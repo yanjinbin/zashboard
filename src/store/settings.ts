@@ -77,6 +77,32 @@ const migrateLegacyConnectionDisplayStyle = () => {
 
 migrateLegacyConnectionDisplayStyle()
 
+// 一次性迁移：将以下代理设置项默认开启，老用户也强制开启一次（仅执行一次）
+const migrateEnableProxySettingsByDefault = () => {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  const migratedKey = 'config/migrated-enable-proxy-settings-by-default'
+
+  if (localStorage.getItem(migratedKey) !== null) {
+    return
+  }
+
+  ;[
+    'config/show-selected-for-now-node',
+    'config/hide-unavailable-proxies',
+    'config/manage-hidden-group-mode',
+    'config/group-proxies-by-provider',
+  ].forEach((key) => {
+    localStorage.setItem(key, 'true')
+  })
+
+  localStorage.setItem(migratedKey, 'true')
+}
+
+migrateEnableProxySettingsByDefault()
+
 // global
 export const defaultTheme = useStorage<string>('config/default-theme', 'light')
 export const darkTheme = useStorage<string>('config/dark-theme', 'dark')
@@ -217,7 +243,7 @@ export const proxyGroupFilterMap = useStorage<Record<string, string>>(
   'cache/proxy-group-filter-map',
   {},
 )
-export const displayFinalOutbound = useStorage('config/show-selected-for-now-node', false)
+export const displayFinalOutbound = useStorage('config/show-selected-for-now-node', true)
 export const twoColumnProxyGroup = useStorage('config/two-columns', true)
 export const proxyFolderMode = useStorage<FOLDER_MODE>(
   'config/proxy-folder-mode-setting',
@@ -250,7 +276,7 @@ export const disableProxiesPageTextSelect = useStorage(
   true,
 )
 export const proxyPreviewType = useStorage('config/proxy-preview-type', PROXY_PREVIEW_TYPE.AUTO)
-export const hideUnavailableProxies = useStorage('config/hide-unavailable-proxies', false)
+export const hideUnavailableProxies = useStorage('config/hide-unavailable-proxies', true)
 export const lowLatency = useStorage('config/low-latency', 400)
 export const mediumLatency = useStorage('config/medium-latency', 800)
 export const IPv6test = useStorage('config/ipv6-test', false)
@@ -262,7 +288,7 @@ export const minProxyCardWidth = useStorage<number>(
   'config/min-proxy-card-width',
   getMinCardWidth(proxyCardSize.value),
 )
-export const manageHiddenGroup = useStorage('config/manage-hidden-group-mode', false)
+export const manageHiddenGroup = useStorage('config/manage-hidden-group-mode', true)
 
 export const displayGlobalByMode = useStorage('config/display-global-by-mode', false)
 export const customGlobalNode = useStorage('config/custom-global-node-name', GLOBAL)
@@ -276,7 +302,7 @@ export const iconReflectList = useStorage<
     uuid: string
   }[]
 >('config/icon-reflect-list', [])
-export const groupProxiesByProvider = useStorage('config/group-proxies-by-provider', false)
+export const groupProxiesByProvider = useStorage('config/group-proxies-by-provider', true)
 export const useSmartGroupSort = useStorage('config/use-smart-group-sort', false)
 export const groupTestUrls = useStorage<
   {
