@@ -381,3 +381,6 @@ export const settingsMenuOrder = useStorage<SETTINGS_MENU_KEY[]>(
 
 // settings page two columns mode
 export const settingsPageTwoColumns = useStorage<boolean>('config/settings-page-two-columns', true)
+
+// custom panel title banner (shown below each page header)
+export const showPanelTitleBanner = useStorage<boolean>('config/show-panel-title-banner', true)

@@ -356,6 +356,7 @@ const en = {
     "Show all features, including those not supported by the official sing-box version. If you're using a forked version of sing-box that supports some of these features, you can try enabling them.",
   blurIntensity: 'Blur intensity',
   scrollAnimationEffect: 'Scroll animation effect',
+  showPanelTitleBanner: 'Show panel title banner',
 
   // Import, export, and upgrade
   importFromFile: 'Import from file',

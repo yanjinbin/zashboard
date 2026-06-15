@@ -351,6 +351,7 @@ const zh: LANG_MESSAGE = {
     '显示所有功能，包括sing-box官方版本不支持的功能，如果您使用了fork版本的sing-box支持其中的某些功能，可以尝试启用',
   blurIntensity: '毛玻璃强度',
   scrollAnimationEffect: '滚动动画效果',
+  showPanelTitleBanner: '显示面板标题栏',
 
   // Import, export, and upgrade
   importFromFile: '从文件导入',

@@ -351,6 +351,7 @@ const zhTW: LANG_MESSAGE = {
     '顯示所有功能，包括sing-box官方版本不支援的功能，如果您使用了fork版本的sing-box支援其中的某些功能，可以嘗試啟用',
   blurIntensity: '毛玻璃強度',
   scrollAnimationEffect: '滾動動畫效果',
+  showPanelTitleBanner: '顯示面板標題列',
 
   // Import, export, and upgrade
   importFromFile: '從檔案匯入',

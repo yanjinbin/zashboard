@@ -89,6 +89,10 @@ export const SETTINGS_CATEGORIES: SettingsCategory[] = [
         key: `${SETTINGS_MENU_KEY.general}.displayAllFeatures`,
         label: 'displayAllFeatures',
       },
+      {
+        key: `${SETTINGS_MENU_KEY.general}.showPanelTitleBanner`,
+        label: 'showPanelTitleBanner',
+      },
     ],
   },
   {

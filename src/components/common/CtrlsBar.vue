@@ -5,29 +5,26 @@
     ref="ctrlsBarRef"
   >
     <slot></slot>
-    <div
-      class="border-base-300/40 flex flex-wrap items-center justify-center gap-x-3 border-t px-3 py-1.5 text-center text-base font-semibold"
+    <a
+      v-if="showPanelTitleBanner"
+      href="https://router-docs-sepia.vercel.app/"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="border-base-300/40 link link-hover text-base-content hover:text-primary flex flex-wrap items-center justify-center gap-x-2 border-t px-3 py-1.5 text-center text-base font-semibold"
     >
-      <span class="text-base-content"> ImmortalWrt-R5C-Gateway Nikki 控制面板 </span>
-      <a
-        href="https://router-docs-sepia.vercel.app/"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="link link-primary inline-flex items-center gap-1.5"
-      >
-        <img
-          src="https://cdn.jsdelivr.net/gh/yanjinbin/dotfiles@latest/mihomo/rules/icons/router.svg"
-          class="h-5 w-5"
-          alt=""
-        />
-        路由文档
-      </a>
-    </div>
+      <img
+        src="https://cdn.jsdelivr.net/gh/yanjinbin/dotfiles@latest/mihomo/rules/icons/router.svg"
+        class="h-5 w-5"
+        alt=""
+      />
+      ImmortalWrt-R5C-Gateway Nikki 控制面板
+    </a>
   </div>
 </template>
 <script lang="ts" setup>
 import { ctrlsBottom } from '@/composables/paddingViews'
 import { isMiddleScreen } from '@/helper/utils'
+import { showPanelTitleBanner } from '@/store/settings'
 import { useElementBounding } from '@vueuse/core'
 import { onUnmounted, ref, watch } from 'vue'
 

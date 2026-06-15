@@ -129,6 +129,19 @@
           class="toggle"
         />
       </div>
+      <div
+        v-if="isVisibleShowPanelTitleBanner"
+        class="setting-item"
+      >
+        <div class="setting-item-label">
+          {{ $t('showPanelTitleBanner') }}
+        </div>
+        <input
+          type="checkbox"
+          v-model="showPanelTitleBanner"
+          class="toggle"
+        />
+      </div>
       <KeyboardShortcutsSettings v-if="isVisibleShortcuts" />
       <div
         v-if="isSingBox && isVisibleDisplayAllFeatures"
@@ -168,6 +181,7 @@ import {
   displayAllFeatures,
   IPInfoAPI,
   scrollAnimationEffect,
+  showPanelTitleBanner,
   swipeInPages,
   swipeInTabs,
 } from '@/store/settings'
@@ -189,6 +203,7 @@ const isVisibleSwipeInPages = useIsSettingVisible(k.swipeInPages)
 const isVisibleSwipeInTabs = useIsSettingVisible(k.swipeInTabs)
 const isVisibleDisablePullToRefresh = useIsSettingVisible(k.disablePullToRefresh)
 const isVisibleDisplayAllFeatures = useIsSettingVisible(k.displayAllFeatures)
+const isVisibleShowPanelTitleBanner = useIsSettingVisible(k.showPanelTitleBanner)
 
 const hasVisibleGeneralItems = computed(() => {
   return (
@@ -202,7 +217,8 @@ const hasVisibleGeneralItems = computed(() => {
     isVisibleSwipeInPages.value ||
     (swipeInPages.value && isVisibleSwipeInTabs.value) ||
     isVisibleDisablePullToRefresh.value ||
-    (isSingBox.value && isVisibleDisplayAllFeatures.value)
+    (isSingBox.value && isVisibleDisplayAllFeatures.value) ||
+    isVisibleShowPanelTitleBanner.value
   )
 })
 </script>
