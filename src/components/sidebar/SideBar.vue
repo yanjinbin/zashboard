@@ -6,6 +6,20 @@
     @transitionend="handleTransitionEnd"
   >
     <div :class="twMerge('flex h-full flex-col gap-2', isSidebarCollapsed ? 'w-18 px-0' : 'w-60')">
+      <div
+        v-if="!isSidebarCollapsed"
+        class="flex flex-col gap-0.5 px-3 pt-2 pb-1"
+      >
+        <h1 class="text-sm leading-tight font-bold">ImmortalWrt-R5C-Gateway Nikki 控制面板</h1>
+        <a
+          href="https://router-docs-sepia.vercel.app/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="link link-primary text-xs"
+        >
+          路由文档
+        </a>
+      </div>
       <ul class="menu w-full flex-1">
         <li
           v-for="r in renderRoutes"
