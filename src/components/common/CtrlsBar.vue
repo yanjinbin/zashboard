@@ -4,21 +4,25 @@
     :class="[isMiddleScreen ? 'fixed' : 'sticky']"
     ref="ctrlsBarRef"
   >
-    <slot></slot>
-    <a
-      v-if="showPanelTitleBanner"
-      href="https://router-docs-sepia.vercel.app/"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="border-base-300/40 link link-hover text-base-content hover:text-primary flex flex-wrap items-center justify-center gap-x-2 border-t px-3 py-1.5 text-center text-base font-semibold"
-    >
-      <img
-        src="https://cdn.jsdelivr.net/gh/yanjinbin/dotfiles@latest/mihomo/rules/icons/router.svg"
-        class="h-5 w-5"
-        alt=""
-      />
-      ImmortalWrt-R5C-Gateway Nikki 控制面板
-    </a>
+    <div class="flex items-center">
+      <div class="min-w-0 flex-1">
+        <slot></slot>
+      </div>
+      <a
+        v-if="showPanelTitleBanner"
+        href="https://router-docs-sepia.vercel.app/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="link link-hover text-base-content hover:text-primary mr-3 hidden shrink-0 items-center gap-1.5 text-sm font-semibold whitespace-nowrap lg:flex"
+      >
+        <img
+          src="https://cdn.jsdelivr.net/gh/yanjinbin/dotfiles@latest/mihomo/rules/icons/router.svg"
+          class="h-5 w-5"
+          alt=""
+        />
+        ImmortalWrt-R5C-Gateway Nikki 控制面板
+      </a>
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
