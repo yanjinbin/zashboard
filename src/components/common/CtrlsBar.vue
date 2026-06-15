@@ -5,6 +5,19 @@
     ref="ctrlsBarRef"
   >
     <slot></slot>
+    <div
+      class="border-base-300/40 flex flex-wrap items-center justify-center gap-x-2 border-t px-3 py-1 text-center text-xs"
+    >
+      <span class="text-base-content/80 font-medium"> ImmortalWrt-R5C-Gateway Nikki 控制面板 </span>
+      <a
+        href="https://router-docs-sepia.vercel.app/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="link link-primary"
+      >
+        https://router-docs-sepia.vercel.app/
+      </a>
+    </div>
   </div>
 </template>
 <script lang="ts" setup>

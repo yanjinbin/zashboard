@@ -6,10 +6,7 @@
     @transitionend="handleTransitionEnd"
   >
     <div :class="twMerge('flex h-full flex-col gap-2', isSidebarCollapsed ? 'w-18 px-0' : 'w-60')">
-      <ul
-        class="menu w-full"
-        :class="!isSidebarCollapsed && 'flex-1'"
-      >
+      <ul class="menu w-full flex-1">
         <li
           v-for="r in renderRoutes"
           :key="r"
@@ -33,17 +30,6 @@
           </a>
         </li>
       </ul>
-      <a
-        v-if="isSidebarCollapsed"
-        href="https://router-docs-sepia.vercel.app/"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-base-content/50 hover:text-primary flex flex-1 items-center justify-center overflow-hidden py-2 transition-colors"
-      >
-        <span class="text-xs whitespace-nowrap [writing-mode:vertical-rl]">
-          ImmortalWrt-R5C-Gateway Nikki 控制面板
-        </span>
-      </a>
       <template v-if="isSidebarCollapsed">
         <VerticalInfos v-if="showStatisticsWhenSidebarCollapsed">
           <SidebarButtons vertical />
