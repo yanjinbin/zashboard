@@ -13,9 +13,14 @@
         href="https://router-docs-sepia.vercel.app/"
         target="_blank"
         rel="noopener noreferrer"
-        class="link link-primary"
+        class="link link-primary inline-flex items-center gap-1"
       >
-        https://router-docs-sepia.vercel.app/
+        <img
+          src="https://cdn.jsdelivr.net/gh/yanjinbin/dotfiles@latest/mihomo/rules/icons/router.svg"
+          class="h-3.5 w-3.5"
+          alt=""
+        />
+        路由文档
       </a>
     </div>
   </div>
