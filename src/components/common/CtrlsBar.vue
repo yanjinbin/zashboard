@@ -6,18 +6,18 @@
   >
     <slot></slot>
     <div
-      class="border-base-300/40 flex flex-wrap items-center justify-center gap-x-2 border-t px-3 py-1 text-center text-xs"
+      class="border-base-300/40 flex flex-wrap items-center justify-center gap-x-3 border-t px-3 py-1.5 text-center text-base font-semibold"
     >
-      <span class="text-base-content/80 font-medium"> ImmortalWrt-R5C-Gateway Nikki 控制面板 </span>
+      <span class="text-base-content"> ImmortalWrt-R5C-Gateway Nikki 控制面板 </span>
       <a
         href="https://router-docs-sepia.vercel.app/"
         target="_blank"
         rel="noopener noreferrer"
-        class="link link-primary inline-flex items-center gap-1"
+        class="link link-primary inline-flex items-center gap-1.5"
       >
         <img
           src="https://cdn.jsdelivr.net/gh/yanjinbin/dotfiles@latest/mihomo/rules/icons/router.svg"
-          class="h-3.5 w-3.5"
+          class="h-5 w-5"
           alt=""
         />
         路由文档
