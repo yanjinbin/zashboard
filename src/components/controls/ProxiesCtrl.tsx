@@ -44,6 +44,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import CtrlsBar from '../common/CtrlsBar.vue'
 import DialogWrapper from '../common/DialogWrapper.vue'
+import PanelTitle from '../common/PanelTitle.vue'
 import TextInput from '../common/TextInput.vue'
 
 export default defineComponent({
@@ -383,7 +384,10 @@ export default defineComponent({
         <div class="flex gap-2 p-2">
           {hasProviders.value && tabs}
           {modeSelect}
-          <div class="flex flex-1">{searchInput}</div>
+          {searchInput}
+          <div class="flex flex-1 justify-center">
+            <PanelTitle />
+          </div>
           {upgradeAllIcon}
           {settingsModal}
           {toggleCollapseAll}

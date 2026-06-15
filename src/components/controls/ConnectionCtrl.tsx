@@ -29,6 +29,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import CtrlsBar from '../common/CtrlsBar.vue'
 import DialogWrapper from '../common/DialogWrapper.vue'
+import PanelTitle from '../common/PanelTitle.vue'
 import TextInput from '../common/TextInput.vue'
 import ConnectionCardSettings from '../settings/connections/ConnectionCardSettings.vue'
 import TableSettings from '../settings/connections/TableSettings.vue'
@@ -228,7 +229,10 @@ export default defineComponent({
           <ConnectionTabs />
           {isConnectionCard.value && sortForCards}
           <SourceIPFilter class="w-40" />
-          <div class="flex flex-1">{searchInput}</div>
+          {searchInput}
+          <div class="flex flex-1 justify-center">
+            <PanelTitle />
+          </div>
           {settingsModal}
           {buttons}
         </div>
