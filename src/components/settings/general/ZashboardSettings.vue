@@ -30,7 +30,7 @@
           <span class="bg-secondary h-2 w-2 rounded-full"></span>
         </span>
         <a
-          href="https://github.com/Zephyruso/zashboard"
+          href="https://github.com/yanjinbin/zashboard"
           target="_blank"
           class="text-lg font-semibold"
         >
