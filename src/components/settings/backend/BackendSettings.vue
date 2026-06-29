@@ -110,64 +110,68 @@
         </button>
         <div
           v-if="!isSingBox || displayAllFeatures"
-          class="col-span-full space-y-2"
+          class="col-span-full space-y-1.5"
         >
           <div
             class="tooltip w-full"
             :data-tip="$t('fullRefreshTip')"
           >
             <button
-              class="btn btn-primary btn-sm w-full"
+              class="btn btn-primary btn-sm relative w-full overflow-hidden"
               :disabled="isFullRefreshing"
               @click="handleFullRefresh"
             >
-              <span
-                v-if="isFullRefreshing"
-                class="loading loading-spinner loading-sm"
-              ></span>
-              {{ $t('fullRefresh') }}
+              <!-- 进度填充层，内嵌在按钮内从左向右增长 -->
+              <div
+                v-if="isFullRefreshing || fullRefreshLogs.length > 0"
+                class="absolute inset-y-0 left-0 transition-[width] duration-300 ease-linear"
+                :class="fullRefreshHasWarning ? 'bg-warning/30' : 'bg-primary-content/15'"
+                :style="{ width: fullRefreshProgress + '%' }"
+              />
+              <span class="relative flex items-center gap-1.5">
+                <span
+                  v-if="isFullRefreshing"
+                  class="loading loading-spinner loading-sm"
+                />
+                {{ $t('fullRefresh') }}
+              </span>
             </button>
           </div>
 
-          <template v-if="isFullRefreshing || fullRefreshLogs.length > 0">
-            <progress
-              class="progress h-1.5 w-full transition-all duration-300"
-              :class="fullRefreshHasWarning ? 'progress-warning' : 'progress-primary'"
-              :value="fullRefreshProgress"
-              max="100"
-            />
-            <div class="space-y-1">
-              <div
-                v-for="log in fullRefreshLogs"
-                :key="log.key"
-                class="flex items-start gap-1.5 text-xs"
+          <div
+            v-if="isFullRefreshing || fullRefreshLogs.length > 0"
+            class="space-y-1"
+          >
+            <div
+              v-for="log in fullRefreshLogs"
+              :key="log.key"
+              class="flex items-start gap-1.5 text-xs"
+            >
+              <span
+                v-if="log.status === 'running'"
+                class="loading loading-spinner loading-xs mt-px shrink-0"
+              />
+              <span
+                v-else
+                class="mt-px shrink-0 leading-none font-bold"
+                :class="{
+                  'text-success': log.status === 'success',
+                  'text-warning': log.status === 'warning',
+                  'text-error': log.status === 'error',
+                }"
+                >{{ log.status === 'success' ? '✓' : log.status === 'warning' ? '⚠' : '✕' }}</span
               >
-                <span
-                  v-if="log.status === 'running'"
-                  class="loading loading-spinner loading-xs mt-px shrink-0"
-                />
-                <span
-                  v-else
-                  class="mt-px shrink-0 leading-none font-bold"
-                  :class="{
-                    'text-success': log.status === 'success',
-                    'text-warning': log.status === 'warning',
-                    'text-error': log.status === 'error',
-                  }"
-                  >{{ log.status === 'success' ? '✓' : log.status === 'warning' ? '⚠' : '✕' }}</span
-                >
-                <span
-                  :class="{
-                    'text-base-content/50': log.status === 'running',
-                    'text-success': log.status === 'success',
-                    'text-warning': log.status === 'warning',
-                    'text-error': log.status === 'error',
-                  }"
-                  >{{ log.text }}</span
-                >
-              </div>
+              <span
+                :class="{
+                  'text-base-content/50': log.status === 'running',
+                  'text-success': log.status === 'success',
+                  'text-warning': log.status === 'warning',
+                  'text-error': log.status === 'error',
+                }"
+                >{{ log.text }}</span
+              >
             </div>
-          </template>
+          </div>
         </div>
       </div>
 
