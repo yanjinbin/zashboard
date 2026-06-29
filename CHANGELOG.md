@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [3.10.0](https://github.com/yanjinbin/zashboard/compare/v3.9.11...v3.10.0) (2026-06-29)
+
+
+### Features
+
+* **settings:** add full-refresh button with partial-failure warning ([46700ad](https://github.com/yanjinbin/zashboard/commit/46700ad553f78bd5331a247b15b66f14d611ae25))
+
 ## [3.9.0](https://github.com/Zephyruso/zashboard/compare/v3.8.0...v3.9.0) (2026-06-12)
 
 
