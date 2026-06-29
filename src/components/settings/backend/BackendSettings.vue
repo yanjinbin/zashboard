@@ -191,23 +191,32 @@
         <div class="settings-section-label mb-2">
           {{ $t('ipCheckTools') }}
         </div>
-        <div class="divide-base-content/10 w-full divide-y">
-          <div
+        <div class="w-full space-y-1.5">
+          <a
             v-for="site in ipCheckSitesResolved"
             :key="site.url"
-            class="flex items-center gap-2 py-1.5 text-xs"
+            :href="site.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group bg-base-200/60 hover:bg-base-200 flex items-center gap-3 rounded-lg px-3 py-2 transition-colors"
           >
-            <a
-              :href="site.url"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="link link-hover w-32 shrink-0 font-medium"
-            >
-              {{ site.label }}
-            </a>
+            <div class="flex w-28 shrink-0 items-center">
+              <img
+                v-if="site.logo && !logoErrors.includes(site.url)"
+                :src="site.logo"
+                :alt="site.label"
+                class="h-5 max-w-[88px] object-contain object-left"
+                @error="() => logoErrors.push(site.url)"
+              />
+              <span
+                v-else
+                class="text-xs font-semibold"
+                >{{ site.label }}</span
+              >
+            </div>
             <div
               v-if="site.chain.length"
-              class="flex min-w-0 flex-1 items-center gap-0.5 overflow-hidden"
+              class="flex min-w-0 flex-1 items-center gap-0.5 overflow-hidden text-xs"
             >
               <template
                 v-for="(node, i) in site.chain"
@@ -234,10 +243,14 @@
             </div>
             <span
               v-else
-              class="text-base-content/30"
+              class="text-base-content/30 flex-1 text-xs"
               >—</span
             >
-          </div>
+            <span
+              class="text-base-content/30 group-hover:text-base-content/60 shrink-0 text-xs transition-colors"
+              >↗</span
+            >
+          </a>
         </div>
       </div>
     </div>
@@ -349,14 +362,24 @@ import UpdateConfigModal from './UpdateConfigModal.vue'
 import UpgradeCoreModal from './UpgradeCoreModal.vue'
 
 const IP_CHECK_SITES = [
-  { label: 'ipleak.net', url: 'https://ipleak.net' },
-  { label: 'dnsleaktest.com', url: 'https://dnsleaktest.com' },
-  { label: 'ipapi.co', url: 'https://ipapi.co' },
-  { label: 'ugtop.com', url: 'https://ugtop.com' },
-  { label: 'myip.com', url: 'https://myip.com' },
-  { label: 'ippure.com', url: 'https://ippure.com' },
-  { label: 'ping0.cc', url: 'https://ping0.cc' },
+  {
+    label: 'ipleak.net',
+    url: 'https://ipleak.net',
+    logo: 'https://ipleak.net/static/images/logotitle.png',
+  },
+  {
+    label: 'dnsleaktest.com',
+    url: 'https://dnsleaktest.com',
+    logo: 'https://dnsleaktest.com/assets/img/logo.png',
+  },
+  { label: 'ipapi.co', url: 'https://ipapi.co', logo: '' },
+  { label: 'ugtop.com', url: 'https://ugtop.com', logo: 'https://ugtop.com/title2002.gif' },
+  { label: 'myip.com', url: 'https://myip.com', logo: 'https://www.myip.com/img/myip.png' },
+  { label: 'ippure.com', url: 'https://ippure.com', logo: 'https://ippure.com/logo.png' },
+  { label: 'ping0.cc', url: 'https://ping0.cc', logo: '' },
 ]
+
+const logoErrors = ref<string[]>([])
 
 const PROXY_GROUP_TYPES = new Set(['Selector', 'URLTest', 'Fallback', 'LoadBalance', 'Smart'])
 
