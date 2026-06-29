@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [3.11.3](https://github.com/yanjinbin/zashboard/compare/v3.11.2...v3.11.3) (2026-06-29)
+
+
+### Bug Fixes
+
+* **settings:** reset full-refresh button to initial state after 3s ([1e6d5cc](https://github.com/yanjinbin/zashboard/commit/1e6d5ccd57230b89c13a569d0d313a55def0d821))
+
 ## [3.11.2](https://github.com/yanjinbin/zashboard/compare/v3.11.1...v3.11.2) (2026-06-29)
 
 
