@@ -673,6 +673,10 @@ const handleFullRefresh = async () => {
     }
   } finally {
     isFullRefreshing.value = false
+    setTimeout(() => {
+      fullRefreshProgress.value = 0
+      fullRefreshLogs.value = []
+    }, 3000)
   }
 }
 </script>
