@@ -187,17 +187,53 @@
         <div class="settings-section-label mb-2">
           {{ $t('ipCheckTools') }}
         </div>
-        <div class="flex flex-wrap gap-1.5">
-          <a
-            v-for="site in IP_CHECK_SITES"
+        <div class="divide-base-content/10 w-full divide-y">
+          <div
+            v-for="site in ipCheckSitesResolved"
             :key="site.url"
-            :href="site.url"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="badge badge-outline hover:badge-primary cursor-pointer text-xs transition-colors"
+            class="flex items-center gap-2 py-1.5 text-xs"
           >
-            {{ site.label }}
-          </a>
+            <a
+              :href="site.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="link link-hover w-32 shrink-0 font-medium"
+            >
+              {{ site.label }}
+            </a>
+            <div
+              v-if="site.chain.length"
+              class="flex min-w-0 flex-1 items-center gap-0.5 overflow-hidden"
+            >
+              <template
+                v-for="(node, i) in site.chain"
+                :key="node"
+              >
+                <span
+                  v-if="i > 0"
+                  class="text-base-content/30 shrink-0"
+                  >›</span
+                >
+                <span
+                  class="truncate"
+                  :class="{
+                    'text-success font-medium': node === 'DIRECT',
+                    'text-error font-medium': node === 'REJECT',
+                    'text-base-content/50':
+                      i < site.chain.length - 1 && node !== 'DIRECT' && node !== 'REJECT',
+                    'text-base-content font-medium':
+                      i === site.chain.length - 1 && node !== 'DIRECT' && node !== 'REJECT',
+                  }"
+                  >{{ node }}</span
+                >
+              </template>
+            </div>
+            <span
+              v-else
+              class="text-base-content/30"
+              >—</span
+            >
+          </div>
         </div>
       </div>
     </div>
@@ -299,8 +335,8 @@ import { BACKEND_ITEM_KEYS } from '@/config/settingsItems'
 import { MIHOMO, MIHOMO_CHANNEL } from '@/constant'
 import { showNotification } from '@/helper/notification'
 import { configs, fetchConfigs, updateConfigs } from '@/store/config'
-import { fetchProxies, hasSmartGroup, proxyProviederList } from '@/store/proxies'
-import { fetchRules, ruleProviderList } from '@/store/rules'
+import { fetchProxies, hasSmartGroup, proxyMap, proxyProviederList } from '@/store/proxies'
+import { fetchRules, ruleProviderList, rules } from '@/store/rules'
 import { autoUpgradeCore, checkUpgradeCore, displayAllFeatures } from '@/store/settings'
 import { activeBackend } from '@/store/setup'
 import { computed, ref } from 'vue'
@@ -317,6 +353,50 @@ const IP_CHECK_SITES = [
   { label: 'ippure.com', url: 'https://ippure.com' },
   { label: 'ping0.cc', url: 'https://ping0.cc' },
 ]
+
+const PROXY_GROUP_TYPES = new Set(['Selector', 'URLTest', 'Fallback', 'LoadBalance', 'Smart'])
+
+const resolveProxyChain = (name: string): string[] => {
+  const chain: string[] = []
+  const visited = new Set<string>()
+  let cur = name
+  while (cur && !visited.has(cur)) {
+    visited.add(cur)
+    chain.push(cur)
+    const p = proxyMap.value[cur]
+    if (!p || !PROXY_GROUP_TYPES.has(p.type) || !p.now) break
+    cur = p.now
+  }
+  return chain
+}
+
+const matchDomain = (domain: string) => {
+  for (const rule of rules.value) {
+    switch (rule.type) {
+      case 'DOMAIN':
+        if (domain === rule.payload) return rule
+        break
+      case 'DOMAIN-SUFFIX':
+        if (domain === rule.payload || domain.endsWith('.' + rule.payload)) return rule
+        break
+      case 'DOMAIN-KEYWORD':
+        if (domain.includes(rule.payload)) return rule
+        break
+      case 'MATCH':
+        return rule
+    }
+  }
+  return null
+}
+
+const ipCheckSitesResolved = computed(() =>
+  IP_CHECK_SITES.map((site) => {
+    const domain = new URL(site.url).hostname
+    const matched = matchDomain(domain)
+    const chain = matched ? resolveProxyChain(matched.proxy) : []
+    return { ...site, chain }
+  }),
+)
 
 const { t } = useI18n()
 const k = BACKEND_ITEM_KEYS
