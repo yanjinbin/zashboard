@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [3.11.1](https://github.com/yanjinbin/zashboard/compare/v3.11.0...v3.11.1) (2026-06-29)
+
+
+### Bug Fixes
+
+* **settings:** resolve exit node chain for IP check tools ([726fcf8](https://github.com/yanjinbin/zashboard/commit/726fcf886d902ef7bdaf06a103195c26a9982db0))
+
 ## [3.11.0](https://github.com/yanjinbin/zashboard/compare/v3.10.0...v3.11.0) (2026-06-29)
 
 
