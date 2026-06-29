@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [3.11.2](https://github.com/yanjinbin/zashboard/compare/v3.11.1...v3.11.2) (2026-06-29)
+
+
+### Bug Fixes
+
+* **settings:** embed progress fill inside full-refresh button ([80bd7cb](https://github.com/yanjinbin/zashboard/commit/80bd7cb8cd9e95016d19bcec1397f1d9b133fe23))
+
 ## [3.11.1](https://github.com/yanjinbin/zashboard/compare/v3.11.0...v3.11.1) (2026-06-29)
 
 
