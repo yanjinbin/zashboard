@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [3.11.4](https://github.com/yanjinbin/zashboard/compare/v3.11.3...v3.11.4) (2026-06-29)
+
+
+### Bug Fixes
+
+* **settings:** add logos for ipapi.co and ping0.cc in IP check tools ([ea730df](https://github.com/yanjinbin/zashboard/commit/ea730df27c4c8b47e17dbb0d6595e073e449a010))
+
 ## [3.11.3](https://github.com/yanjinbin/zashboard/compare/v3.11.2...v3.11.3) (2026-06-29)
 
 
