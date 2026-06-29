@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [3.11.5](https://github.com/yanjinbin/zashboard/compare/v3.11.4...v3.11.5) (2026-06-29)
+
+
+### Bug Fixes
+
+* **settings:** use vivid blue for full-refresh progress fill ([050f249](https://github.com/yanjinbin/zashboard/commit/050f249a40243e3e09bbfa7aa303e439e656a670))
+
 ## [3.11.4](https://github.com/yanjinbin/zashboard/compare/v3.11.3...v3.11.4) (2026-06-29)
 
 
