@@ -371,6 +371,15 @@ const en = {
   upgradeSuccess: 'Upgrade successful',
   numberOfChartsInSidebar: 'Number of charts in the sidebar',
   flushSmartWeights: 'Clear smart weights',
+  fullRefresh: 'Full Refresh',
+  fullRefreshSuccess: 'Full refresh completed',
+  fullRefreshPartialFailure: 'Some updates failed: {names}',
+  fullRefreshTip:
+    'Update all proxy & rule providers, then reload config and flush Fake IP / DNS cache',
+  fullRefreshStepProxies: 'Updating proxy subscriptions...',
+  fullRefreshStepRules: 'Updating rule sets...',
+  fullRefreshStepReload: 'Reloading config...',
+  fullRefreshStepCache: 'Flushing caches...',
   IPInfoAPI: 'IP info API',
   IPInfoAPITip:
     "This API is used to look up global node IP information during IP checks, and for IP geolocation lookups in connection details and zashboard's DNS query feature.",

@@ -373,6 +373,15 @@ const ru: LANG_MESSAGE = {
   upgradeSuccess: 'Обновление до новой версии выполнено успешно',
   numberOfChartsInSidebar: 'Количество графиков в боковой панели',
   flushSmartWeights: 'Очистить Smart веса',
+  fullRefresh: 'Полное обновление',
+  fullRefreshSuccess: 'Полное обновление завершено',
+  fullRefreshPartialFailure: 'Некоторые обновления не удались: {names}',
+  fullRefreshTip:
+    'Обновить все прокси и провайдеры правил, затем перезагрузить конфиг и очистить кэш Fake IP / DNS',
+  fullRefreshStepProxies: 'Обновление подписок прокси...',
+  fullRefreshStepRules: 'Обновление наборов правил...',
+  fullRefreshStepReload: 'Перезагрузка конфига...',
+  fullRefreshStepCache: 'Очистка кэша...',
   IPInfoAPI: 'API информации о IP',
   IPInfoAPITip:
     'Этот API будет использоваться для проверки IP-адресов при запросах информации о глобальных узлах, определения геолокации IP-адресов в деталях соединения, а также для определения геолокации IP-адресов при DNS-запросах в панели.',

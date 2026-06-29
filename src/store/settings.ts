@@ -128,12 +128,18 @@ const replaceLegacyTheme = (theme: string, defaultTheme: string) => {
 defaultTheme.value = replaceLegacyTheme(defaultTheme.value, 'light')
 darkTheme.value = replaceLegacyTheme(darkTheme.value, 'dark')
 
-export const language = useStorage<LANG>(
-  'config/language',
-  Object.values(LANG).includes(navigator.language as LANG)
-    ? (navigator.language as LANG)
-    : LANG.EN_US,
-)
+const detectBrowserLanguage = (): LANG => {
+  const supported = Object.values(LANG)
+  for (const lang of navigator.languages ?? [navigator.language]) {
+    if (supported.includes(lang as LANG)) return lang as LANG
+    const prefix = lang.split('-')[0].toLowerCase()
+    const match = supported.find((l) => l.toLowerCase().startsWith(prefix))
+    if (match) return match
+  }
+  return LANG.EN_US
+}
+
+export const language = useStorage<LANG>('config/language', detectBrowserLanguage())
 export const isSidebarCollapsedConfig = useStorage('config/is-sidebar-collapsed', true)
 export const isSidebarCollapsed = computed({
   get: () => {

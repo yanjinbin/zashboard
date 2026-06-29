@@ -108,6 +108,23 @@
         >
           {{ $t('flushSmartWeights') }}
         </button>
+        <div
+          v-if="!isSingBox || displayAllFeatures"
+          class="tooltip col-span-full"
+          :data-tip="$t('fullRefreshTip')"
+        >
+          <button
+            class="btn btn-primary btn-sm w-full"
+            :disabled="isFullRefreshing"
+            @click="handleFullRefresh"
+          >
+            <span
+              v-if="isFullRefreshing"
+              class="loading loading-spinner loading-sm"
+            ></span>
+            {{ isFullRefreshing ? $t(fullRefreshStep) : $t('fullRefresh') }}
+          </button>
+        </div>
       </div>
 
       <div
@@ -208,6 +225,8 @@ import {
   reloadConfigsAPI,
   restartCoreAPI,
   updateGeoDataAPI,
+  updateProxyProviderAPI,
+  updateRuleProviderAPI,
 } from '@/api'
 import BackendVersion from '@/components/common/BackendVersion.vue'
 import BackendPortsGrid from '@/components/settings/backend/BackendPortsGrid.vue'
@@ -218,8 +237,8 @@ import { BACKEND_ITEM_KEYS } from '@/config/settingsItems'
 import { MIHOMO, MIHOMO_CHANNEL } from '@/constant'
 import { showNotification } from '@/helper/notification'
 import { configs, fetchConfigs, updateConfigs } from '@/store/config'
-import { fetchProxies, hasSmartGroup } from '@/store/proxies'
-import { fetchRules } from '@/store/rules'
+import { fetchProxies, hasSmartGroup, proxyProviederList } from '@/store/proxies'
+import { fetchRules, ruleProviderList } from '@/store/rules'
 import { autoUpgradeCore, checkUpgradeCore, displayAllFeatures } from '@/store/settings'
 import { activeBackend } from '@/store/setup'
 import { computed, ref } from 'vue'
@@ -358,5 +377,49 @@ const handleFlushSmartWeights = async () => {
     content: 'flushSmartWeightsSuccess',
     type: 'alert-success',
   })
+}
+
+const isFullRefreshing = ref(false)
+const fullRefreshStep = ref('fullRefreshStepProxies')
+const handleFullRefresh = async () => {
+  if (isFullRefreshing.value) return
+  isFullRefreshing.value = true
+  try {
+    fullRefreshStep.value = 'fullRefreshStepProxies'
+    const proxyResults = await Promise.allSettled(
+      proxyProviederList.value.map((p) => updateProxyProviderAPI(p.name)),
+    )
+    const failedProxies = proxyProviederList.value
+      .filter((_, i) => proxyResults[i].status === 'rejected')
+      .map((p) => p.name)
+
+    fullRefreshStep.value = 'fullRefreshStepRules'
+    const ruleResults = await Promise.allSettled(
+      ruleProviderList.value.map((r) => updateRuleProviderAPI(r.name)),
+    )
+    const failedRules = ruleProviderList.value
+      .filter((_, i) => ruleResults[i].status === 'rejected')
+      .map((r) => r.name)
+
+    fullRefreshStep.value = 'fullRefreshStepReload'
+    await reloadConfigsAPI()
+    fullRefreshStep.value = 'fullRefreshStepCache'
+    await Promise.all([flushFakeIPAPI(), flushDNSCacheAPI()])
+    reloadAll()
+
+    const failed = [...failedProxies, ...failedRules]
+    if (failed.length > 0) {
+      showNotification({
+        content: 'fullRefreshPartialFailure',
+        params: { names: failed.join(', ') },
+        type: 'alert-warning',
+        timeout: 6000,
+      })
+    } else {
+      showNotification({ content: 'fullRefreshSuccess', type: 'alert-success' })
+    }
+  } finally {
+    isFullRefreshing.value = false
+  }
 }
 </script>
