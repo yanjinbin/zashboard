@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [3.11.0](https://github.com/yanjinbin/zashboard/compare/v3.10.0...v3.11.0) (2026-06-29)
+
+
+### Features
+
+* **settings:** full-refresh progress bar + IP check links + drop Russian locale ([87f029d](https://github.com/yanjinbin/zashboard/commit/87f029d99f6e324e050bf4548e1d80c202e2738d))
+
 ## [3.10.0](https://github.com/yanjinbin/zashboard/compare/v3.9.11...v3.10.0) (2026-06-29)
 
 
