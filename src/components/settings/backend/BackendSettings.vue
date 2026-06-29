@@ -110,20 +110,64 @@
         </button>
         <div
           v-if="!isSingBox || displayAllFeatures"
-          class="tooltip col-span-full"
-          :data-tip="$t('fullRefreshTip')"
+          class="col-span-full space-y-2"
         >
-          <button
-            class="btn btn-primary btn-sm w-full"
-            :disabled="isFullRefreshing"
-            @click="handleFullRefresh"
+          <div
+            class="tooltip w-full"
+            :data-tip="$t('fullRefreshTip')"
           >
-            <span
-              v-if="isFullRefreshing"
-              class="loading loading-spinner loading-sm"
-            ></span>
-            {{ isFullRefreshing ? $t(fullRefreshStep) : $t('fullRefresh') }}
-          </button>
+            <button
+              class="btn btn-primary btn-sm w-full"
+              :disabled="isFullRefreshing"
+              @click="handleFullRefresh"
+            >
+              <span
+                v-if="isFullRefreshing"
+                class="loading loading-spinner loading-sm"
+              ></span>
+              {{ $t('fullRefresh') }}
+            </button>
+          </div>
+
+          <template v-if="isFullRefreshing || fullRefreshLogs.length > 0">
+            <progress
+              class="progress h-1.5 w-full transition-all duration-300"
+              :class="fullRefreshHasWarning ? 'progress-warning' : 'progress-primary'"
+              :value="fullRefreshProgress"
+              max="100"
+            />
+            <div class="space-y-1">
+              <div
+                v-for="log in fullRefreshLogs"
+                :key="log.key"
+                class="flex items-start gap-1.5 text-xs"
+              >
+                <span
+                  v-if="log.status === 'running'"
+                  class="loading loading-spinner loading-xs mt-px shrink-0"
+                />
+                <span
+                  v-else
+                  class="mt-px shrink-0 leading-none font-bold"
+                  :class="{
+                    'text-success': log.status === 'success',
+                    'text-warning': log.status === 'warning',
+                    'text-error': log.status === 'error',
+                  }"
+                  >{{ log.status === 'success' ? '✓' : log.status === 'warning' ? '⚠' : '✕' }}</span
+                >
+                <span
+                  :class="{
+                    'text-base-content/50': log.status === 'running',
+                    'text-success': log.status === 'success',
+                    'text-warning': log.status === 'warning',
+                    'text-error': log.status === 'error',
+                  }"
+                  >{{ log.text }}</span
+                >
+              </div>
+            </div>
+          </template>
         </div>
       </div>
 
@@ -136,6 +180,24 @@
             {{ $t('DNSQuery') }}
           </div>
           <DnsQuery />
+        </div>
+      </div>
+
+      <div class="setting-item flex-col items-start py-3">
+        <div class="settings-section-label mb-2">
+          {{ $t('ipCheckTools') }}
+        </div>
+        <div class="flex flex-wrap gap-1.5">
+          <a
+            v-for="site in IP_CHECK_SITES"
+            :key="site.url"
+            :href="site.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="badge badge-outline hover:badge-primary cursor-pointer text-xs transition-colors"
+          >
+            {{ site.label }}
+          </a>
         </div>
       </div>
     </div>
@@ -242,9 +304,21 @@ import { fetchRules, ruleProviderList } from '@/store/rules'
 import { autoUpgradeCore, checkUpgradeCore, displayAllFeatures } from '@/store/settings'
 import { activeBackend } from '@/store/setup'
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import UpdateConfigModal from './UpdateConfigModal.vue'
 import UpgradeCoreModal from './UpgradeCoreModal.vue'
 
+const IP_CHECK_SITES = [
+  { label: 'ipleak.net', url: 'https://ipleak.net' },
+  { label: 'dnsleaktest.com', url: 'https://dnsleaktest.com' },
+  { label: 'ipapi.co', url: 'https://ipapi.co' },
+  { label: 'ugtop.com', url: 'https://ugtop.com' },
+  { label: 'myip.com', url: 'https://myip.com' },
+  { label: 'ippure.com', url: 'https://ippure.com' },
+  { label: 'ping0.cc', url: 'https://ping0.cc' },
+]
+
+const { t } = useI18n()
 const k = BACKEND_ITEM_KEYS
 const isVisibleBackendSwitch = useIsSettingVisible(k.backend)
 const isVisiblePorts = useIsSettingVisible(k.ports)
@@ -379,43 +453,138 @@ const handleFlushSmartWeights = async () => {
   })
 }
 
+interface LogEntry {
+  key: string
+  text: string
+  status: 'running' | 'success' | 'warning' | 'error'
+}
+
 const isFullRefreshing = ref(false)
-const fullRefreshStep = ref('fullRefreshStepProxies')
+const fullRefreshProgress = ref(0)
+const fullRefreshLogs = ref<LogEntry[]>([])
+const fullRefreshHasWarning = computed(() =>
+  fullRefreshLogs.value.some((l) => l.status === 'warning'),
+)
+
+const pushLog = (entry: LogEntry) => fullRefreshLogs.value.push(entry)
+const patchLog = (key: string, updates: Partial<LogEntry>) => {
+  const idx = fullRefreshLogs.value.findIndex((l) => l.key === key)
+  if (idx >= 0) fullRefreshLogs.value[idx] = { ...fullRefreshLogs.value[idx], ...updates }
+}
+
 const handleFullRefresh = async () => {
   if (isFullRefreshing.value) return
   isFullRefreshing.value = true
+  fullRefreshProgress.value = 0
+  fullRefreshLogs.value = []
+
   try {
-    fullRefreshStep.value = 'fullRefreshStepProxies'
-    const proxyResults = await Promise.allSettled(
-      proxyProviederList.value.map((p) => updateProxyProviderAPI(p.name)),
-    )
-    const failedProxies = proxyProviederList.value
-      .filter((_, i) => proxyResults[i].status === 'rejected')
-      .map((p) => p.name)
+    const proxyList = proxyProviederList.value
+    const ruleList = ruleProviderList.value
+    const totalUnits = proxyList.length + ruleList.length + 2
+    let doneUnits = 0
+    const advance = () => {
+      doneUnits++
+      fullRefreshProgress.value = Math.min(
+        99,
+        Math.round((doneUnits / Math.max(totalUnits, 1)) * 100),
+      )
+    }
 
-    fullRefreshStep.value = 'fullRefreshStepRules'
-    const ruleResults = await Promise.allSettled(
-      ruleProviderList.value.map((r) => updateRuleProviderAPI(r.name)),
-    )
-    const failedRules = ruleProviderList.value
-      .filter((_, i) => ruleResults[i].status === 'rejected')
-      .map((r) => r.name)
+    // Step 1: proxy providers
+    if (proxyList.length > 0) {
+      pushLog({ key: 'proxies', text: t('fullRefreshStepProxies'), status: 'running' })
+      let proxyDone = 0
+      const proxyFailed: string[] = []
+      await Promise.allSettled(
+        proxyList.map(async (p) => {
+          try {
+            await updateProxyProviderAPI(p.name)
+          } catch {
+            proxyFailed.push(p.name)
+          } finally {
+            proxyDone++
+            advance()
+            patchLog('proxies', {
+              text: t('fullRefreshProxiesUpdating', { done: proxyDone, total: proxyList.length }),
+              status: proxyFailed.length > 0 ? 'warning' : 'running',
+            })
+          }
+        }),
+      )
+      const proxySuccess = proxyList.length - proxyFailed.length
+      patchLog('proxies', {
+        text:
+          proxyFailed.length > 0
+            ? t('fullRefreshProxiesPartial', {
+                success: proxySuccess,
+                total: proxyList.length,
+                failed: proxyFailed.join(', '),
+              })
+            : t('fullRefreshProxiesDone', { success: proxySuccess, total: proxyList.length }),
+        status: proxyFailed.length > 0 ? 'warning' : 'success',
+      })
+    }
 
-    fullRefreshStep.value = 'fullRefreshStepReload'
-    await reloadConfigsAPI()
-    fullRefreshStep.value = 'fullRefreshStepCache'
-    await Promise.all([flushFakeIPAPI(), flushDNSCacheAPI()])
+    // Step 2: rule providers
+    if (ruleList.length > 0) {
+      pushLog({ key: 'rules', text: t('fullRefreshStepRules'), status: 'running' })
+      let ruleDone = 0
+      const ruleFailed: string[] = []
+      await Promise.allSettled(
+        ruleList.map(async (r) => {
+          try {
+            await updateRuleProviderAPI(r.name)
+          } catch {
+            ruleFailed.push(r.name)
+          } finally {
+            ruleDone++
+            advance()
+            patchLog('rules', {
+              text: t('fullRefreshRulesUpdating', { done: ruleDone, total: ruleList.length }),
+              status: ruleFailed.length > 0 ? 'warning' : 'running',
+            })
+          }
+        }),
+      )
+      const ruleSuccess = ruleList.length - ruleFailed.length
+      patchLog('rules', {
+        text:
+          ruleFailed.length > 0
+            ? t('fullRefreshRulesPartial', {
+                success: ruleSuccess,
+                total: ruleList.length,
+                failed: ruleFailed.join(', '),
+              })
+            : t('fullRefreshRulesDone', { success: ruleSuccess, total: ruleList.length }),
+        status: ruleFailed.length > 0 ? 'warning' : 'success',
+      })
+    }
+
+    // Step 3: reload config
+    pushLog({ key: 'reload', text: t('fullRefreshStepReload'), status: 'running' })
+    try {
+      await reloadConfigsAPI()
+      advance()
+      patchLog('reload', { text: t('fullRefreshReloadDone'), status: 'success' })
+    } catch {
+      advance()
+      patchLog('reload', { text: t('fullRefreshReloadFailed'), status: 'error' })
+    }
+
+    // Step 4: flush caches
+    pushLog({ key: 'cache', text: t('fullRefreshStepCache'), status: 'running' })
+    try {
+      await Promise.all([flushFakeIPAPI(), flushDNSCacheAPI()])
+    } finally {
+      advance()
+      fullRefreshProgress.value = 100
+      patchLog('cache', { text: t('fullRefreshCacheDone'), status: 'success' })
+    }
+
     reloadAll()
 
-    const failed = [...failedProxies, ...failedRules]
-    if (failed.length > 0) {
-      showNotification({
-        content: 'fullRefreshPartialFailure',
-        params: { names: failed.join(', ') },
-        type: 'alert-warning',
-        timeout: 6000,
-      })
-    } else {
+    if (!fullRefreshHasWarning.value) {
       showNotification({ content: 'fullRefreshSuccess', type: 'alert-success' })
     }
   } finally {
