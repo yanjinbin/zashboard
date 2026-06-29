@@ -125,7 +125,7 @@
               <div
                 v-if="isFullRefreshing || fullRefreshLogs.length > 0"
                 class="absolute inset-y-0 left-0 transition-[width] duration-300 ease-linear"
-                :class="fullRefreshHasWarning ? 'bg-warning/30' : 'bg-primary-content/15'"
+                :class="fullRefreshHasWarning ? 'bg-warning/30' : 'bg-blue-500/40'"
                 :style="{ width: fullRefreshProgress + '%' }"
               />
               <span class="relative flex items-center gap-1.5">
