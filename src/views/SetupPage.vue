@@ -224,6 +224,17 @@ const editBackend = (backend: Backend) => {
 
 type SetupForm = Omit<Backend, 'uuid'>
 
+const isSameBackend = (backend: Backend, setupForm: SetupForm) => {
+  return (
+    backend.type === setupForm.type &&
+    backend.host === setupForm.host &&
+    backend.port === setupForm.port &&
+    backend.password === setupForm.password &&
+    backend.protocol === setupForm.protocol &&
+    backend.secondaryPath === setupForm.secondaryPath
+  )
+}
+
 const finishLogin = async () => {
   try {
     const synced = await syncSettingsFromCore()
@@ -276,7 +287,11 @@ const handleSubmit = async (setupForm: SetupForm, quiet = false) => {
 const backend = getBackendFromUrl()
 
 if (backend) {
-  handleSubmit(backend)
+  const backendExists = backendList.value.some((item) => isSameBackend(item, backend))
+
+  if (!backendExists) {
+    handleSubmit(backend)
+  }
 } else if (backendList.value.length === 0) {
   handleSubmit(form, true)
 }
