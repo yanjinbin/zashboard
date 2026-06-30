@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.12.7](https://github.com/yanjinbin/zashboard/compare/v3.12.6...v3.12.7) (2026-06-30)
+
+
+### Bug Fixes
+
+* **settings:** restore 3.10.0 upgrade dashboard logic and silence API errors ([5368ab9](https://github.com/yanjinbin/zashboard/commit/5368ab95ce69c92d01499b43f18eec0a91bd0128))
+* **settings:** trigger release 3.12.7 ([1982ce3](https://github.com/yanjinbin/zashboard/commit/1982ce37399ac8dee3f66c3b3c648a9b791e3b5a))
+
 ## [3.12.6](https://github.com/yanjinbin/zashboard/compare/v3.12.5...v3.12.6) (2026-06-30)
 
 
