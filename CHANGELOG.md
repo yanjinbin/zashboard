@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.12.6](https://github.com/yanjinbin/zashboard/compare/v3.12.5...v3.12.6) (2026-06-30)
+
+
+### Bug Fixes
+
+* **settings:** trigger release 3.12.6 ([61238ef](https://github.com/yanjinbin/zashboard/commit/61238efc64ffaa6954f82324d2043055fb3e0bda))
+
 ## [3.12.3](https://github.com/yanjinbin/zashboard/compare/v3.12.2...v3.12.3) (2026-06-30)
 
 
