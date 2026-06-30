@@ -162,6 +162,16 @@
           class="toggle"
         />
       </SettingItem>
+      <SettingItem :setting-key="k.showPanelTitleBanner">
+        <div class="setting-item-label">
+          {{ $t('showPanelTitleBanner') }}
+        </div>
+        <input
+          type="checkbox"
+          v-model="showPanelTitleBanner"
+          class="toggle"
+        />
+      </SettingItem>
     </div>
   </template>
 </template>
@@ -188,6 +198,7 @@ import {
   displayAllFeatures,
   IPInfoAPI,
   scrollAnimationEffect,
+  showPanelTitleBanner,
   swipeInPages,
   swipeInTabs,
 } from '@/store/settings'
@@ -210,6 +221,7 @@ const isVisibleSwipeInPages = useIsSettingVisible(k.swipeInPages)
 const isVisibleSwipeInTabs = useIsSettingVisible(k.swipeInTabs)
 const isVisibleDisablePullToRefresh = useIsSettingVisible(k.disablePullToRefresh)
 const isVisibleDisplayAllFeatures = useIsSettingVisible(k.displayAllFeatures)
+const isVisibleShowPanelTitleBanner = useIsSettingVisible(k.showPanelTitleBanner)
 
 const isUIUpgrading = ref(false)
 const handlerClickUpgradeUI = async () => {
@@ -240,7 +252,8 @@ const hasVisibleGeneralItems = computed(() => {
     isVisibleSwipeInPages.value ||
     (swipeInPages.value && isVisibleSwipeInTabs.value) ||
     isVisibleDisablePullToRefresh.value ||
-    (isSingBoxCore.value && isVisibleDisplayAllFeatures.value)
+    (isSingBoxCore.value && isVisibleDisplayAllFeatures.value) ||
+    isVisibleShowPanelTitleBanner.value
   )
 })
 </script>
