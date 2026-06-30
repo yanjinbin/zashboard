@@ -21,11 +21,6 @@ const getGitCommitId = (): string => {
   }
 }
 
-// The sing-box native API support (ConnectRPC/protobuf client and the Tools
-// page: xterm, qrcode, tailscale) is opt-in: the default build drops it. Set
-// SINGBOX_NATIVE=true to include it.
-const singboxNativeEnabled = process.env.SINGBOX_NATIVE === 'true'
-
 // Selects which fonts get bundled. One of:
 //   all (default) | cdn | firasans | misans | pingfang | sarasa | none
 // See src/assets/load-fonts.ts for what each value loads.
@@ -36,7 +31,6 @@ export default defineConfig({
   define: {
     __APP_VERSION__: JSON.stringify(version),
     __COMMIT_ID__: JSON.stringify(getGitCommitId()),
-    __SINGBOX_NATIVE__: JSON.stringify(singboxNativeEnabled),
     __FONT__: JSON.stringify(font),
   },
   base: './',
@@ -47,11 +41,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'favicon-dark.svg'],
       workbox: {
-        // The bundle grew past the 2 MiB default after adding the sing-box
-        // native API client (ConnectRPC/protobuf) and xterm. Builds that drop
-        // the native API stay under the default, so only raise the cap when
-        // the native API is included.
-        maximumFileSizeToCacheInBytes: singboxNativeEnabled ? 4 * 1024 * 1024 : 2 * 1024 * 1024,
+        // The bundle is above Workbox's 2 MiB default because sing-box native
+        // API support and the Tools page are always bundled.
+        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
       },
       manifest: {
         name: 'zashboard',

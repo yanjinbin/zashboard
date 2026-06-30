@@ -269,9 +269,9 @@
 </template>
 
 <script setup lang="ts">
-import { getSingboxClient } from '@/api/singbox/client'
+import { getSingboxClient } from '@/assembly/tools'
 import type { NetworkQualityTestProgress, STUNTestProgress } from '@/gen/daemon/started_service_pb'
-import { proxyMap } from '@/store/proxies'
+import { proxyMap } from '@/assembly/proxies'
 import { computed, defineComponent, h, onBeforeUnmount, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 

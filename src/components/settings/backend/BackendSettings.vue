@@ -16,7 +16,7 @@
         <a
           class="flex cursor-pointer items-center gap-2 text-lg font-semibold"
           :href="
-            isSingBox
+            isSingBoxCore
               ? 'https://github.com/sagernet/sing-box'
               : MIHOMO_CHANNEL[mihomo?.[0] ?? MIHOMO.Meta].url
           "
@@ -32,152 +32,159 @@
       class="settings-grid"
       v-if="isVisibleActions || isVisibleBackendSwitch || isVisibleDnsQuery"
     >
-      <div
-        v-if="isVisibleBackendSwitch"
-        class="setting-item p-4"
+      <SettingItem
+        :setting-key="k.backend"
+        class="p-4"
       >
         <BackendSwitch />
-      </div>
+      </SettingItem>
 
       <div
-        v-if="isVisibleActions"
-        class="grid grid-cols-1 gap-2 px-4 py-3 md:grid-cols-2"
+        v-if="isVisibleActions && !isSingboxBackend"
+        class="relative"
+        :class="settingsEditMode && isSettingHidden(k.actions) ? 'opacity-40' : ''"
       >
-        <template v-if="!isSingBox || displayAllFeatures">
-          <button
-            v-if="!activeBackend?.disableUpgradeCore"
-            class="btn btn-neutral btn-sm"
-            @click="showUpgradeCoreModal = true"
-          >
-            {{ $t('upgradeCore') }}
-          </button>
-          <button
-            class="btn btn-sm"
-            @click="handlerClickRestartCore"
-          >
-            <span
-              v-if="isCoreRestarting"
-              class="loading loading-spinner loading-md"
-            ></span>
-            {{ $t('restartCore') }}
-          </button>
-          <button
-            class="btn btn-sm"
-            @click="handlerClickReloadConfigs"
-          >
-            <span
-              v-if="isConfigReloading"
-              class="loading loading-spinner loading-md"
-            ></span>
-            {{ $t('reloadConfigs') }}
-          </button>
-          <button
-            v-if="!isSingBox"
-            class="btn btn-sm"
-            @click="showUpdateConfigModal = true"
-          >
-            {{ $t('updateConfigs') }}
-          </button>
-          <button
-            class="btn btn-sm"
-            @click="handlerClickUpdateGeo"
-          >
-            <span
-              v-if="isGeoUpdating"
-              class="loading loading-spinner loading-md"
-            ></span>
-            {{ $t('updateGeoDatabase') }}
-          </button>
-        </template>
-        <button
-          class="btn btn-sm"
-          @click="handleFlushDNSCache"
-        >
-          {{ $t('flushDNSCache') }}
-        </button>
-        <button
-          class="btn btn-sm"
-          @click="handleFlushFakeIP"
-        >
-          {{ $t('flushFakeIP') }}
-        </button>
-        <button
-          v-if="hasSmartGroup"
-          class="btn btn-sm"
-          @click="handleFlushSmartWeights"
-        >
-          {{ $t('flushSmartWeights') }}
-        </button>
-        <div
-          v-if="!isSingBox || displayAllFeatures"
-          class="col-span-full space-y-1.5"
-        >
-          <div
-            class="tooltip w-full"
-            :data-tip="$t('fullRefreshTip')"
-          >
+        <SettingVisibilityToggle
+          :setting-key="k.actions"
+          class="absolute top-2 left-2 z-10"
+        />
+        <div class="grid grid-cols-1 gap-2 px-4 py-3 md:grid-cols-2">
+          <template v-if="!isSingBoxCore || displayAllFeatures">
             <button
-              class="btn btn-primary btn-sm relative w-full overflow-hidden"
-              :disabled="isFullRefreshing"
-              @click="handleFullRefresh"
+              v-if="!activeBackend?.disableUpgradeCore"
+              class="btn btn-neutral btn-sm"
+              @click="showUpgradeCoreModal = true"
             >
-              <!-- 进度填充层，内嵌在按钮内从左向右增长 -->
-              <div
-                v-if="isFullRefreshing || fullRefreshLogs.length > 0"
-                class="absolute inset-y-0 left-0 transition-[width] duration-300 ease-linear"
-                :class="fullRefreshHasWarning ? 'bg-warning/30' : 'bg-blue-500/40'"
-                :style="{ width: fullRefreshProgress + '%' }"
-              />
-              <span class="relative flex items-center gap-1.5">
-                <span
-                  v-if="isFullRefreshing"
-                  class="loading loading-spinner loading-sm"
-                />
-                {{ $t('fullRefresh') }}
-              </span>
+              {{ $t('upgradeCore') }}
             </button>
-          </div>
-
+            <button
+              class="btn btn-sm"
+              @click="handlerClickRestartCore"
+            >
+              <span
+                v-if="isCoreRestarting"
+                class="loading loading-spinner loading-md"
+              ></span>
+              {{ $t('restartCore') }}
+            </button>
+            <button
+              class="btn btn-sm"
+              @click="handlerClickReloadConfigs"
+            >
+              <span
+                v-if="isConfigReloading"
+                class="loading loading-spinner loading-md"
+              ></span>
+              {{ $t('reloadConfigs') }}
+            </button>
+            <button
+              v-if="!isSingBoxCore"
+              class="btn btn-sm"
+              @click="showUpdateConfigModal = true"
+            >
+              {{ $t('updateConfigs') }}
+            </button>
+            <button
+              class="btn btn-sm"
+              @click="handlerClickUpdateGeo"
+            >
+              <span
+                v-if="isGeoUpdating"
+                class="loading loading-spinner loading-md"
+              ></span>
+              {{ $t('updateGeoDatabase') }}
+            </button>
+          </template>
+          <button
+            class="btn btn-sm"
+            @click="handleFlushDNSCache"
+          >
+            {{ $t('flushDNSCache') }}
+          </button>
+          <button
+            class="btn btn-sm"
+            @click="handleFlushFakeIP"
+          >
+            {{ $t('flushFakeIP') }}
+          </button>
+          <button
+            v-if="hasSmartGroup"
+            class="btn btn-sm"
+            @click="handleFlushSmartWeights"
+          >
+            {{ $t('flushSmartWeights') }}
+          </button>
           <div
-            v-if="isFullRefreshing || fullRefreshLogs.length > 0"
-            class="space-y-1"
+            v-if="!isSingBoxCore || displayAllFeatures"
+            class="col-span-full space-y-1.5"
           >
             <div
-              v-for="log in fullRefreshLogs"
-              :key="log.key"
-              class="flex items-start gap-1.5 text-xs"
+              class="tooltip w-full"
+              :data-tip="$t('fullRefreshTip')"
             >
-              <span
-                v-if="log.status === 'running'"
-                class="loading loading-spinner loading-xs mt-px shrink-0"
-              />
-              <span
-                v-else
-                class="mt-px shrink-0 leading-none font-bold"
-                :class="{
-                  'text-success': log.status === 'success',
-                  'text-warning': log.status === 'warning',
-                  'text-error': log.status === 'error',
-                }"
-                >{{ log.status === 'success' ? '✓' : log.status === 'warning' ? '⚠' : '✕' }}</span
+              <button
+                class="btn btn-primary btn-sm relative w-full overflow-hidden"
+                :disabled="isFullRefreshing"
+                @click="handleFullRefresh"
               >
-              <span
-                :class="{
-                  'text-base-content/50': log.status === 'running',
-                  'text-success': log.status === 'success',
-                  'text-warning': log.status === 'warning',
-                  'text-error': log.status === 'error',
-                }"
-                >{{ log.text }}</span
+                <div
+                  v-if="isFullRefreshing || fullRefreshLogs.length > 0"
+                  class="absolute inset-y-0 left-0 transition-[width] duration-300 ease-linear"
+                  :class="fullRefreshHasWarning ? 'bg-warning/30' : 'bg-blue-500/40'"
+                  :style="{ width: fullRefreshProgress + '%' }"
+                />
+                <span class="relative flex items-center gap-1.5">
+                  <span
+                    v-if="isFullRefreshing"
+                    class="loading loading-spinner loading-sm"
+                  />
+                  {{ $t('fullRefresh') }}
+                </span>
+              </button>
+            </div>
+
+            <div
+              v-if="isFullRefreshing || fullRefreshLogs.length > 0"
+              class="space-y-1"
+            >
+              <div
+                v-for="log in fullRefreshLogs"
+                :key="log.key"
+                class="flex items-start gap-1.5 text-xs"
               >
+                <span
+                  v-if="log.status === 'running'"
+                  class="loading loading-spinner loading-xs mt-px shrink-0"
+                />
+                <span
+                  v-else
+                  class="mt-px shrink-0 leading-none font-bold"
+                  :class="{
+                    'text-success': log.status === 'success',
+                    'text-warning': log.status === 'warning',
+                    'text-error': log.status === 'error',
+                  }"
+                  >{{ log.status === 'success' ? '✓' : log.status === 'warning' ? '⚠' : '✕' }}</span
+                >
+                <span
+                  :class="{
+                    'text-base-content/50': log.status === 'running',
+                    'text-success': log.status === 'success',
+                    'text-warning': log.status === 'warning',
+                    'text-error': log.status === 'error',
+                  }"
+                  >{{ log.text }}</span
+                >
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div
-        v-if="isVisibleDnsQuery"
-        class="setting-item flex-col items-start py-3"
+      <SettingItem
+        :setting-key="k.DNSQuery"
+        :when="!isSingboxBackend"
+        class="py-3"
       >
         <div class="flex w-full flex-col">
           <div class="settings-section-label">
@@ -185,7 +192,7 @@
           </div>
           <DnsQuery />
         </div>
-      </div>
+      </SettingItem>
 
       <div class="setting-item flex-col items-start py-3">
         <div class="settings-section-label mb-2">
@@ -256,18 +263,29 @@
     </div>
 
     <div
-      v-if="!isSingBox && configs && hasVisibleSettings"
+      v-if="!isSingBoxCore && configs && hasVisibleSettings"
       class="grid"
     >
       <div class="settings-section-label">
         {{ $t('settings') }}
       </div>
       <div class="settings-grid">
-        <BackendPortsGrid v-if="isVisiblePorts" />
+        <div
+          v-if="isVisiblePorts"
+          class="relative"
+          :class="settingsEditMode && isSettingHidden(k.ports) ? 'opacity-40' : ''"
+        >
+          <SettingVisibilityToggle
+            :setting-key="k.ports"
+            class="absolute top-1 right-1 z-10"
+          />
+          <BackendPortsGrid />
+        </div>
         <div
           v-if="configs?.tun && canShowTunMode"
           class="setting-item"
         >
+          <SettingVisibilityToggle :setting-key="k.tunMode" />
           <div class="setting-item-label">
             {{ $t('tunMode') }}
           </div>
@@ -279,9 +297,10 @@
           />
         </div>
         <div
-          v-if="isVisibleAllowLan"
+          v-if="configs && isVisibleAllowLan"
           class="setting-item"
         >
+          <SettingVisibilityToggle :setting-key="k.allowLan" />
           <div class="setting-item-label">
             {{ $t('allowLan') }}
           </div>
@@ -293,10 +312,7 @@
           />
         </div>
         <template v-if="!activeBackend?.disableUpgradeCore">
-          <div
-            v-if="isVisibleCheckUpgrade"
-            class="setting-item"
-          >
+          <SettingItem :setting-key="k.checkCoreUpgrade">
             <div class="setting-item-label">
               {{ $t('checkCoreUpgrade') }}
             </div>
@@ -306,10 +322,10 @@
               v-model="checkUpgradeCore"
               @change="handlerCheckUpgradeCoreChange"
             />
-          </div>
-          <div
-            v-if="checkUpgradeCore && isVisibleAutoUpgrade"
-            class="setting-item"
+          </SettingItem>
+          <SettingItem
+            :setting-key="k.autoUpgradeCore"
+            :when="checkUpgradeCore"
           >
             <div class="setting-item-label">
               {{ $t('autoUpgradeCore') }}
@@ -319,7 +335,7 @@
               type="checkbox"
               v-model="autoUpgradeCore"
             />
-          </div>
+          </SettingItem>
         </template>
       </div>
     </div>
@@ -333,27 +349,32 @@
 import {
   flushDNSCacheAPI,
   flushFakeIPAPI,
-  flushSmartGroupWeightsAPI,
-  isCoreUpdateAvailable,
-  isSingBox,
-  mihomo,
   reloadConfigsAPI,
-  restartCoreAPI,
   updateGeoDataAPI,
   updateProxyProviderAPI,
   updateRuleProviderAPI,
 } from '@/api'
+import { isCoreUpdateAvailable, isSingBoxCore, mihomo, restartCoreAPI } from '@/assembly/version'
 import BackendVersion from '@/components/common/BackendVersion.vue'
 import BackendPortsGrid from '@/components/settings/backend/BackendPortsGrid.vue'
 import BackendSwitch from '@/components/settings/backend/BackendSwitch.vue'
 import DnsQuery from '@/components/settings/backend/DnsQuery.vue'
-import { useIsSettingVisible } from '@/composables/settings'
+import { isSingboxBackend } from '@/assembly/backend'
+import SettingItem from '@/components/settings/SettingItem.vue'
+import SettingVisibilityToggle from '@/components/settings/SettingVisibilityToggle.vue'
+import { isSettingHidden, settingsEditMode, useIsSettingVisible } from '@/composables/settings'
 import { BACKEND_ITEM_KEYS } from '@/config/settingsItems'
 import { MIHOMO, MIHOMO_CHANNEL } from '@/constant'
 import { showNotification } from '@/helper/notification'
-import { configs, fetchConfigs, updateConfigs } from '@/store/config'
-import { fetchProxies, hasSmartGroup, proxyMap, proxyProviederList } from '@/store/proxies'
-import { fetchRules, ruleProviderList, rules } from '@/store/rules'
+import {
+  fetchProxies,
+  flushSmartGroupWeightsAPI,
+  hasSmartGroup,
+  proxyMap,
+  proxyProviederList,
+} from '@/assembly/proxies'
+import { configs, fetchConfigs, updateConfigs } from '@/assembly/config'
+import { fetchRules, ruleProviderList, rules } from '@/assembly/rules'
 import { autoUpgradeCore, checkUpgradeCore, displayAllFeatures } from '@/store/settings'
 import { activeBackend } from '@/store/setup'
 import { computed, ref } from 'vue'
@@ -458,7 +479,7 @@ const hasVisibleItems = computed(() => {
 
 const hasVisibleSettings = computed(() => {
   return (
-    !isSingBox.value &&
+    !isSingBoxCore.value &&
     !!configs.value &&
     (isVisiblePorts.value ||
       (configs.value.tun && canShowTunMode.value) ||

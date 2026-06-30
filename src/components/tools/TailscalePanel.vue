@@ -1,147 +1,148 @@
 <template>
-  <div class="mx-auto flex max-w-3xl flex-col gap-4 p-2 sm:p-4">
+  <div class="mx-auto flex max-w-2xl flex-col p-2 sm:p-4">
     <div
       v-if="endpoints.length === 0"
-      class="text-base-content/60 p-8 text-center text-sm"
+      class="text-base-content/50 p-12 text-center text-sm"
     >
       {{ $t('noEndpoints') }}
     </div>
 
-    <div
+    <template
       v-for="endpoint in endpoints"
       :key="endpoint.endpointTag"
-      class="card bg-base-100"
     >
-      <div class="card-body gap-3 p-4">
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <h2 class="card-title text-base">
+      <!-- Endpoint header -->
+      <div class="settings-section-label flex items-center justify-between gap-2 normal-case">
+        <span class="flex items-center gap-2 tracking-normal">
+          <span class="text-base-content/90 text-sm font-semibold">
             {{ endpoint.endpointTag || 'Tailscale' }}
-            <span
-              class="badge badge-sm"
-              :class="stateBadge(endpoint.backendState)"
-              >{{ endpoint.backendState || $t('unknown') }}</span
-            >
-          </h2>
-          <button
-            v-if="!endpoint.keyAuth"
-            class="btn btn-xs btn-error btn-outline"
-            @click="logout(endpoint.endpointTag)"
+          </span>
+          <span
+            class="rounded-full px-2 py-0.5 text-[0.65rem] font-medium tracking-normal"
+            :class="statePill(endpoint.backendState)"
           >
-            {{ $t('logout') }}
+            {{ endpoint.backendState || $t('unknown') }}
+          </span>
+        </span>
+        <button
+          v-if="!endpoint.keyAuth"
+          class="text-error/90 hover:text-error flex items-center gap-1 text-xs font-medium tracking-normal"
+          @click="logout(endpoint.endpointTag)"
+        >
+          <ArrowRightOnRectangleIcon class="h-4 w-4" />
+          {{ $t('logout') }}
+        </button>
+      </div>
+
+      <!-- Status group -->
+      <div class="settings-grid">
+        <button
+          v-if="endpoint.self"
+          class="setting-item hover:bg-base-content/3 active:bg-base-content/5 w-full text-left transition-colors"
+          @click="openPeerDetail(endpoint, endpoint.self, true)"
+        >
+          <span class="setting-item-label">{{ $t('thisDevice') }}</span>
+          <span class="text-base-content/50 truncate text-sm">{{
+            peerDisplayName(endpoint.self)
+          }}</span>
+          <ChevronRightIcon class="text-base-content/25 h-4 w-4 shrink-0" />
+        </button>
+        <button
+          v-if="exitCandidates(endpoint).length > 0"
+          class="setting-item hover:bg-base-content/3 active:bg-base-content/5 w-full text-left transition-colors"
+          @click="openExitPicker(endpoint)"
+        >
+          <span class="setting-item-label">{{ $t('exitNode') }}</span>
+          <span class="text-base-content/50 truncate text-sm">
+            {{ endpoint.exitNode ? peerDisplayName(endpoint.exitNode) : $t('disabledLabel') }}
+          </span>
+          <ChevronRightIcon class="text-base-content/25 h-4 w-4 shrink-0" />
+        </button>
+        <div
+          v-if="endpoint.networkName"
+          class="setting-item"
+        >
+          <span class="setting-item-label">{{ $t('networkLabel') }}</span>
+          <span class="text-base-content/50 truncate text-sm">{{ endpoint.networkName }}</span>
+        </div>
+        <div
+          v-if="endpoint.authURL"
+          class="setting-item"
+        >
+          <span class="setting-item-label shrink-0">{{ $t('authURL') }}</span>
+          <a
+            :href="endpoint.authURL"
+            target="_blank"
+            class="link link-primary truncate text-sm"
+            >{{ endpoint.authURL }}</a
+          >
+          <button
+            class="text-base-content/40 hover:text-base-content/70 shrink-0 transition-colors"
+            :title="$t('showAuthQR')"
+            @click="openAuthQR(endpoint)"
+          >
+            <QrCodeIcon class="h-5 w-5" />
           </button>
         </div>
+      </div>
 
-        <!-- Status section -->
-        <div class="border-base-300 divide-base-300 divide-y rounded border text-sm">
-          <button
-            v-if="endpoint.self"
-            class="hover:bg-base-200 flex w-full cursor-pointer items-center justify-between gap-3 px-3 py-2 text-left"
-            @click="openPeerDetail(endpoint, endpoint.self, true)"
-          >
-            <span class="opacity-60">{{ $t('thisDevice') }}</span>
-            <span class="font-medium break-all">{{ peerDisplayName(endpoint.self) }}</span>
-          </button>
-          <button
-            v-if="exitCandidates(endpoint).length > 0"
-            class="hover:bg-base-200 flex w-full cursor-pointer items-center justify-between gap-3 px-3 py-2 text-left"
-            @click="openExitPicker(endpoint)"
-          >
-            <span class="opacity-60">{{ $t('exitNode') }}</span>
-            <span class="font-medium break-all">
-              {{ endpoint.exitNode ? peerDisplayName(endpoint.exitNode) : $t('disabledLabel') }}
-            </span>
-          </button>
+      <!-- Peers grouped by user -->
+      <template
+        v-for="group in groupsOf(endpoint)"
+        :key="group.userID.toString()"
+      >
+        <div class="settings-section-label">
+          {{ group.displayName || group.loginName || $t('peers') }}
+        </div>
+        <div class="settings-grid">
           <div
-            v-if="endpoint.networkName"
-            class="flex items-center justify-between gap-3 px-3 py-2"
+            v-for="peer in group.peers"
+            :key="peer.stableID"
+            class="setting-item"
           >
-            <span class="opacity-60">{{ $t('networkLabel') }}</span>
-            <span class="font-medium break-all">{{ endpoint.networkName }}</span>
-          </div>
-          <div
-            v-if="endpoint.authURL"
-            class="flex flex-wrap items-center justify-between gap-2 px-3 py-2"
-          >
-            <a
-              :href="endpoint.authURL"
-              target="_blank"
-              class="link link-primary break-all"
-              >{{ endpoint.authURL }}</a
+            <button
+              class="flex min-w-0 flex-1 items-center gap-2.5 text-left"
+              @click="openPeerDetail(endpoint, peer, false)"
+            >
+              <span
+                class="inline-block h-2 w-2 shrink-0 rounded-full"
+                :class="peer.online ? 'bg-success' : 'bg-base-content/20'"
+              ></span>
+              <span class="truncate text-sm font-medium">{{ peerDisplayName(peer) }}</span>
+              <span class="text-base-content/40 truncate text-xs">{{ peer.tailscaleIPs[0] }}</span>
+            </button>
+            <span
+              v-if="peer.exitNode || peer.exitNodeOption"
+              class="shrink-0 rounded-full px-2 py-0.5 text-[0.65rem] font-medium"
+              :class="peer.exitNode ? 'bg-primary/15 text-primary' : 'bg-info/15 text-info'"
+              >{{ $t('exitNode') }}</span
+            >
+            <span
+              v-if="peer.shareeNode"
+              class="bg-base-content/8 text-base-content/60 shrink-0 rounded-full px-2 py-0.5 text-[0.65rem] font-medium"
+              >{{ $t('sharedIn') }}</span
+            >
+            <span
+              v-if="peer.expired"
+              class="bg-error/15 text-error shrink-0 rounded-full px-2 py-0.5 text-[0.65rem] font-medium"
+              >{{ $t('expired') }}</span
             >
             <button
-              class="btn btn-xs"
-              @click="openAuthQR(endpoint)"
+              v-if="peerSSHAvailable(peer)"
+              class="text-primary hover:bg-primary/10 shrink-0 rounded-md p-1 transition-colors"
+              :title="$t('connectViaSSH')"
+              @click="connectSSH(endpoint, peer)"
             >
-              {{ $t('showAuthQR') }}
+              <CommandLineIcon class="h-4 w-4" />
             </button>
+            <ChevronRightIcon
+              class="text-base-content/25 h-4 w-4 shrink-0 cursor-pointer"
+              @click="openPeerDetail(endpoint, peer, false)"
+            />
           </div>
         </div>
-
-        <!-- Peers grouped by user -->
-        <template
-          v-for="group in groupsOf(endpoint)"
-          :key="group.userID.toString()"
-        >
-          <div class="text-xs font-medium opacity-60">
-            {{ group.displayName || group.loginName || $t('peers') }}
-          </div>
-          <div class="flex flex-col gap-1">
-            <div
-              v-for="peer in group.peers"
-              :key="peer.stableID"
-              class="bg-base-200 flex flex-col gap-2 rounded p-2 text-sm sm:flex-row sm:flex-wrap sm:items-center"
-            >
-              <button
-                class="flex min-w-0 items-center gap-2 text-left"
-                @click="openPeerDetail(endpoint, peer, false)"
-              >
-                <span
-                  class="inline-block h-2 w-2 flex-shrink-0 rounded-full"
-                  :class="peer.online ? 'bg-success' : 'bg-base-300'"
-                ></span>
-                <span class="font-medium">{{ peerDisplayName(peer) }}</span>
-                <span class="truncate opacity-60">{{ peer.tailscaleIPs[0] }}</span>
-              </button>
-              <div
-                v-if="hasPeerMeta(peer)"
-                class="flex flex-1 flex-wrap items-center gap-2"
-              >
-                <div class="flex flex-1 items-center gap-1">
-                  <span
-                    v-if="peer.exitNode || peer.exitNodeOption"
-                    class="badge badge-xs"
-                    :class="peer.exitNode ? 'badge-primary' : 'badge-info'"
-                    >{{ $t('exitNode') }}</span
-                  >
-                  <span
-                    v-if="peer.shareeNode"
-                    class="badge badge-xs badge-error"
-                    >{{ $t('sharedIn') }}</span
-                  >
-                  <span
-                    v-if="peer.expired"
-                    class="badge badge-xs badge-error"
-                    >{{ $t('expired') }}</span
-                  >
-                  <span
-                    v-if="peer.sshHostKeys.length > 0"
-                    class="badge badge-xs badge-info"
-                    >SSH</span
-                  >
-                </div>
-                <button
-                  v-if="peerSSHAvailable(peer)"
-                  class="btn btn-xs btn-primary btn-outline leading-none"
-                  @click="connectSSH(endpoint, peer)"
-                >
-                  {{ $t('connectViaSSH') }}
-                </button>
-              </div>
-            </div>
-          </div>
-        </template>
-      </div>
-    </div>
+      </template>
+    </template>
 
     <!-- Dialogs -->
     <TailscalePeerDialog
@@ -186,8 +187,7 @@
 </template>
 
 <script setup lang="ts">
-import { getSingboxClient } from '@/api/singbox/client'
-import { runStream, type StreamHandle } from '@/api/singbox/streams'
+import { getSingboxClient, runStream, type StreamHandle } from '@/assembly/tools'
 import DialogWrapper from '@/components/common/DialogWrapper.vue'
 import QRCodeView from '@/components/tools/QRCodeView.vue'
 import TailscaleExitNodeDialog from '@/components/tools/TailscaleExitNodeDialog.vue'
@@ -206,6 +206,12 @@ import type {
   TailscalePeer,
   TailscaleUserGroup,
 } from '@/gen/daemon/started_service_pb'
+import {
+  ArrowRightOnRectangleIcon,
+  ChevronRightIcon,
+  CommandLineIcon,
+  QrCodeIcon,
+} from '@heroicons/vue/24/outline'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 const emit = defineEmits<{ ssh: [session: SSHSessionOptions] }>()
@@ -216,29 +222,22 @@ let statusHandle: StreamHandle | null = null
 const groupsOf = (endpoint: TailscaleEndpointStatus): TailscaleUserGroup[] =>
   endpoint.userGroups.filter((g) => g.peers.length > 0)
 
-const hasPeerMeta = (peer: TailscalePeer): boolean =>
-  peer.exitNode ||
-  peer.exitNodeOption ||
-  peer.shareeNode ||
-  peer.expired ||
-  peer.sshHostKeys.length > 0
-
 const exitCandidates = (endpoint: TailscaleEndpointStatus): TailscalePeer[] =>
   endpoint.backendState === 'Running'
     ? endpoint.userGroups.flatMap((g) => g.peers).filter((p) => p.exitNodeOption)
     : []
 
-const stateBadge = (state: string): string => {
+const statePill = (state: string): string => {
   switch (state) {
     case 'Running':
-      return 'badge-success'
+      return 'bg-success/15 text-success'
     case 'NeedsLogin':
     case 'NeedsMachineAuth':
-      return 'badge-error'
+      return 'bg-error/15 text-error'
     case 'Starting':
-      return 'badge-warning'
+      return 'bg-warning/15 text-warning'
     default:
-      return 'badge-ghost'
+      return 'bg-base-content/10 text-base-content/60'
   }
 }
 

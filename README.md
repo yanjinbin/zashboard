@@ -24,17 +24,7 @@ You can access the online zashboard at the following link:
 
 You can download the zashboard files here:
 
-> By default the builds **do not** include sing-box native API support (the Tools
-> page: terminal, Tailscale, network tools, QR code — which pull in extra
-> ConnectRPC/protobuf and xterm code). To get a release build **with** it, append
-> `-singbox-native` to any variant below, e.g.
-> [`dist-singbox-native.zip`](https://github.com/Zephyruso/zashboard/releases/latest/download/dist-singbox-native.zip)
-> or `dist-misans-only-singbox-native.zip`. The same suffix works for the
-> `gh-pages-*` dev branches too (e.g. `gh-pages-no-fonts-singbox-native`).
->
-> The online site at [board.zash.run.place](http://board.zash.run.place) (the
-> root `gh-pages` branch) is the one exception: it always ships the full build —
-> all fonts **and** sing-box native support.
+> All builds include sing-box native API support.
 
 release:
 
@@ -108,5 +98,9 @@ http://host:port/#/setup?hostname=ipordomain&port=9090&secret=123456
 
 7. **`disableTunMode`**
    - Set '1' to hide tun switch
+
+8. **`type`**
+   - Selects the backend API: `clash` (Clash REST/WS) or `singbox` (sing-box native).
+   - Default: `clash`
 
 ### I code just for fun, not for money. If you really want to donate, please consider donating to [UNICEF](https://www.unicef.org/) to help hungry children.

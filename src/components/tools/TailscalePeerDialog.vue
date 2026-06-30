@@ -5,8 +5,10 @@
   >
     <template #title-right>
       <span
-        class="badge badge-sm ml-2"
-        :class="peer.online ? 'badge-success' : 'badge-ghost'"
+        class="ml-2 rounded-full px-2 py-0.5 text-[0.65rem] font-medium"
+        :class="
+          peer.online ? 'bg-success/15 text-success' : 'bg-base-content/10 text-base-content/60'
+        "
       >
         {{ peer.online ? $t('connected') : $t('notConnected') }}
       </span>
@@ -15,8 +17,8 @@
     <div class="flex flex-col gap-4 text-sm">
       <!-- Addresses -->
       <section class="flex flex-col gap-1">
-        <div class="text-xs font-medium opacity-60">{{ $t('addresses') }}</div>
-        <div class="border-base-300 divide-base-300 divide-y rounded border">
+        <div class="text-base-content/45 px-1 text-xs font-medium">{{ $t('addresses') }}</div>
+        <div class="divide-base-content/8 bg-base-200/40 divide-y overflow-hidden rounded-xl">
           <CopyLine
             v-if="magicDNS"
             label="MagicDNS"
@@ -45,7 +47,7 @@
         class="flex flex-col gap-1"
       >
         <div class="flex items-center justify-between">
-          <span class="text-xs font-medium opacity-60">{{ $t('ping') }}</span>
+          <span class="text-base-content/45 px-1 text-xs font-medium">{{ $t('ping') }}</span>
           <button
             class="btn btn-ghost btn-xs"
             @click="pingRunning ? stopPing() : startPing()"
@@ -63,7 +65,7 @@
           {{ pingError }}
         </div>
         <template v-if="pingLatest">
-          <div class="border-base-300 divide-base-300 divide-y rounded border">
+          <div class="divide-base-content/8 bg-base-200/40 divide-y overflow-hidden rounded-xl">
             <DataRow :label="pingLatest.isDirect ? $t('directConnection') : $t('derpRelayed')">
               {{ pingLatest.latencyMs.toFixed(1) }} ms
             </DataRow>
@@ -102,8 +104,8 @@
 
       <!-- Details -->
       <section class="flex flex-col gap-1">
-        <div class="text-xs font-medium opacity-60">{{ $t('detailsLabel') }}</div>
-        <div class="border-base-300 divide-base-300 divide-y rounded border">
+        <div class="text-base-content/45 px-1 text-xs font-medium">{{ $t('detailsLabel') }}</div>
+        <div class="divide-base-content/8 bg-base-200/40 divide-y overflow-hidden rounded-xl">
           <DataRow
             v-if="peer.os"
             :label="$t('osLabel')"
@@ -135,19 +137,20 @@
       <!-- SSH actions -->
       <div
         v-if="sshAvailable"
-        class="flex justify-end gap-2"
+        class="flex justify-end gap-2 pt-1"
       >
         <button
           v-if="sshRemembered"
-          class="btn btn-sm"
+          class="btn btn-sm rounded-lg"
           @click="emit('editSsh')"
         >
           {{ $t('editSSHConfiguration') }}
         </button>
         <button
-          class="btn btn-primary btn-sm"
+          class="btn btn-primary btn-sm rounded-lg"
           @click="emit('connectSsh')"
         >
+          <CommandLineIcon class="h-4 w-4" />
           {{ $t('connectViaSSH') }}
         </button>
       </div>
@@ -156,7 +159,7 @@
 </template>
 
 <script setup lang="ts">
-import { getSingboxClient } from '@/api/singbox/client'
+import { getSingboxClient } from '@/assembly/tools'
 import DialogWrapper from '@/components/common/DialogWrapper.vue'
 import PingSparkline from '@/components/tools/PingSparkline.vue'
 import { peerDisplayName, sshPrefs } from '@/composables/tailscaleSSH'
@@ -166,7 +169,12 @@ import type {
   TailscalePingResponse,
 } from '@/gen/daemon/started_service_pb'
 import { showNotification } from '@/helper/notification'
-import { DocumentDuplicateIcon, PlayIcon, StopIcon } from '@heroicons/vue/24/outline'
+import {
+  CommandLineIcon,
+  DocumentDuplicateIcon,
+  PlayIcon,
+  StopIcon,
+} from '@heroicons/vue/24/outline'
 import { useClipboard } from '@vueuse/core'
 import dayjs from 'dayjs'
 import { computed, defineComponent, h, onBeforeUnmount, ref, watch } from 'vue'
@@ -188,9 +196,9 @@ const DataRow = defineComponent({
   setup:
     (rowProps, { slots }) =>
     () =>
-      h('div', { class: 'flex items-center justify-between gap-3 px-3 py-2' }, [
-        h('span', { class: 'opacity-60' }, rowProps.label),
-        h('span', { class: 'text-right font-medium break-all' }, slots.default?.()),
+      h('div', { class: 'flex min-h-11 items-center justify-between gap-3 px-4 py-2' }, [
+        h('span', { class: 'text-base-content/55' }, rowProps.label),
+        h('span', { class: 'text-right break-all' }, slots.default?.()),
       ]),
 })
 
@@ -203,10 +211,10 @@ const copyValue = (value?: string) => {
 const CopyLine = defineComponent({
   props: { label: String, value: String },
   setup: (lineProps) => () =>
-    h('div', { class: 'flex items-center justify-between gap-3 px-3 py-2' }, [
-      h('span', { class: 'opacity-60' }, lineProps.label),
+    h('div', { class: 'flex min-h-11 items-center justify-between gap-3 px-4 py-2' }, [
+      h('span', { class: 'text-base-content/55' }, lineProps.label),
       h('div', { class: 'flex items-center gap-2' }, [
-        h('span', { class: 'text-right font-medium break-all' }, lineProps.value),
+        h('span', { class: 'text-right break-all' }, lineProps.value),
         h(
           'button',
           {

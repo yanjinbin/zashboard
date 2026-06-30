@@ -4,40 +4,42 @@
     :title="$t('sshConfiguration')"
   >
     <div class="flex flex-col gap-3">
-      <div class="text-sm opacity-60">{{ peerDisplayName(peer) }}</div>
-      <label class="flex flex-col gap-1 text-sm">
-        <span>{{ $t('username') }}</span>
-        <input
-          ref="usernameEl"
-          class="input input-sm input-bordered"
-          v-model="username"
-          @keydown.enter="connect"
-        />
-      </label>
-      <label class="flex flex-col gap-1 text-sm">
-        <span>{{ $t('terminalType') }}</span>
-        <input
-          class="input input-sm input-bordered"
-          v-model="terminalType"
-        />
-      </label>
-      <label class="flex items-center gap-2 text-sm">
-        <input
-          type="checkbox"
-          class="checkbox checkbox-sm"
-          v-model="remember"
-        />
-        <span>{{ $t('rememberSSHOptions') }}</span>
-      </label>
-      <div class="flex justify-end gap-2">
+      <div class="text-base-content/55 px-1 text-sm">{{ peerDisplayName(peer) }}</div>
+      <div class="divide-base-content/8 bg-base-200/40 divide-y overflow-hidden rounded-xl">
+        <div class="setting-item">
+          <span class="setting-item-label">{{ $t('username') }}</span>
+          <input
+            ref="usernameEl"
+            class="input input-ghost input-sm w-40 text-right"
+            v-model="username"
+            @keydown.enter="connect"
+          />
+        </div>
+        <div class="setting-item">
+          <span class="setting-item-label">{{ $t('terminalType') }}</span>
+          <input
+            class="input input-ghost input-sm w-40 text-right"
+            v-model="terminalType"
+          />
+        </div>
+        <label class="setting-item cursor-pointer">
+          <span class="setting-item-label">{{ $t('rememberSSHOptions') }}</span>
+          <input
+            type="checkbox"
+            class="toggle toggle-sm"
+            v-model="remember"
+          />
+        </label>
+      </div>
+      <div class="flex justify-end gap-2 pt-1">
         <button
-          class="btn btn-sm"
+          class="btn btn-sm rounded-lg"
           @click="isOpen = false"
         >
           {{ $t('cancel') }}
         </button>
         <button
-          class="btn btn-primary btn-sm"
+          class="btn btn-primary btn-sm rounded-lg"
           :disabled="username.trim() === ''"
           @click="connect"
         >

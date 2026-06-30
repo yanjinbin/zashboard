@@ -1,4 +1,4 @@
-import { capabilities } from '@/composables/backendCapability'
+import { capabilities } from '@/assembly/backend'
 import { ROUTE_NAME } from '@/constant'
 import { renderRoutes } from '@/helper'
 import { i18n } from '@/i18n'
@@ -42,18 +42,11 @@ const childrenRouter = [
     name: ROUTE_NAME.rules,
     component: RulesPage,
   },
-  // The Tools page pulls in the sing-box native API client, xterm and qrcode.
-  // Lazy-import it behind the build flag so it is dropped entirely when the
-  // native API support is disabled at build time.
-  ...(__SINGBOX_NATIVE__
-    ? [
-        {
-          path: 'tools',
-          name: ROUTE_NAME.tools,
-          component: () => import('@/views/ToolsPage.vue'),
-        },
-      ]
-    : []),
+  {
+    path: 'tools',
+    name: ROUTE_NAME.tools,
+    component: () => import('@/views/ToolsPage.vue'),
+  },
   {
     path: 'settings',
     name: ROUTE_NAME.settings,

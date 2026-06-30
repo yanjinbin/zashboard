@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { configs, updateConfigs } from '@/store/config'
+import { configs, updateConfigs } from '@/assembly/config'
 import { useElementSize } from '@vueuse/core'
 import { computed, ref } from 'vue'
 

@@ -13,7 +13,7 @@ import { file_google_protobuf_empty } from '@bufbuild/protobuf/wkt'
 export const file_daemon_started_service: GenFile =
   /*@__PURE__*/
   fileDesc(
-    'ChxkYWVtb24vc3RhcnRlZF9zZXJ2aWNlLnByb3RvEgZkYWVtb24iLgoHVmVyc2lvbhIPCgd2ZXJzaW9uGAEgASgJEhIKCmFwaVZlcnNpb24YAiABKAUilwEKDVNlcnZpY2VTdGF0dXMSKgoGc3RhdHVzGAEgASgOMhouZGFlbW9uLlNlcnZpY2VTdGF0dXMuVHlwZRIUCgxlcnJvck1lc3NhZ2UYAiABKAkiRAoEVHlwZRIICgRJRExFEAASDAoIU1RBUlRJTkcQARILCgdTVEFSVEVEEAISDAoIU1RPUFBJTkcQAxIJCgVGQVRBTBAEIioKFlN1YnNjcmliZVN0YXR1c1JlcXVlc3QSEAoIaW50ZXJ2YWwYASABKAMieAoDTG9nEiUKCG1lc3NhZ2VzGAEgAygLMhMuZGFlbW9uLkxvZy5NZXNzYWdlEg0KBXJlc2V0GAIgASgIGjsKB01lc3NhZ2USHwoFbGV2ZWwYASABKA4yEC5kYWVtb24uTG9nTGV2ZWwSDwoHbWVzc2FnZRgCIAEoCSIyCg9EZWZhdWx0TG9nTGV2ZWwSHwoFbGV2ZWwYASABKA4yEC5kYWVtb24uTG9nTGV2ZWwiwwEKBlN0YXR1cxIOCgZtZW1vcnkYASABKAQSEgoKZ29yb3V0aW5lcxgCIAEoBRIVCg1jb25uZWN0aW9uc0luGAMgASgFEhYKDmNvbm5lY3Rpb25zT3V0GAQgASgFEhgKEHRyYWZmaWNBdmFpbGFibGUYBSABKAgSDgoGdXBsaW5rGAYgASgDEhAKCGRvd25saW5rGAcgASgDEhMKC3VwbGlua1RvdGFsGAggASgDEhUKDWRvd25saW5rVG90YWwYCSABKAMiJgoGR3JvdXBzEhwKBWdyb3VwGAEgAygLMg0uZGFlbW9uLkdyb3VwInwKBUdyb3VwEgsKA3RhZxgBIAEoCRIMCgR0eXBlGAIgASgJEhIKCnNlbGVjdGFibGUYAyABKAgSEAoIc2VsZWN0ZWQYBCABKAkSEAoIaXNFeHBhbmQYBSABKAgSIAoFaXRlbXMYBiADKAsyES5kYWVtb24uR3JvdXBJdGVtIlEKCUdyb3VwSXRlbRILCgN0YWcYASABKAkSDAoEdHlwZRgCIAEoCRITCgt1cmxUZXN0VGltZRgDIAEoAxIUCgx1cmxUZXN0RGVsYXkYBCABKAUiJQoOVVJMVGVzdFJlcXVlc3QSEwoLb3V0Ym91bmRUYWcYASABKAkiPgoVU2VsZWN0T3V0Ym91bmRSZXF1ZXN0EhAKCGdyb3VwVGFnGAEgASgJEhMKC291dGJvdW5kVGFnGAIgASgJIjsKFVNldEdyb3VwRXhwYW5kUmVxdWVzdBIQCghncm91cFRhZxgBIAEoCRIQCghpc0V4cGFuZBgCIAEoCCIZCglDbGFzaE1vZGUSDAoEbW9kZRgDIAEoCSI4Cg9DbGFzaE1vZGVTdGF0dXMSEAoIbW9kZUxpc3QYASADKAkSEwoLY3VycmVudE1vZGUYAiABKAkiLwobU3Vic2NyaWJlQ29ubmVjdGlvbnNSZXF1ZXN0EhAKCGludGVydmFsGAEgASgDIq4BCg9Db25uZWN0aW9uRXZlbnQSKQoEdHlwZRgBIAEoDjIbLmRhZW1vbi5Db25uZWN0aW9uRXZlbnRUeXBlEgoKAmlkGAIgASgJEiYKCmNvbm5lY3Rpb24YAyABKAsyEi5kYWVtb24uQ29ubmVjdGlvbhITCgt1cGxpbmtEZWx0YRgEIAEoAxIVCg1kb3dubGlua0RlbHRhGAUgASgDEhAKCGNsb3NlZEF0GAYgASgDIkoKEENvbm5lY3Rpb25FdmVudHMSJwoGZXZlbnRzGAEgAygLMhcuZGFlbW9uLkNvbm5lY3Rpb25FdmVudBINCgVyZXNldBgCIAEoCCKzAwoKQ29ubmVjdGlvbhIKCgJpZBgBIAEoCRIPCgdpbmJvdW5kGAIgASgJEhMKC2luYm91bmRUeXBlGAMgASgJEhEKCWlwVmVyc2lvbhgEIAEoBRIPCgduZXR3b3JrGAUgASgJEg4KBnNvdXJjZRgGIAEoCRITCgtkZXN0aW5hdGlvbhgHIAEoCRIOCgZkb21haW4YCCABKAkSEAoIcHJvdG9jb2wYCSABKAkSDAoEdXNlchgKIAEoCRIUCgxmcm9tT3V0Ym91bmQYCyABKAkSEQoJY3JlYXRlZEF0GAwgASgDEhAKCGNsb3NlZEF0GA0gASgDEg4KBnVwbGluaxgOIAEoAxIQCghkb3dubGluaxgPIAEoAxITCgt1cGxpbmtUb3RhbBgQIAEoAxIVCg1kb3dubGlua1RvdGFsGBEgASgDEgwKBHJ1bGUYEiABKAkSEAoIb3V0Ym91bmQYEyABKAkSFAoMb3V0Ym91bmRUeXBlGBQgASgJEhEKCWNoYWluTGlzdBgVIAMoCRIoCgtwcm9jZXNzSW5mbxgWIAEoCzITLmRhZW1vbi5Qcm9jZXNzSW5mbyJtCgtQcm9jZXNzSW5mbxIRCglwcm9jZXNzSWQYASABKA0SDgoGdXNlcklkGAIgASgFEhAKCHVzZXJOYW1lGAMgASgJEhMKC3Byb2Nlc3NQYXRoGAQgASgJEhQKDHBhY2thZ2VOYW1lcxgFIAMoCSIkChZDbG9zZUNvbm5lY3Rpb25SZXF1ZXN0EgoKAmlkGAEgASgJIkEKEkRlcHJlY2F0ZWRXYXJuaW5ncxIrCgh3YXJuaW5ncxgBIAMoCzIZLmRhZW1vbi5EZXByZWNhdGVkV2FybmluZyKYAQoRRGVwcmVjYXRlZFdhcm5pbmcSDwoHbWVzc2FnZRgBIAEoCRIRCglpbXBlbmRpbmcYAiABKAgSFQoNbWlncmF0aW9uTGluaxgDIAEoCRITCgtkZXNjcmlwdGlvbhgEIAEoCRIZChFkZXByZWNhdGVkVmVyc2lvbhgFIAEoCRIYChBzY2hlZHVsZWRWZXJzaW9uGAYgASgJIh4KCVN0YXJ0ZWRBdBIRCglzdGFydGVkQXQYASABKAMiNAoMT3V0Ym91bmRMaXN0EiQKCW91dGJvdW5kcxgBIAMoCzIRLmRhZW1vbi5Hcm91cEl0ZW0ifQoZTmV0d29ya1F1YWxpdHlUZXN0UmVxdWVzdBIRCgljb25maWdVUkwYASABKAkSEwoLb3V0Ym91bmRUYWcYAiABKAkSDgoGc2VyaWFsGAMgASgIEhkKEW1heFJ1bnRpbWVTZWNvbmRzGAQgASgFEg0KBWh0dHAzGAUgASgIIskCChpOZXR3b3JrUXVhbGl0eVRlc3RQcm9ncmVzcxINCgVwaGFzZRgBIAEoBRIYChBkb3dubG9hZENhcGFjaXR5GAIgASgDEhYKDnVwbG9hZENhcGFjaXR5GAMgASgDEhMKC2Rvd25sb2FkUlBNGAQgASgFEhEKCXVwbG9hZFJQTRgFIAEoBRIVCg1pZGxlTGF0ZW5jeU1zGAYgASgFEhEKCWVsYXBzZWRNcxgHIAEoAxIPCgdpc0ZpbmFsGAggASgIEg0KBWVycm9yGAkgASgJEiAKGGRvd25sb2FkQ2FwYWNpdHlBY2N1cmFjeRgKIAEoBRIeChZ1cGxvYWRDYXBhY2l0eUFjY3VyYWN5GAsgASgFEhsKE2Rvd25sb2FkUlBNQWNjdXJhY3kYDCABKAUSGQoRdXBsb2FkUlBNQWNjdXJhY3kYDSABKAUiNgoPU1RVTlRlc3RSZXF1ZXN0Eg4KBnNlcnZlchgBIAEoCRITCgtvdXRib3VuZFRhZxgCIAEoCSKuAQoQU1RVTlRlc3RQcm9ncmVzcxINCgVwaGFzZRgBIAEoBRIUCgxleHRlcm5hbEFkZHIYAiABKAkSEQoJbGF0ZW5jeU1zGAMgASgFEhIKCm5hdE1hcHBpbmcYBCABKAUSFAoMbmF0RmlsdGVyaW5nGAUgASgFEg8KB2lzRmluYWwYBiABKAgSDQoFZXJyb3IYByABKAkSGAoQbmF0VHlwZVN1cHBvcnRlZBgIIAEoCCJLChVUYWlsc2NhbGVTdGF0dXNVcGRhdGUSMgoJZW5kcG9pbnRzGAEgAygLMh8uZGFlbW9uLlRhaWxzY2FsZUVuZHBvaW50U3RhdHVzIpECChdUYWlsc2NhbGVFbmRwb2ludFN0YXR1cxITCgtlbmRwb2ludFRhZxgBIAEoCRIUCgxiYWNrZW5kU3RhdGUYAiABKAkSDwoHYXV0aFVSTBgDIAEoCRITCgtuZXR3b3JrTmFtZRgEIAEoCRIWCg5tYWdpY0ROU1N1ZmZpeBgFIAEoCRIjCgRzZWxmGAYgASgLMhUuZGFlbW9uLlRhaWxzY2FsZVBlZXISLgoKdXNlckdyb3VwcxgHIAMoCzIaLmRhZW1vbi5UYWlsc2NhbGVVc2VyR3JvdXASJwoIZXhpdE5vZGUYCCABKAsyFS5kYWVtb24uVGFpbHNjYWxlUGVlchIPCgdrZXlBdXRoGAkgASgIIokBChJUYWlsc2NhbGVVc2VyR3JvdXASDgoGdXNlcklEGAEgASgDEhEKCWxvZ2luTmFtZRgCIAEoCRITCgtkaXNwbGF5TmFtZRgDIAEoCRIVCg1wcm9maWxlUGljVVJMGAQgASgJEiQKBXBlZXJzGAUgAygLMhUuZGFlbW9uLlRhaWxzY2FsZVBlZXIisQIKDVRhaWxzY2FsZVBlZXISEAoIaG9zdE5hbWUYASABKAkSDwoHZG5zTmFtZRgCIAEoCRIKCgJvcxgDIAEoCRIUCgx0YWlsc2NhbGVJUHMYBCADKAkSDgoGb25saW5lGAUgASgIEhAKCGV4aXROb2RlGAYgASgIEhYKDmV4aXROb2RlT3B0aW9uGAcgASgIEg4KBmFjdGl2ZRgIIAEoCBIPCgdyeEJ5dGVzGAkgASgDEg8KB3R4Qnl0ZXMYCiABKAMSEQoJa2V5RXhwaXJ5GAsgASgDEhAKCHN0YWJsZUlEGAwgASgJEg8KB2V4cGlyZWQYDSABKAgSEwoLc3NoSG9zdEtleXMYDiADKAkSEgoKc2hhcmVlTm9kZRgPIAEoCBIQCghsYXN0U2VlbhgQIAEoAyI7ChRUYWlsc2NhbGVQaW5nUmVxdWVzdBITCgtlbmRwb2ludFRhZxgBIAEoCRIOCgZwZWVySVAYAiABKAkiiwEKFVRhaWxzY2FsZVBpbmdSZXNwb25zZRIRCglsYXRlbmN5TXMYASABKAESEAoIaXNEaXJlY3QYAiABKAgSEAoIZW5kcG9pbnQYAyABKAkSFAoMZGVycFJlZ2lvbklEGAQgASgFEhYKDmRlcnBSZWdpb25Db2RlGAUgASgJEg0KBWVycm9yGAYgASgJIkQKG1NldFRhaWxzY2FsZUV4aXROb2RlUmVxdWVzdBITCgtlbmRwb2ludFRhZxgBIAEoCRIQCghzdGFibGVJRBgCIAEoCSItChZUYWlsc2NhbGVMb2dvdXRSZXF1ZXN0EhMKC2VuZHBvaW50VGFnGAEgASgJIqwBChlUYWlsc2NhbGVTU0hDbGllbnRNZXNzYWdlEioKBXN0YXJ0GAEgASgLMhkuZGFlbW9uLlRhaWxzY2FsZVNTSFN0YXJ0SAASKgoFaW5wdXQYAiABKAsyGS5kYWVtb24uVGFpbHNjYWxlU1NISW5wdXRIABIsCgZyZXNpemUYAyABKAsyGi5kYWVtb24uVGFpbHNjYWxlU1NIUmVzaXplSABCCQoHbWVzc2FnZSLYAQoRVGFpbHNjYWxlU1NIU3RhcnQSEwoLZW5kcG9pbnRUYWcYASABKAkSEwoLcGVlckFkZHJlc3MYAiABKAkSEAoIdXNlcm5hbWUYAyABKAkSFAoMdGVybWluYWxUeXBlGAQgASgJEg8KB2NvbHVtbnMYBSABKAUSDAoEcm93cxgGIAEoBRITCgt3aWR0aFBpeGVscxgHIAEoBRIUCgxoZWlnaHRQaXhlbHMYCCABKAUSEAoIaG9zdEtleXMYCSADKAkSFQoNZm9yd2FyZF9hZ2VudBgKIAEoCCIhChFUYWlsc2NhbGVTU0hJbnB1dBIMCgRkYXRhGAEgASgMIl4KElRhaWxzY2FsZVNTSFJlc2l6ZRIPCgdjb2x1bW5zGAEgASgFEgwKBHJvd3MYAiABKAUSEwoLd2lkdGhQaXhlbHMYAyABKAUSFAoMaGVpZ2h0UGl4ZWxzGAQgASgFIowCChlUYWlsc2NhbGVTU0hTZXJ2ZXJNZXNzYWdlEjQKCmF1dGhCYW5uZXIYASABKAsyHi5kYWVtb24uVGFpbHNjYWxlU1NIQXV0aEJhbm5lckgAEioKBXJlYWR5GAIgASgLMhkuZGFlbW9uLlRhaWxzY2FsZVNTSFJlYWR5SAASLAoGb3V0cHV0GAMgASgLMhouZGFlbW9uLlRhaWxzY2FsZVNTSE91dHB1dEgAEigKBGV4aXQYBCABKAsyGC5kYWVtb24uVGFpbHNjYWxlU1NIRXhpdEgAEioKBWVycm9yGAUgASgLMhkuZGFlbW9uLlRhaWxzY2FsZVNTSEVycm9ySABCCQoHbWVzc2FnZSIpChZUYWlsc2NhbGVTU0hBdXRoQmFubmVyEg8KB21lc3NhZ2UYASABKAkiEwoRVGFpbHNjYWxlU1NIUmVhZHkiIgoSVGFpbHNjYWxlU1NIT3V0cHV0EgwKBGRhdGEYASABKAwiSgoQVGFpbHNjYWxlU1NIRXhpdBIQCghleGl0Q29kZRgBIAEoBRIOCgZzaWduYWwYAiABKAkSFAoMZXJyb3JNZXNzYWdlGAMgASgJIiQKEVRhaWxzY2FsZVNTSEVycm9yEg8KB21lc3NhZ2UYASABKAkqVQoITG9nTGV2ZWwSCQoFUEFOSUMQABIJCgVGQVRBTBABEgkKBUVSUk9SEAISCAoEV0FSThADEggKBElORk8QBBIJCgVERUJVRxAFEgkKBVRSQUNFEAYqaQoTQ29ubmVjdGlvbkV2ZW50VHlwZRIYChRDT05ORUNUSU9OX0VWRU5UX05FVxAAEhsKF0NPTk5FQ1RJT05fRVZFTlRfVVBEQVRFEAESGwoXQ09OTkVDVElPTl9FVkVOVF9DTE9TRUQQAjLuDwoOU3RhcnRlZFNlcnZpY2USNwoKR2V0VmVyc2lvbhIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRoPLmRhZW1vbi5WZXJzaW9uIgASSwoWU3Vic2NyaWJlU2VydmljZVN0YXR1cxIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRoVLmRhZW1vbi5TZXJ2aWNlU3RhdHVzIgAwARI3CgxTdWJzY3JpYmVMb2cSFi5nb29nbGUucHJvdG9idWYuRW1wdHkaCy5kYWVtb24uTG9nIgAwARJHChJHZXREZWZhdWx0TG9nTGV2ZWwSFi5nb29nbGUucHJvdG9idWYuRW1wdHkaFy5kYWVtb24uRGVmYXVsdExvZ0xldmVsIgASPQoJQ2xlYXJMb2dzEhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IgASRQoPU3Vic2NyaWJlU3RhdHVzEh4uZGFlbW9uLlN1YnNjcmliZVN0YXR1c1JlcXVlc3QaDi5kYWVtb24uU3RhdHVzIgAwARI9Cg9TdWJzY3JpYmVHcm91cHMSFi5nb29nbGUucHJvdG9idWYuRW1wdHkaDi5kYWVtb24uR3JvdXBzIgAwARJHChJHZXRDbGFzaE1vZGVTdGF0dXMSFi5nb29nbGUucHJvdG9idWYuRW1wdHkaFy5kYWVtb24uQ2xhc2hNb2RlU3RhdHVzIgASQwoSU3Vic2NyaWJlQ2xhc2hNb2RlEhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5GhEuZGFlbW9uLkNsYXNoTW9kZSIAMAESOwoMU2V0Q2xhc2hNb2RlEhEuZGFlbW9uLkNsYXNoTW9kZRoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eSIAEjsKB1VSTFRlc3QSFi5kYWVtb24uVVJMVGVzdFJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkiABJJCg5TZWxlY3RPdXRib3VuZBIdLmRhZW1vbi5TZWxlY3RPdXRib3VuZFJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkiABJJCg5TZXRHcm91cEV4cGFuZBIdLmRhZW1vbi5TZXRHcm91cEV4cGFuZFJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkiABJEChBUcmlnZ2VyT09NUmVwb3J0EhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IgASWQoUU3Vic2NyaWJlQ29ubmVjdGlvbnMSIy5kYWVtb24uU3Vic2NyaWJlQ29ubmVjdGlvbnNSZXF1ZXN0GhguZGFlbW9uLkNvbm5lY3Rpb25FdmVudHMiADABEksKD0Nsb3NlQ29ubmVjdGlvbhIeLmRhZW1vbi5DbG9zZUNvbm5lY3Rpb25SZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IgASRwoTQ2xvc2VBbGxDb25uZWN0aW9ucxIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eSIAEk0KFUdldERlcHJlY2F0ZWRXYXJuaW5ncxIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRoaLmRhZW1vbi5EZXByZWNhdGVkV2FybmluZ3MiABI7CgxHZXRTdGFydGVkQXQSFi5nb29nbGUucHJvdG9idWYuRW1wdHkaES5kYWVtb24uU3RhcnRlZEF0IgASRgoSU3Vic2NyaWJlT3V0Ym91bmRzEhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5GhQuZGFlbW9uLk91dGJvdW5kTGlzdCIAMAESZAoXU3RhcnROZXR3b3JrUXVhbGl0eVRlc3QSIS5kYWVtb24uTmV0d29ya1F1YWxpdHlUZXN0UmVxdWVzdBoiLmRhZW1vbi5OZXR3b3JrUXVhbGl0eVRlc3RQcm9ncmVzcyIAMAESRgoNU3RhcnRTVFVOVGVzdBIXLmRhZW1vbi5TVFVOVGVzdFJlcXVlc3QaGC5kYWVtb24uU1RVTlRlc3RQcm9ncmVzcyIAMAESVQoYU3Vic2NyaWJlVGFpbHNjYWxlU3RhdHVzEhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5Gh0uZGFlbW9uLlRhaWxzY2FsZVN0YXR1c1VwZGF0ZSIAMAESVQoSU3RhcnRUYWlsc2NhbGVQaW5nEhwuZGFlbW9uLlRhaWxzY2FsZVBpbmdSZXF1ZXN0Gh0uZGFlbW9uLlRhaWxzY2FsZVBpbmdSZXNwb25zZSIAMAESVQoUU2V0VGFpbHNjYWxlRXhpdE5vZGUSIy5kYWVtb24uU2V0VGFpbHNjYWxlRXhpdE5vZGVSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IgASSwoPVGFpbHNjYWxlTG9nb3V0Eh4uZGFlbW9uLlRhaWxzY2FsZUxvZ291dFJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkiABJmChhTdGFydFRhaWxzY2FsZVNTSFNlc3Npb24SIS5kYWVtb24uVGFpbHNjYWxlU1NIQ2xpZW50TWVzc2FnZRohLmRhZW1vbi5UYWlsc2NhbGVTU0hTZXJ2ZXJNZXNzYWdlIgAoATABQiVaI2dpdGh1Yi5jb20vc2FnZXJuZXQvc2luZy1ib3gvZGFlbW9uYgZwcm90bzM',
+    'ChxkYWVtb24vc3RhcnRlZF9zZXJ2aWNlLnByb3RvEgZkYWVtb24iLgoHVmVyc2lvbhIPCgd2ZXJzaW9uGAEgASgJEhIKCmFwaVZlcnNpb24YAiABKAUilwEKDVNlcnZpY2VTdGF0dXMSKgoGc3RhdHVzGAEgASgOMhouZGFlbW9uLlNlcnZpY2VTdGF0dXMuVHlwZRIUCgxlcnJvck1lc3NhZ2UYAiABKAkiRAoEVHlwZRIICgRJRExFEAASDAoIU1RBUlRJTkcQARILCgdTVEFSVEVEEAISDAoIU1RPUFBJTkcQAxIJCgVGQVRBTBAEIioKFlN1YnNjcmliZVN0YXR1c1JlcXVlc3QSEAoIaW50ZXJ2YWwYASABKAMieAoDTG9nEiUKCG1lc3NhZ2VzGAEgAygLMhMuZGFlbW9uLkxvZy5NZXNzYWdlEg0KBXJlc2V0GAIgASgIGjsKB01lc3NhZ2USHwoFbGV2ZWwYASABKA4yEC5kYWVtb24uTG9nTGV2ZWwSDwoHbWVzc2FnZRgCIAEoCSIyCg9EZWZhdWx0TG9nTGV2ZWwSHwoFbGV2ZWwYASABKA4yEC5kYWVtb24uTG9nTGV2ZWwiwwEKBlN0YXR1cxIOCgZtZW1vcnkYASABKAQSEgoKZ29yb3V0aW5lcxgCIAEoBRIVCg1jb25uZWN0aW9uc0luGAMgASgFEhYKDmNvbm5lY3Rpb25zT3V0GAQgASgFEhgKEHRyYWZmaWNBdmFpbGFibGUYBSABKAgSDgoGdXBsaW5rGAYgASgDEhAKCGRvd25saW5rGAcgASgDEhMKC3VwbGlua1RvdGFsGAggASgDEhUKDWRvd25saW5rVG90YWwYCSABKAMiJgoGR3JvdXBzEhwKBWdyb3VwGAEgAygLMg0uZGFlbW9uLkdyb3VwInwKBUdyb3VwEgsKA3RhZxgBIAEoCRIMCgR0eXBlGAIgASgJEhIKCnNlbGVjdGFibGUYAyABKAgSEAoIc2VsZWN0ZWQYBCABKAkSEAoIaXNFeHBhbmQYBSABKAgSIAoFaXRlbXMYBiADKAsyES5kYWVtb24uR3JvdXBJdGVtIlEKCUdyb3VwSXRlbRILCgN0YWcYASABKAkSDAoEdHlwZRgCIAEoCRITCgt1cmxUZXN0VGltZRgDIAEoAxIUCgx1cmxUZXN0RGVsYXkYBCABKAUiJQoOVVJMVGVzdFJlcXVlc3QSEwoLb3V0Ym91bmRUYWcYASABKAkiPgoVU2VsZWN0T3V0Ym91bmRSZXF1ZXN0EhAKCGdyb3VwVGFnGAEgASgJEhMKC291dGJvdW5kVGFnGAIgASgJIjsKFVNldEdyb3VwRXhwYW5kUmVxdWVzdBIQCghncm91cFRhZxgBIAEoCRIQCghpc0V4cGFuZBgCIAEoCCIZCglDbGFzaE1vZGUSDAoEbW9kZRgDIAEoCSI4Cg9DbGFzaE1vZGVTdGF0dXMSEAoIbW9kZUxpc3QYASADKAkSEwoLY3VycmVudE1vZGUYAiABKAkiLwobU3Vic2NyaWJlQ29ubmVjdGlvbnNSZXF1ZXN0EhAKCGludGVydmFsGAEgASgDIq4BCg9Db25uZWN0aW9uRXZlbnQSKQoEdHlwZRgBIAEoDjIbLmRhZW1vbi5Db25uZWN0aW9uRXZlbnRUeXBlEgoKAmlkGAIgASgJEiYKCmNvbm5lY3Rpb24YAyABKAsyEi5kYWVtb24uQ29ubmVjdGlvbhITCgt1cGxpbmtEZWx0YRgEIAEoAxIVCg1kb3dubGlua0RlbHRhGAUgASgDEhAKCGNsb3NlZEF0GAYgASgDIkoKEENvbm5lY3Rpb25FdmVudHMSJwoGZXZlbnRzGAEgAygLMhcuZGFlbW9uLkNvbm5lY3Rpb25FdmVudBINCgVyZXNldBgCIAEoCCKzAwoKQ29ubmVjdGlvbhIKCgJpZBgBIAEoCRIPCgdpbmJvdW5kGAIgASgJEhMKC2luYm91bmRUeXBlGAMgASgJEhEKCWlwVmVyc2lvbhgEIAEoBRIPCgduZXR3b3JrGAUgASgJEg4KBnNvdXJjZRgGIAEoCRITCgtkZXN0aW5hdGlvbhgHIAEoCRIOCgZkb21haW4YCCABKAkSEAoIcHJvdG9jb2wYCSABKAkSDAoEdXNlchgKIAEoCRIUCgxmcm9tT3V0Ym91bmQYCyABKAkSEQoJY3JlYXRlZEF0GAwgASgDEhAKCGNsb3NlZEF0GA0gASgDEg4KBnVwbGluaxgOIAEoAxIQCghkb3dubGluaxgPIAEoAxITCgt1cGxpbmtUb3RhbBgQIAEoAxIVCg1kb3dubGlua1RvdGFsGBEgASgDEgwKBHJ1bGUYEiABKAkSEAoIb3V0Ym91bmQYEyABKAkSFAoMb3V0Ym91bmRUeXBlGBQgASgJEhEKCWNoYWluTGlzdBgVIAMoCRIoCgtwcm9jZXNzSW5mbxgWIAEoCzITLmRhZW1vbi5Qcm9jZXNzSW5mbyJtCgtQcm9jZXNzSW5mbxIRCglwcm9jZXNzSWQYASABKA0SDgoGdXNlcklkGAIgASgFEhAKCHVzZXJOYW1lGAMgASgJEhMKC3Byb2Nlc3NQYXRoGAQgASgJEhQKDHBhY2thZ2VOYW1lcxgFIAMoCSIkChZDbG9zZUNvbm5lY3Rpb25SZXF1ZXN0EgoKAmlkGAEgASgJIkEKEkRlcHJlY2F0ZWRXYXJuaW5ncxIrCgh3YXJuaW5ncxgBIAMoCzIZLmRhZW1vbi5EZXByZWNhdGVkV2FybmluZyKYAQoRRGVwcmVjYXRlZFdhcm5pbmcSDwoHbWVzc2FnZRgBIAEoCRIRCglpbXBlbmRpbmcYAiABKAgSFQoNbWlncmF0aW9uTGluaxgDIAEoCRITCgtkZXNjcmlwdGlvbhgEIAEoCRIZChFkZXByZWNhdGVkVmVyc2lvbhgFIAEoCRIYChBzY2hlZHVsZWRWZXJzaW9uGAYgASgJIh4KCVN0YXJ0ZWRBdBIRCglzdGFydGVkQXQYASABKAMiNAoMT3V0Ym91bmRMaXN0EiQKCW91dGJvdW5kcxgBIAMoCzIRLmRhZW1vbi5Hcm91cEl0ZW0ifQoZTmV0d29ya1F1YWxpdHlUZXN0UmVxdWVzdBIRCgljb25maWdVUkwYASABKAkSEwoLb3V0Ym91bmRUYWcYAiABKAkSDgoGc2VyaWFsGAMgASgIEhkKEW1heFJ1bnRpbWVTZWNvbmRzGAQgASgFEg0KBWh0dHAzGAUgASgIIskCChpOZXR3b3JrUXVhbGl0eVRlc3RQcm9ncmVzcxINCgVwaGFzZRgBIAEoBRIYChBkb3dubG9hZENhcGFjaXR5GAIgASgDEhYKDnVwbG9hZENhcGFjaXR5GAMgASgDEhMKC2Rvd25sb2FkUlBNGAQgASgFEhEKCXVwbG9hZFJQTRgFIAEoBRIVCg1pZGxlTGF0ZW5jeU1zGAYgASgFEhEKCWVsYXBzZWRNcxgHIAEoAxIPCgdpc0ZpbmFsGAggASgIEg0KBWVycm9yGAkgASgJEiAKGGRvd25sb2FkQ2FwYWNpdHlBY2N1cmFjeRgKIAEoBRIeChZ1cGxvYWRDYXBhY2l0eUFjY3VyYWN5GAsgASgFEhsKE2Rvd25sb2FkUlBNQWNjdXJhY3kYDCABKAUSGQoRdXBsb2FkUlBNQWNjdXJhY3kYDSABKAUiNgoPU1RVTlRlc3RSZXF1ZXN0Eg4KBnNlcnZlchgBIAEoCRITCgtvdXRib3VuZFRhZxgCIAEoCSKuAQoQU1RVTlRlc3RQcm9ncmVzcxINCgVwaGFzZRgBIAEoBRIUCgxleHRlcm5hbEFkZHIYAiABKAkSEQoJbGF0ZW5jeU1zGAMgASgFEhIKCm5hdE1hcHBpbmcYBCABKAUSFAoMbmF0RmlsdGVyaW5nGAUgASgFEg8KB2lzRmluYWwYBiABKAgSDQoFZXJyb3IYByABKAkSGAoQbmF0VHlwZVN1cHBvcnRlZBgIIAEoCCJLChVUYWlsc2NhbGVTdGF0dXNVcGRhdGUSMgoJZW5kcG9pbnRzGAEgAygLMh8uZGFlbW9uLlRhaWxzY2FsZUVuZHBvaW50U3RhdHVzIpECChdUYWlsc2NhbGVFbmRwb2ludFN0YXR1cxITCgtlbmRwb2ludFRhZxgBIAEoCRIUCgxiYWNrZW5kU3RhdGUYAiABKAkSDwoHYXV0aFVSTBgDIAEoCRITCgtuZXR3b3JrTmFtZRgEIAEoCRIWCg5tYWdpY0ROU1N1ZmZpeBgFIAEoCRIjCgRzZWxmGAYgASgLMhUuZGFlbW9uLlRhaWxzY2FsZVBlZXISLgoKdXNlckdyb3VwcxgHIAMoCzIaLmRhZW1vbi5UYWlsc2NhbGVVc2VyR3JvdXASJwoIZXhpdE5vZGUYCCABKAsyFS5kYWVtb24uVGFpbHNjYWxlUGVlchIPCgdrZXlBdXRoGAkgASgIIokBChJUYWlsc2NhbGVVc2VyR3JvdXASDgoGdXNlcklEGAEgASgDEhEKCWxvZ2luTmFtZRgCIAEoCRITCgtkaXNwbGF5TmFtZRgDIAEoCRIVCg1wcm9maWxlUGljVVJMGAQgASgJEiQKBXBlZXJzGAUgAygLMhUuZGFlbW9uLlRhaWxzY2FsZVBlZXIisQIKDVRhaWxzY2FsZVBlZXISEAoIaG9zdE5hbWUYASABKAkSDwoHZG5zTmFtZRgCIAEoCRIKCgJvcxgDIAEoCRIUCgx0YWlsc2NhbGVJUHMYBCADKAkSDgoGb25saW5lGAUgASgIEhAKCGV4aXROb2RlGAYgASgIEhYKDmV4aXROb2RlT3B0aW9uGAcgASgIEg4KBmFjdGl2ZRgIIAEoCBIPCgdyeEJ5dGVzGAkgASgDEg8KB3R4Qnl0ZXMYCiABKAMSEQoJa2V5RXhwaXJ5GAsgASgDEhAKCHN0YWJsZUlEGAwgASgJEg8KB2V4cGlyZWQYDSABKAgSEwoLc3NoSG9zdEtleXMYDiADKAkSEgoKc2hhcmVlTm9kZRgPIAEoCBIQCghsYXN0U2VlbhgQIAEoAyI7ChRUYWlsc2NhbGVQaW5nUmVxdWVzdBITCgtlbmRwb2ludFRhZxgBIAEoCRIOCgZwZWVySVAYAiABKAkiiwEKFVRhaWxzY2FsZVBpbmdSZXNwb25zZRIRCglsYXRlbmN5TXMYASABKAESEAoIaXNEaXJlY3QYAiABKAgSEAoIZW5kcG9pbnQYAyABKAkSFAoMZGVycFJlZ2lvbklEGAQgASgFEhYKDmRlcnBSZWdpb25Db2RlGAUgASgJEg0KBWVycm9yGAYgASgJIkQKG1NldFRhaWxzY2FsZUV4aXROb2RlUmVxdWVzdBITCgtlbmRwb2ludFRhZxgBIAEoCRIQCghzdGFibGVJRBgCIAEoCSItChZUYWlsc2NhbGVMb2dvdXRSZXF1ZXN0EhMKC2VuZHBvaW50VGFnGAEgASgJIqwBChlUYWlsc2NhbGVTU0hDbGllbnRNZXNzYWdlEioKBXN0YXJ0GAEgASgLMhkuZGFlbW9uLlRhaWxzY2FsZVNTSFN0YXJ0SAASKgoFaW5wdXQYAiABKAsyGS5kYWVtb24uVGFpbHNjYWxlU1NISW5wdXRIABIsCgZyZXNpemUYAyABKAsyGi5kYWVtb24uVGFpbHNjYWxlU1NIUmVzaXplSABCCQoHbWVzc2FnZSLYAQoRVGFpbHNjYWxlU1NIU3RhcnQSEwoLZW5kcG9pbnRUYWcYASABKAkSEwoLcGVlckFkZHJlc3MYAiABKAkSEAoIdXNlcm5hbWUYAyABKAkSFAoMdGVybWluYWxUeXBlGAQgASgJEg8KB2NvbHVtbnMYBSABKAUSDAoEcm93cxgGIAEoBRITCgt3aWR0aFBpeGVscxgHIAEoBRIUCgxoZWlnaHRQaXhlbHMYCCABKAUSEAoIaG9zdEtleXMYCSADKAkSFQoNZm9yd2FyZF9hZ2VudBgKIAEoCCIhChFUYWlsc2NhbGVTU0hJbnB1dBIMCgRkYXRhGAEgASgMIl4KElRhaWxzY2FsZVNTSFJlc2l6ZRIPCgdjb2x1bW5zGAEgASgFEgwKBHJvd3MYAiABKAUSEwoLd2lkdGhQaXhlbHMYAyABKAUSFAoMaGVpZ2h0UGl4ZWxzGAQgASgFIowCChlUYWlsc2NhbGVTU0hTZXJ2ZXJNZXNzYWdlEjQKCmF1dGhCYW5uZXIYASABKAsyHi5kYWVtb24uVGFpbHNjYWxlU1NIQXV0aEJhbm5lckgAEioKBXJlYWR5GAIgASgLMhkuZGFlbW9uLlRhaWxzY2FsZVNTSFJlYWR5SAASLAoGb3V0cHV0GAMgASgLMhouZGFlbW9uLlRhaWxzY2FsZVNTSE91dHB1dEgAEigKBGV4aXQYBCABKAsyGC5kYWVtb24uVGFpbHNjYWxlU1NIRXhpdEgAEioKBWVycm9yGAUgASgLMhkuZGFlbW9uLlRhaWxzY2FsZVNTSEVycm9ySABCCQoHbWVzc2FnZSIpChZUYWlsc2NhbGVTU0hBdXRoQmFubmVyEg8KB21lc3NhZ2UYASABKAkiEwoRVGFpbHNjYWxlU1NIUmVhZHkiIgoSVGFpbHNjYWxlU1NIT3V0cHV0EgwKBGRhdGEYASABKAwiSgoQVGFpbHNjYWxlU1NIRXhpdBIQCghleGl0Q29kZRgBIAEoBRIOCgZzaWduYWwYAiABKAkSFAoMZXJyb3JNZXNzYWdlGAMgASgJIiQKEVRhaWxzY2FsZVNTSEVycm9yEg8KB21lc3NhZ2UYASABKAkipAEKElVTQlByb3ZpZGVyTWVzc2FnZRIpCgZhdHRhY2gYASABKAsyFy5kYWVtb24uVVNCRGV2aWNlQXR0YWNoSAASKQoGZGV0YWNoGAIgASgLMhcuZGFlbW9uLlVTQkRldmljZURldGFjaEgAEi0KC3VyYlJlc3BvbnNlGAMgASgLMhYuZGFlbW9uLlVTQlVSQlJlc3BvbnNlSABCCQoHbWVzc2FnZSLBAQoQVVNCU2VydmVyTWVzc2FnZRInCgVyZWFkeRgBIAEoCzIWLmRhZW1vbi5VU0JEZXZpY2VSZWFkeUgAEisKCnVyYlJlcXVlc3QYAiABKAsyFS5kYWVtb24uVVNCVVJCUmVxdWVzdEgAEikKBWFib3J0GAMgASgLMhguZGFlbW9uLlVTQkVuZHBvaW50QWJvcnRIABIhCgVlcnJvchgEIAEoCzIQLmRhZW1vbi5VU0JFcnJvckgAQgkKB21lc3NhZ2Ui1QIKE1VTQkRldmljZURlc2NyaXB0b3ISEAoIZGV2aWNlSWQYASABKAkSDgoGYnVzTnVtGAIgASgNEg4KBmRldk51bRgDIAEoDRINCgVzcGVlZBgEIAEoDRIQCgh2ZW5kb3JJZBgFIAEoDRIRCglwcm9kdWN0SWQYBiABKA0SEQoJYmNkRGV2aWNlGAcgASgNEhMKC2RldmljZUNsYXNzGAggASgNEhYKDmRldmljZVN1YkNsYXNzGAkgASgNEhYKDmRldmljZVByb3RvY29sGAogASgNEhoKEmNvbmZpZ3VyYXRpb25WYWx1ZRgLIAEoDRIZChFudW1Db25maWd1cmF0aW9ucxgMIAEoDRIoCgppbnRlcmZhY2VzGA0gAygLMhQuZGFlbW9uLlVTQkludGVyZmFjZRIOCgZzZXJpYWwYDiABKAkSDwoHcHJvZHVjdBgPIAEoCSJVCg9VU0JEZXZpY2VBdHRhY2gSEQoJc2VydmVyVGFnGAEgASgJEi8KCmRlc2NyaXB0b3IYAiABKAsyGy5kYWVtb24uVVNCRGV2aWNlRGVzY3JpcHRvciJcCgxVU0JJbnRlcmZhY2USFgoOaW50ZXJmYWNlQ2xhc3MYASABKA0SGQoRaW50ZXJmYWNlU3ViQ2xhc3MYAiABKA0SGQoRaW50ZXJmYWNlUHJvdG9jb2wYAyABKA0iIwoPVVNCRGV2aWNlRGV0YWNoEhAKCGRldmljZUlkGAEgASgJIjEKDlVTQkRldmljZVJlYWR5EhAKCGRldmljZUlkGAEgASgJEg0KBWJ1c0lkGAIgASgJIpMCCg1VU0JVUkJSZXF1ZXN0EhAKCGRldmljZUlkGAEgASgJEgsKA3NlcRgCIAEoBBIQCghlbmRwb2ludBgDIAEoDRITCgtkaXJlY3Rpb25JbhgEIAEoCBIVCg10cmFuc2ZlckZsYWdzGAUgASgNEg0KBXNldHVwGAYgASgMEhwKFHRyYW5zZmVyQnVmZmVyTGVuZ3RoGAcgASgNEg8KB291dERhdGEYCCABKAwSFwoPbnVtYmVyT2ZQYWNrZXRzGAkgASgFEhIKCnN0YXJ0RnJhbWUYCiABKAUSEAoIaW50ZXJ2YWwYCyABKAUSKAoKaXNvUGFja2V0cxgMIAMoCzIULmRhZW1vbi5VU0JJc29QYWNrZXQijwEKDlVTQlVSQlJlc3BvbnNlEhAKCGRldmljZUlkGAEgASgJEgsKA3NlcRgCIAEoBBIOCgZzdGF0dXMYAyABKAUSFAoMYWN0dWFsTGVuZ3RoGAQgASgFEg4KBmluRGF0YRgFIAEoDBIoCgppc29QYWNrZXRzGAYgAygLMhQuZGFlbW9uLlVTQklzb1BhY2tldCJUCgxVU0JJc29QYWNrZXQSDgoGb2Zmc2V0GAEgASgFEg4KBmxlbmd0aBgCIAEoBRIUCgxhY3R1YWxMZW5ndGgYAyABKAUSDgoGc3RhdHVzGAQgASgFIjYKEFVTQkVuZHBvaW50QWJvcnQSEAoIZGV2aWNlSWQYASABKAkSEAoIZW5kcG9pbnQYAiABKA0iLQoIVVNCRXJyb3ISEAoIZGV2aWNlSWQYASABKAkSDwoHbWVzc2FnZRgCIAEoCSJFChdVU0JJUFNlcnZlclN0YXR1c1VwZGF0ZRIqCgdzZXJ2ZXJzGAEgAygLMhkuZGFlbW9uLlVTQklQU2VydmVyU3RhdHVzIlAKEVVTQklQU2VydmVyU3RhdHVzEhEKCXNlcnZlclRhZxgBIAEoCRIoCgdkZXZpY2VzGAIgAygLMhcuZGFlbW9uLlVTQlNoYXJlZERldmljZSKvAQoPVVNCU2hhcmVkRGV2aWNlEi8KCmRlc2NyaXB0b3IYASABKAsyGy5kYWVtb24uVVNCRGV2aWNlRGVzY3JpcHRvchINCgVidXNJZBgCIAEoCRIQCghzdGFibGVJZBgDIAEoCRIjCgdiYWNrZW5kGAQgASgOMhIuZGFlbW9uLlVTQkJhY2tlbmQSJQoFc3RhdGUYBSABKA4yFi5kYWVtb24uVVNCRGV2aWNlU3RhdGUqVQoITG9nTGV2ZWwSCQoFUEFOSUMQABIJCgVGQVRBTBABEgkKBUVSUk9SEAISCAoEV0FSThADEggKBElORk8QBBIJCgVERUJVRxAFEgkKBVRSQUNFEAYqaQoTQ29ubmVjdGlvbkV2ZW50VHlwZRIYChRDT05ORUNUSU9OX0VWRU5UX05FVxAAEhsKF0NPTk5FQ1RJT05fRVZFTlRfVVBEQVRFEAESGwoXQ09OTkVDVElPTl9FVkVOVF9DTE9TRUQQAipsCg5VU0JEZXZpY2VTdGF0ZRIZChVVU0JfREVWSUNFX1NUQVRFX0lETEUQABIdChlVU0JfREVWSUNFX1NUQVRFX0FUVEFDSEVEEAESIAocVVNCX0RFVklDRV9TVEFURV9VTkFWQUlMQUJMRRACKp4BCgpVU0JCYWNrZW5kEhsKF1VTQl9CQUNLRU5EX1VOU1BFQ0lGSUVEEAASGwoXVVNCX0JBQ0tFTkRfTElOVVhfU1lTRlMQARIXChNVU0JfQkFDS0VORF9EWU5BTUlDEAISHAoYVVNCX0JBQ0tFTkRfREFSV0lOX0lPS0lUEAMSHwobVVNCX0JBQ0tFTkRfV0lORE9XU19WQk9YVVNCEAQymhEKDlN0YXJ0ZWRTZXJ2aWNlEjcKCkdldFZlcnNpb24SFi5nb29nbGUucHJvdG9idWYuRW1wdHkaDy5kYWVtb24uVmVyc2lvbiIAEksKFlN1YnNjcmliZVNlcnZpY2VTdGF0dXMSFi5nb29nbGUucHJvdG9idWYuRW1wdHkaFS5kYWVtb24uU2VydmljZVN0YXR1cyIAMAESNwoMU3Vic2NyaWJlTG9nEhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5GgsuZGFlbW9uLkxvZyIAMAESRwoSR2V0RGVmYXVsdExvZ0xldmVsEhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5GhcuZGFlbW9uLkRlZmF1bHRMb2dMZXZlbCIAEj0KCUNsZWFyTG9ncxIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eSIAEkUKD1N1YnNjcmliZVN0YXR1cxIeLmRhZW1vbi5TdWJzY3JpYmVTdGF0dXNSZXF1ZXN0Gg4uZGFlbW9uLlN0YXR1cyIAMAESPQoPU3Vic2NyaWJlR3JvdXBzEhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5Gg4uZGFlbW9uLkdyb3VwcyIAMAESRwoSR2V0Q2xhc2hNb2RlU3RhdHVzEhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5GhcuZGFlbW9uLkNsYXNoTW9kZVN0YXR1cyIAEkMKElN1YnNjcmliZUNsYXNoTW9kZRIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRoRLmRhZW1vbi5DbGFzaE1vZGUiADABEjsKDFNldENsYXNoTW9kZRIRLmRhZW1vbi5DbGFzaE1vZGUaFi5nb29nbGUucHJvdG9idWYuRW1wdHkiABI7CgdVUkxUZXN0EhYuZGFlbW9uLlVSTFRlc3RSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IgASSQoOU2VsZWN0T3V0Ym91bmQSHS5kYWVtb24uU2VsZWN0T3V0Ym91bmRSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IgASSQoOU2V0R3JvdXBFeHBhbmQSHS5kYWVtb24uU2V0R3JvdXBFeHBhbmRSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IgASRAoQVHJpZ2dlck9PTVJlcG9ydBIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eSIAElkKFFN1YnNjcmliZUNvbm5lY3Rpb25zEiMuZGFlbW9uLlN1YnNjcmliZUNvbm5lY3Rpb25zUmVxdWVzdBoYLmRhZW1vbi5Db25uZWN0aW9uRXZlbnRzIgAwARJLCg9DbG9zZUNvbm5lY3Rpb24SHi5kYWVtb24uQ2xvc2VDb25uZWN0aW9uUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eSIAEkcKE0Nsb3NlQWxsQ29ubmVjdGlvbnMSFi5nb29nbGUucHJvdG9idWYuRW1wdHkaFi5nb29nbGUucHJvdG9idWYuRW1wdHkiABJNChVHZXREZXByZWNhdGVkV2FybmluZ3MSFi5nb29nbGUucHJvdG9idWYuRW1wdHkaGi5kYWVtb24uRGVwcmVjYXRlZFdhcm5pbmdzIgASOwoMR2V0U3RhcnRlZEF0EhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5GhEuZGFlbW9uLlN0YXJ0ZWRBdCIAEkYKElN1YnNjcmliZU91dGJvdW5kcxIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRoULmRhZW1vbi5PdXRib3VuZExpc3QiADABEmQKF1N0YXJ0TmV0d29ya1F1YWxpdHlUZXN0EiEuZGFlbW9uLk5ldHdvcmtRdWFsaXR5VGVzdFJlcXVlc3QaIi5kYWVtb24uTmV0d29ya1F1YWxpdHlUZXN0UHJvZ3Jlc3MiADABEkYKDVN0YXJ0U1RVTlRlc3QSFy5kYWVtb24uU1RVTlRlc3RSZXF1ZXN0GhguZGFlbW9uLlNUVU5UZXN0UHJvZ3Jlc3MiADABElUKGFN1YnNjcmliZVRhaWxzY2FsZVN0YXR1cxIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRodLmRhZW1vbi5UYWlsc2NhbGVTdGF0dXNVcGRhdGUiADABElUKElN0YXJ0VGFpbHNjYWxlUGluZxIcLmRhZW1vbi5UYWlsc2NhbGVQaW5nUmVxdWVzdBodLmRhZW1vbi5UYWlsc2NhbGVQaW5nUmVzcG9uc2UiADABElUKFFNldFRhaWxzY2FsZUV4aXROb2RlEiMuZGFlbW9uLlNldFRhaWxzY2FsZUV4aXROb2RlUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eSIAEksKD1RhaWxzY2FsZUxvZ291dBIeLmRhZW1vbi5UYWlsc2NhbGVMb2dvdXRSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IgASZgoYU3RhcnRUYWlsc2NhbGVTU0hTZXNzaW9uEiEuZGFlbW9uLlRhaWxzY2FsZVNTSENsaWVudE1lc3NhZ2UaIS5kYWVtb24uVGFpbHNjYWxlU1NIU2VydmVyTWVzc2FnZSIAKAEwARJPChFQcm92aWRlVVNCRGV2aWNlcxIaLmRhZW1vbi5VU0JQcm92aWRlck1lc3NhZ2UaGC5kYWVtb24uVVNCU2VydmVyTWVzc2FnZSIAKAEwARJZChpTdWJzY3JpYmVVU0JJUFNlcnZlclN0YXR1cxIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRofLmRhZW1vbi5VU0JJUFNlcnZlclN0YXR1c1VwZGF0ZSIAMAFCJVojZ2l0aHViLmNvbS9zYWdlcm5ldC9zaW5nLWJveC9kYWVtb25iBnByb3RvMw',
     [file_google_protobuf_empty],
   )
 
@@ -1607,6 +1607,547 @@ export const TailscaleSSHErrorSchema: GenMessage<TailscaleSSHError> =
   messageDesc(file_daemon_started_service, 45)
 
 /**
+ * @generated from message daemon.USBProviderMessage
+ */
+export type USBProviderMessage = Message<'daemon.USBProviderMessage'> & {
+  /**
+   * @generated from oneof daemon.USBProviderMessage.message
+   */
+  message:
+    | {
+        /**
+         * @generated from field: daemon.USBDeviceAttach attach = 1;
+         */
+        value: USBDeviceAttach
+        case: 'attach'
+      }
+    | {
+        /**
+         * @generated from field: daemon.USBDeviceDetach detach = 2;
+         */
+        value: USBDeviceDetach
+        case: 'detach'
+      }
+    | {
+        /**
+         * @generated from field: daemon.USBURBResponse urbResponse = 3;
+         */
+        value: USBURBResponse
+        case: 'urbResponse'
+      }
+    | { case: undefined; value?: undefined }
+}
+
+/**
+ * Describes the message daemon.USBProviderMessage.
+ * Use `create(USBProviderMessageSchema)` to create a new message.
+ */
+export const USBProviderMessageSchema: GenMessage<USBProviderMessage> =
+  /*@__PURE__*/
+  messageDesc(file_daemon_started_service, 46)
+
+/**
+ * @generated from message daemon.USBServerMessage
+ */
+export type USBServerMessage = Message<'daemon.USBServerMessage'> & {
+  /**
+   * @generated from oneof daemon.USBServerMessage.message
+   */
+  message:
+    | {
+        /**
+         * @generated from field: daemon.USBDeviceReady ready = 1;
+         */
+        value: USBDeviceReady
+        case: 'ready'
+      }
+    | {
+        /**
+         * @generated from field: daemon.USBURBRequest urbRequest = 2;
+         */
+        value: USBURBRequest
+        case: 'urbRequest'
+      }
+    | {
+        /**
+         * @generated from field: daemon.USBEndpointAbort abort = 3;
+         */
+        value: USBEndpointAbort
+        case: 'abort'
+      }
+    | {
+        /**
+         * @generated from field: daemon.USBError error = 4;
+         */
+        value: USBError
+        case: 'error'
+      }
+    | { case: undefined; value?: undefined }
+}
+
+/**
+ * Describes the message daemon.USBServerMessage.
+ * Use `create(USBServerMessageSchema)` to create a new message.
+ */
+export const USBServerMessageSchema: GenMessage<USBServerMessage> =
+  /*@__PURE__*/
+  messageDesc(file_daemon_started_service, 47)
+
+/**
+ * @generated from message daemon.USBDeviceDescriptor
+ */
+export type USBDeviceDescriptor = Message<'daemon.USBDeviceDescriptor'> & {
+  /**
+   * @generated from field: string deviceId = 1;
+   */
+  deviceId: string
+
+  /**
+   * @generated from field: uint32 busNum = 2;
+   */
+  busNum: number
+
+  /**
+   * @generated from field: uint32 devNum = 3;
+   */
+  devNum: number
+
+  /**
+   * @generated from field: uint32 speed = 4;
+   */
+  speed: number
+
+  /**
+   * @generated from field: uint32 vendorId = 5;
+   */
+  vendorId: number
+
+  /**
+   * @generated from field: uint32 productId = 6;
+   */
+  productId: number
+
+  /**
+   * @generated from field: uint32 bcdDevice = 7;
+   */
+  bcdDevice: number
+
+  /**
+   * @generated from field: uint32 deviceClass = 8;
+   */
+  deviceClass: number
+
+  /**
+   * @generated from field: uint32 deviceSubClass = 9;
+   */
+  deviceSubClass: number
+
+  /**
+   * @generated from field: uint32 deviceProtocol = 10;
+   */
+  deviceProtocol: number
+
+  /**
+   * @generated from field: uint32 configurationValue = 11;
+   */
+  configurationValue: number
+
+  /**
+   * @generated from field: uint32 numConfigurations = 12;
+   */
+  numConfigurations: number
+
+  /**
+   * @generated from field: repeated daemon.USBInterface interfaces = 13;
+   */
+  interfaces: USBInterface[]
+
+  /**
+   * @generated from field: string serial = 14;
+   */
+  serial: string
+
+  /**
+   * @generated from field: string product = 15;
+   */
+  product: string
+}
+
+/**
+ * Describes the message daemon.USBDeviceDescriptor.
+ * Use `create(USBDeviceDescriptorSchema)` to create a new message.
+ */
+export const USBDeviceDescriptorSchema: GenMessage<USBDeviceDescriptor> =
+  /*@__PURE__*/
+  messageDesc(file_daemon_started_service, 48)
+
+/**
+ * @generated from message daemon.USBDeviceAttach
+ */
+export type USBDeviceAttach = Message<'daemon.USBDeviceAttach'> & {
+  /**
+   * @generated from field: string serverTag = 1;
+   */
+  serverTag: string
+
+  /**
+   * @generated from field: daemon.USBDeviceDescriptor descriptor = 2;
+   */
+  descriptor?: USBDeviceDescriptor | undefined
+}
+
+/**
+ * Describes the message daemon.USBDeviceAttach.
+ * Use `create(USBDeviceAttachSchema)` to create a new message.
+ */
+export const USBDeviceAttachSchema: GenMessage<USBDeviceAttach> =
+  /*@__PURE__*/
+  messageDesc(file_daemon_started_service, 49)
+
+/**
+ * @generated from message daemon.USBInterface
+ */
+export type USBInterface = Message<'daemon.USBInterface'> & {
+  /**
+   * @generated from field: uint32 interfaceClass = 1;
+   */
+  interfaceClass: number
+
+  /**
+   * @generated from field: uint32 interfaceSubClass = 2;
+   */
+  interfaceSubClass: number
+
+  /**
+   * @generated from field: uint32 interfaceProtocol = 3;
+   */
+  interfaceProtocol: number
+}
+
+/**
+ * Describes the message daemon.USBInterface.
+ * Use `create(USBInterfaceSchema)` to create a new message.
+ */
+export const USBInterfaceSchema: GenMessage<USBInterface> =
+  /*@__PURE__*/
+  messageDesc(file_daemon_started_service, 50)
+
+/**
+ * @generated from message daemon.USBDeviceDetach
+ */
+export type USBDeviceDetach = Message<'daemon.USBDeviceDetach'> & {
+  /**
+   * @generated from field: string deviceId = 1;
+   */
+  deviceId: string
+}
+
+/**
+ * Describes the message daemon.USBDeviceDetach.
+ * Use `create(USBDeviceDetachSchema)` to create a new message.
+ */
+export const USBDeviceDetachSchema: GenMessage<USBDeviceDetach> =
+  /*@__PURE__*/
+  messageDesc(file_daemon_started_service, 51)
+
+/**
+ * @generated from message daemon.USBDeviceReady
+ */
+export type USBDeviceReady = Message<'daemon.USBDeviceReady'> & {
+  /**
+   * @generated from field: string deviceId = 1;
+   */
+  deviceId: string
+
+  /**
+   * @generated from field: string busId = 2;
+   */
+  busId: string
+}
+
+/**
+ * Describes the message daemon.USBDeviceReady.
+ * Use `create(USBDeviceReadySchema)` to create a new message.
+ */
+export const USBDeviceReadySchema: GenMessage<USBDeviceReady> =
+  /*@__PURE__*/
+  messageDesc(file_daemon_started_service, 52)
+
+/**
+ * @generated from message daemon.USBURBRequest
+ */
+export type USBURBRequest = Message<'daemon.USBURBRequest'> & {
+  /**
+   * @generated from field: string deviceId = 1;
+   */
+  deviceId: string
+
+  /**
+   * @generated from field: uint64 seq = 2;
+   */
+  seq: bigint
+
+  /**
+   * @generated from field: uint32 endpoint = 3;
+   */
+  endpoint: number
+
+  /**
+   * @generated from field: bool directionIn = 4;
+   */
+  directionIn: boolean
+
+  /**
+   * @generated from field: uint32 transferFlags = 5;
+   */
+  transferFlags: number
+
+  /**
+   * @generated from field: bytes setup = 6;
+   */
+  setup: Uint8Array
+
+  /**
+   * @generated from field: uint32 transferBufferLength = 7;
+   */
+  transferBufferLength: number
+
+  /**
+   * @generated from field: bytes outData = 8;
+   */
+  outData: Uint8Array
+
+  /**
+   * @generated from field: int32 numberOfPackets = 9;
+   */
+  numberOfPackets: number
+
+  /**
+   * @generated from field: int32 startFrame = 10;
+   */
+  startFrame: number
+
+  /**
+   * @generated from field: int32 interval = 11;
+   */
+  interval: number
+
+  /**
+   * @generated from field: repeated daemon.USBIsoPacket isoPackets = 12;
+   */
+  isoPackets: USBIsoPacket[]
+}
+
+/**
+ * Describes the message daemon.USBURBRequest.
+ * Use `create(USBURBRequestSchema)` to create a new message.
+ */
+export const USBURBRequestSchema: GenMessage<USBURBRequest> =
+  /*@__PURE__*/
+  messageDesc(file_daemon_started_service, 53)
+
+/**
+ * @generated from message daemon.USBURBResponse
+ */
+export type USBURBResponse = Message<'daemon.USBURBResponse'> & {
+  /**
+   * @generated from field: string deviceId = 1;
+   */
+  deviceId: string
+
+  /**
+   * @generated from field: uint64 seq = 2;
+   */
+  seq: bigint
+
+  /**
+   * @generated from field: int32 status = 3;
+   */
+  status: number
+
+  /**
+   * @generated from field: int32 actualLength = 4;
+   */
+  actualLength: number
+
+  /**
+   * @generated from field: bytes inData = 5;
+   */
+  inData: Uint8Array
+
+  /**
+   * @generated from field: repeated daemon.USBIsoPacket isoPackets = 6;
+   */
+  isoPackets: USBIsoPacket[]
+}
+
+/**
+ * Describes the message daemon.USBURBResponse.
+ * Use `create(USBURBResponseSchema)` to create a new message.
+ */
+export const USBURBResponseSchema: GenMessage<USBURBResponse> =
+  /*@__PURE__*/
+  messageDesc(file_daemon_started_service, 54)
+
+/**
+ * @generated from message daemon.USBIsoPacket
+ */
+export type USBIsoPacket = Message<'daemon.USBIsoPacket'> & {
+  /**
+   * @generated from field: int32 offset = 1;
+   */
+  offset: number
+
+  /**
+   * @generated from field: int32 length = 2;
+   */
+  length: number
+
+  /**
+   * @generated from field: int32 actualLength = 3;
+   */
+  actualLength: number
+
+  /**
+   * @generated from field: int32 status = 4;
+   */
+  status: number
+}
+
+/**
+ * Describes the message daemon.USBIsoPacket.
+ * Use `create(USBIsoPacketSchema)` to create a new message.
+ */
+export const USBIsoPacketSchema: GenMessage<USBIsoPacket> =
+  /*@__PURE__*/
+  messageDesc(file_daemon_started_service, 55)
+
+/**
+ * @generated from message daemon.USBEndpointAbort
+ */
+export type USBEndpointAbort = Message<'daemon.USBEndpointAbort'> & {
+  /**
+   * @generated from field: string deviceId = 1;
+   */
+  deviceId: string
+
+  /**
+   * @generated from field: uint32 endpoint = 2;
+   */
+  endpoint: number
+}
+
+/**
+ * Describes the message daemon.USBEndpointAbort.
+ * Use `create(USBEndpointAbortSchema)` to create a new message.
+ */
+export const USBEndpointAbortSchema: GenMessage<USBEndpointAbort> =
+  /*@__PURE__*/
+  messageDesc(file_daemon_started_service, 56)
+
+/**
+ * @generated from message daemon.USBError
+ */
+export type USBError = Message<'daemon.USBError'> & {
+  /**
+   * @generated from field: string deviceId = 1;
+   */
+  deviceId: string
+
+  /**
+   * @generated from field: string message = 2;
+   */
+  message: string
+}
+
+/**
+ * Describes the message daemon.USBError.
+ * Use `create(USBErrorSchema)` to create a new message.
+ */
+export const USBErrorSchema: GenMessage<USBError> =
+  /*@__PURE__*/
+  messageDesc(file_daemon_started_service, 57)
+
+/**
+ * @generated from message daemon.USBIPServerStatusUpdate
+ */
+export type USBIPServerStatusUpdate = Message<'daemon.USBIPServerStatusUpdate'> & {
+  /**
+   * @generated from field: repeated daemon.USBIPServerStatus servers = 1;
+   */
+  servers: USBIPServerStatus[]
+}
+
+/**
+ * Describes the message daemon.USBIPServerStatusUpdate.
+ * Use `create(USBIPServerStatusUpdateSchema)` to create a new message.
+ */
+export const USBIPServerStatusUpdateSchema: GenMessage<USBIPServerStatusUpdate> =
+  /*@__PURE__*/
+  messageDesc(file_daemon_started_service, 58)
+
+/**
+ * @generated from message daemon.USBIPServerStatus
+ */
+export type USBIPServerStatus = Message<'daemon.USBIPServerStatus'> & {
+  /**
+   * @generated from field: string serverTag = 1;
+   */
+  serverTag: string
+
+  /**
+   * @generated from field: repeated daemon.USBSharedDevice devices = 2;
+   */
+  devices: USBSharedDevice[]
+}
+
+/**
+ * Describes the message daemon.USBIPServerStatus.
+ * Use `create(USBIPServerStatusSchema)` to create a new message.
+ */
+export const USBIPServerStatusSchema: GenMessage<USBIPServerStatus> =
+  /*@__PURE__*/
+  messageDesc(file_daemon_started_service, 59)
+
+/**
+ * @generated from message daemon.USBSharedDevice
+ */
+export type USBSharedDevice = Message<'daemon.USBSharedDevice'> & {
+  /**
+   * @generated from field: daemon.USBDeviceDescriptor descriptor = 1;
+   */
+  descriptor?: USBDeviceDescriptor | undefined
+
+  /**
+   * @generated from field: string busId = 2;
+   */
+  busId: string
+
+  /**
+   * @generated from field: string stableId = 3;
+   */
+  stableId: string
+
+  /**
+   * @generated from field: daemon.USBBackend backend = 4;
+   */
+  backend: USBBackend
+
+  /**
+   * @generated from field: daemon.USBDeviceState state = 5;
+   */
+  state: USBDeviceState
+}
+
+/**
+ * Describes the message daemon.USBSharedDevice.
+ * Use `create(USBSharedDeviceSchema)` to create a new message.
+ */
+export const USBSharedDeviceSchema: GenMessage<USBSharedDevice> =
+  /*@__PURE__*/
+  messageDesc(file_daemon_started_service, 60)
+
+/**
  * @generated from enum daemon.LogLevel
  */
 export enum LogLevel {
@@ -1679,6 +2220,70 @@ export enum ConnectionEventType {
 export const ConnectionEventTypeSchema: GenEnum<ConnectionEventType> =
   /*@__PURE__*/
   enumDesc(file_daemon_started_service, 1)
+
+/**
+ * @generated from enum daemon.USBDeviceState
+ */
+export enum USBDeviceState {
+  /**
+   * @generated from enum value: USB_DEVICE_STATE_IDLE = 0;
+   */
+  USB_DEVICE_STATE_IDLE = 0,
+
+  /**
+   * @generated from enum value: USB_DEVICE_STATE_ATTACHED = 1;
+   */
+  USB_DEVICE_STATE_ATTACHED = 1,
+
+  /**
+   * @generated from enum value: USB_DEVICE_STATE_UNAVAILABLE = 2;
+   */
+  USB_DEVICE_STATE_UNAVAILABLE = 2,
+}
+
+/**
+ * Describes the enum daemon.USBDeviceState.
+ */
+export const USBDeviceStateSchema: GenEnum<USBDeviceState> =
+  /*@__PURE__*/
+  enumDesc(file_daemon_started_service, 2)
+
+/**
+ * @generated from enum daemon.USBBackend
+ */
+export enum USBBackend {
+  /**
+   * @generated from enum value: USB_BACKEND_UNSPECIFIED = 0;
+   */
+  USB_BACKEND_UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: USB_BACKEND_LINUX_SYSFS = 1;
+   */
+  USB_BACKEND_LINUX_SYSFS = 1,
+
+  /**
+   * @generated from enum value: USB_BACKEND_DYNAMIC = 2;
+   */
+  USB_BACKEND_DYNAMIC = 2,
+
+  /**
+   * @generated from enum value: USB_BACKEND_DARWIN_IOKIT = 3;
+   */
+  USB_BACKEND_DARWIN_IOKIT = 3,
+
+  /**
+   * @generated from enum value: USB_BACKEND_WINDOWS_VBOXUSB = 4;
+   */
+  USB_BACKEND_WINDOWS_VBOXUSB = 4,
+}
+
+/**
+ * Describes the enum daemon.USBBackend.
+ */
+export const USBBackendSchema: GenEnum<USBBackend> =
+  /*@__PURE__*/
+  enumDesc(file_daemon_started_service, 3)
 
 /**
  * @generated from service daemon.StartedService
@@ -1899,5 +2504,21 @@ export const StartedService: GenService<{
     methodKind: 'bidi_streaming'
     input: typeof TailscaleSSHClientMessageSchema
     output: typeof TailscaleSSHServerMessageSchema
+  }
+  /**
+   * @generated from rpc daemon.StartedService.ProvideUSBDevices
+   */
+  provideUSBDevices: {
+    methodKind: 'bidi_streaming'
+    input: typeof USBProviderMessageSchema
+    output: typeof USBServerMessageSchema
+  }
+  /**
+   * @generated from rpc daemon.StartedService.SubscribeUSBIPServerStatus
+   */
+  subscribeUSBIPServerStatus: {
+    methodKind: 'server_streaming'
+    input: typeof EmptySchema
+    output: typeof USBIPServerStatusUpdateSchema
   }
 }> = /*@__PURE__*/ serviceDesc(file_daemon_started_service, 0)

@@ -1,8 +1,9 @@
-import { capabilities } from '@/composables/backendCapability'
+import { capabilities } from '@/assembly/backend'
+import { connectionAccessor } from '@/assembly/connections'
+import { hiddenGroupMap, proxyMap } from '@/assembly/proxies'
 import { NOT_CONNECTED, PROXY_CHAIN_DIRECTION, PROXY_TYPE, ROUTE_NAME } from '@/constant'
 import { showNotification } from '@/helper/notification'
 import { timeSaved } from '@/store/overview'
-import { hiddenGroupMap, proxyMap } from '@/store/proxies'
 import {
   customThemes,
   lowLatency,
@@ -13,7 +14,6 @@ import {
 import type { Connection } from '@/types'
 import dayjs from 'dayjs'
 import * as ipaddr from 'ipaddr.js'
-import { head } from 'lodash'
 import { computed } from 'vue'
 import { prettyBytesHelper } from './utils'
 
@@ -43,34 +43,53 @@ export const isProxyGroup = (name: string) => {
   ].includes(proxyNode.type.toLowerCase() as PROXY_TYPE)
 }
 
-export const getHostFromConnection = (connection: Connection) => {
-  const port = connection.metadata.destinationPort
-  const host =
-    connection.metadata.host || connection.metadata.sniffHost || connection.metadata.destinationIP
+// 以下 getConnectionXxx 均委托给 assembly 层「按当前后端动态选用」的访问器,
+// view / store 直接读取这些 view 友好的派生值,无需感知后端差异。
+export const getConnectionChains = (connection: Connection) =>
+  connectionAccessor().chains(connection)
 
-  if (host.includes(':')) {
-    return `[${host}]:${port}`
-  }
-  return `${host}:${port}`
-}
+export const getConnectionDownload = (connection: Connection) =>
+  connectionAccessor().download(connection)
 
-export const getProcessFromConnection = (connection: Connection) => {
-  return (
-    connection.metadata.process ||
-    connection.metadata.processPath.replace(/^.*[/\\](.*)$/, '$1') ||
-    '-'
-  )
-}
+export const getConnectionUpload = (connection: Connection) =>
+  connectionAccessor().upload(connection)
 
-export const getDestinationFromConnection = (connection: Connection) => {
-  const finalProxyType = proxyMap.value[head(connection.chains) || '']?.type.toLowerCase()
+export const getConnectionStart = (connection: Connection) => connectionAccessor().start(connection)
 
-  if (finalProxyType === PROXY_TYPE.Direct && connection.metadata.remoteDestination) {
-    return connection.metadata.remoteDestination
-  }
+export const getConnectionRule = (connection: Connection) => connectionAccessor().rule(connection)
 
-  return connection.metadata.destinationIP || connection.metadata.host
-}
+export const getConnectionRulePayload = (connection: Connection) =>
+  connectionAccessor().rulePayload(connection)
+
+export const getConnectionSourceIP = (connection: Connection) =>
+  connectionAccessor().sourceIP(connection)
+
+export const getConnectionSourcePort = (connection: Connection) =>
+  connectionAccessor().sourcePort(connection)
+
+export const getConnectionNetwork = (connection: Connection) =>
+  connectionAccessor().network(connection)
+
+export const getConnectionSmartBlock = (connection: Connection) =>
+  connectionAccessor().smartBlock(connection)
+
+export const getConnectionHostname = (connection: Connection) =>
+  connectionAccessor().hostname(connection)
+
+export const getHostFromConnection = (connection: Connection) =>
+  connectionAccessor().host(connection)
+
+export const getProcessFromConnection = (connection: Connection) =>
+  connectionAccessor().process(connection)
+
+export const getDestinationFromConnection = (connection: Connection) =>
+  connectionAccessor().destination(connection)
+
+export const getNetworkTypeFromConnection = (connection: Connection) =>
+  connectionAccessor().networkType(connection)
+
+export const getInboundUserFromConnection = (connection: Connection) =>
+  connectionAccessor().inboundUser(connection)
 
 export const getDestinationTypeFromConnection = (connection: Connection) => {
   const destination = getDestinationFromConnection(connection)
@@ -85,26 +104,13 @@ export const getDestinationTypeFromConnection = (connection: Connection) => {
 }
 
 export const getChainsStringFromConnection = (connection: Connection) => {
-  const chains = [...connection.chains]
+  const chains = [...getConnectionChains(connection)]
 
   if (proxyChainDirection.value === PROXY_CHAIN_DIRECTION.NORMAL) {
     chains.reverse()
   }
 
   return chains.join('')
-}
-
-export const getNetworkTypeFromConnection = (connection: Connection) => {
-  return `${connection.metadata.type} | ${connection.metadata.network}`
-}
-
-export const getInboundUserFromConnection = (connection: Connection) => {
-  return (
-    connection.metadata.inboundUser ||
-    connection.metadata.inboundName ||
-    connection.metadata.inboundPort ||
-    '-'
-  )
 }
 
 export const getToolTipForParams = (
@@ -134,11 +140,11 @@ export const getColorForLatency = (latency: number) => {
   if (latency === NOT_CONNECTED) {
     return ''
   } else if (latency < lowLatency.value) {
-    return 'text-green-500'
+    return 'text-low-latency'
   } else if (latency < mediumLatency.value) {
-    return 'text-yellow-500'
+    return 'text-medium-latency'
   } else {
-    return 'text-red-500'
+    return 'text-high-latency'
   }
 }
 

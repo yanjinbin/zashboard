@@ -4,41 +4,40 @@
     :title="$t('exitNode')"
   >
     <div class="flex flex-col gap-3">
-      <label class="flex flex-col gap-1 text-sm">
-        <span>{{ $t('search') }}</span>
-        <input
-          ref="searchEl"
-          class="input input-sm input-bordered"
-          v-model="search"
-        />
-      </label>
-      <div class="flex flex-col gap-1">
+      <input
+        ref="searchEl"
+        class="input input-sm w-full rounded-lg"
+        :placeholder="$t('search')"
+        v-model="search"
+      />
+      <div class="divide-base-content/8 bg-base-200/40 divide-y overflow-hidden rounded-xl">
         <button
-          class="hover:bg-base-200 flex items-center gap-2 rounded p-2 text-left text-sm"
+          class="setting-item hover:bg-base-content/3 active:bg-base-content/5 w-full text-left transition-colors"
           @click="select('')"
         >
-          <span class="flex-1">{{ $t('disabledLabel') }}</span>
+          <span class="setting-item-label">{{ $t('disabledLabel') }}</span>
           <CheckIcon
             v-if="current === ''"
-            class="h-4 w-4"
+            class="text-primary h-4 w-4 shrink-0"
           />
         </button>
         <button
           v-for="peer in filtered"
           :key="peer.stableID"
-          class="hover:bg-base-200 flex items-center gap-2 rounded p-2 text-left text-sm"
+          class="setting-item hover:bg-base-content/3 active:bg-base-content/5 w-full text-left transition-colors"
           @click="select(peer.stableID)"
         >
           <span
-            class="inline-block h-2 w-2 flex-shrink-0 rounded-full"
-            :class="peer.online ? 'bg-success' : 'bg-base-300'"
+            class="inline-block h-2 w-2 shrink-0 rounded-full"
+            :class="peer.online ? 'bg-success' : 'bg-base-content/20'"
           ></span>
-          <span class="font-medium">{{ peerDisplayName(peer) }}</span>
-          <span class="opacity-60">{{ peer.tailscaleIPs[0] }}</span>
-          <span class="flex-1"></span>
+          <span class="setting-item-label flex min-w-0 items-center gap-2">
+            <span class="truncate text-sm font-medium">{{ peerDisplayName(peer) }}</span>
+            <span class="text-base-content/40 truncate text-xs">{{ peer.tailscaleIPs[0] }}</span>
+          </span>
           <CheckIcon
             v-if="current === peer.stableID"
-            class="h-4 w-4"
+            class="text-primary h-4 w-4 shrink-0"
           />
         </button>
       </div>
@@ -48,7 +47,7 @@
 
 <script setup lang="ts">
 import DialogWrapper from '@/components/common/DialogWrapper.vue'
-import { getSingboxClient } from '@/api/singbox/client'
+import { getSingboxClient } from '@/assembly/tools'
 import { peerDisplayName } from '@/composables/tailscaleSSH'
 import type { TailscaleEndpointStatus, TailscalePeer } from '@/gen/daemon/started_service_pb'
 import { CheckIcon } from '@heroicons/vue/24/outline'

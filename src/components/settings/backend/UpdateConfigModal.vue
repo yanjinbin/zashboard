@@ -53,11 +53,11 @@
 </template>
 
 <script setup lang="ts">
-import { updateConfigsAPI } from '@/api'
+import { updateConfigsAPI } from '@/assembly/config'
 import { showNotification } from '@/helper/notification'
-import { fetchConfigs } from '@/store/config'
-import { fetchProxies } from '@/store/proxies'
-import { fetchRules } from '@/store/rules'
+import { fetchConfigs } from '@/assembly/config'
+import { fetchProxies } from '@/assembly/proxies'
+import { fetchRules } from '@/assembly/rules'
 import { ref } from 'vue'
 import DialogWrapper from '../../common/DialogWrapper.vue'
 

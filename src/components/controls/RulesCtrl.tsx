@@ -1,8 +1,14 @@
-import { updateRuleProviderAPI } from '@/api'
+import {
+  fetchRules,
+  ruleProviderList,
+  rules,
+  rulesFilter,
+  rulesTabShow,
+  updateRuleProviderAPI,
+} from '@/assembly/rules'
 import { useCtrlsBar } from '@/composables/useCtrlsBar'
 import { RULE_TAB_TYPE } from '@/constant'
 import { showNotification } from '@/helper/notification'
-import { fetchRules, ruleProviderList, rules, rulesFilter, rulesTabShow } from '@/store/rules'
 import {
   disconnectOnRuleDisable,
   displayLatencyInRule,
@@ -13,7 +19,7 @@ import { computed, defineComponent, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CtrlsBar from '../common/CtrlsBar.vue'
 import DialogWrapper from '../common/DialogWrapper.vue'
-import PanelTitle from '../common/PanelTitle.vue'
+import SegmentedControl from '../common/SegmentedControl.vue'
 import TextInput from '../common/TextInput.vue'
 
 export default defineComponent({
@@ -71,23 +77,15 @@ export default defineComponent({
 
     return () => {
       const tabs = (
-        <div
-          role="tablist"
-          class="tabs-box tabs tabs-xs"
-        >
-          {tabsWithNumbers.value.map(({ type, count }) => {
-            return (
-              <a
-                role="tab"
-                key={type}
-                class={['tab', rulesTabShow.value === type && 'tab-active']}
-                onClick={() => (rulesTabShow.value = type)}
-              >
-                {t(type)} ({count})
-              </a>
-            )
-          })}
-        </div>
+        <SegmentedControl
+          modelValue={rulesTabShow.value}
+          onUpdate:modelValue={(value) => (rulesTabShow.value = value as RULE_TAB_TYPE)}
+          options={tabsWithNumbers.value.map(({ type, count }) => ({
+            value: type,
+            label: t(type),
+            count,
+          }))}
+        />
       )
       const upgradeAllIcon = rulesTabShow.value === RULE_TAB_TYPE.PROVIDER && (
         <button
@@ -168,9 +166,7 @@ export default defineComponent({
         <div class="flex flex-wrap items-center gap-2 p-2">
           {hasProviders.value && tabs}
           {searchInput}
-          <div class="flex flex-1 justify-center">
-            <PanelTitle />
-          </div>
+          <div class="flex-1"></div>
           {upgradeAllIcon}
           {settingsModal}
         </div>

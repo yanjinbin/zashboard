@@ -1,4 +1,4 @@
-import { disconnectAllAPI, disconnectByIdAPI } from '@/api'
+import { disconnectAllAPI, disconnectByIdAPI } from '@/assembly/connections'
 import { useCtrlsBar } from '@/composables/useCtrlsBar'
 import { ROUTE_NAME, SETTINGS_MENU_KEY, SORT_DIRECTION, SORT_TYPE } from '@/constant'
 import { useTooltip } from '@/helper/tooltip'

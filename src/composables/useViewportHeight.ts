@@ -35,5 +35,8 @@ export const useViewportHeight = () => {
     viewport?.removeEventListener('resize', update)
     viewport?.removeEventListener('scroll', update)
     window.removeEventListener('resize', update)
+    // Stop pinning the height so the rest of the app falls back to `100dvh`;
+    // this tracking is only wanted while the terminal is open.
+    document.documentElement.style.removeProperty('--app-height')
   })
 }

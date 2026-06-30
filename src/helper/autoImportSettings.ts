@@ -1,4 +1,4 @@
-import { getStorageAPI } from '@/api'
+import { getStorageAPI } from '@/assembly/storage'
 import { showNotification } from '@/helper/notification'
 import { applyDashboardSettingsToStorage } from '@/helper/utils'
 import { useStorage } from '@vueuse/core'

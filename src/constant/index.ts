@@ -53,6 +53,9 @@ export enum CONNECTIONS_TABLE_ACCESSOR_KEY {
   DestinationType = 'destinationType',
   RemoteAddress = 'remoteAddress',
   InboundUser = 'inboundUser',
+  Protocol = 'protocol',
+  OutboundType = 'outboundType',
+  FromOutbound = 'fromOutbound',
 }
 
 export enum TABLE_WIDTH_MODE {
@@ -225,6 +228,8 @@ export const DETAILED_CARD_STYLE = [
 export const ALL_THEME = [
   'light',
   'dark',
+  'light-neutral',
+  'dark-neutral',
   ...(window.ksu ? ['light-monet', 'dark-monet'] : []),
   'halloween',
   'forest',

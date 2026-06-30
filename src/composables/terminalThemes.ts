@@ -11,12 +11,9 @@ export interface TerminalThemeEntry {
   theme: ITheme
 }
 
-// 厳選した配色プリセット。xterm の ITheme をインラインで持つため、生成スクリプトや
-// lazy chunk は不要。light/dark のスロットを個別に選択できる。
 export const TERMINAL_THEMES: TerminalThemeEntry[] = [
   // ----- Light -----
   {
-    // 既定（ライト）。sing-box-for-apple と同じ Alabaster。
     name: DEFAULT_LIGHT_THEME_NAME,
     isDark: false,
     theme: {
@@ -148,7 +145,6 @@ export const TERMINAL_THEMES: TerminalThemeEntry[] = [
   },
   // ----- Dark -----
   {
-    // 既定（ダーク）。sing-box-for-apple と同じ Afterglow。
     name: DEFAULT_DARK_THEME_NAME,
     isDark: true,
     theme: {
@@ -415,11 +411,9 @@ const fallbackTheme = (isDark: boolean): ITheme => {
   return TERMINAL_THEMES.find((entry) => entry.name === name)!.theme
 }
 
-// 設定モーダルの選択肢用に、ライト/ダーク別でフィルタする。
 export const themesForScheme = (isDark: boolean): TerminalThemeEntry[] =>
   TERMINAL_THEMES.filter((entry) => entry.isDark === isDark)
 
-// アプリの外観に応じたスロットからテーマを解決する。見つからなければ既定へ。
 export const resolveTheme = (config: TerminalConfig, isDark: boolean): ITheme => {
   const name = isDark ? config.darkThemeName : config.lightThemeName
   return TERMINAL_THEMES.find((entry) => entry.name === name)?.theme ?? fallbackTheme(isDark)

@@ -41,11 +41,6 @@ jobs:
           - { key: pingfang, suffix: '-pingfang-only' }
           - { key: sarasa, suffix: '-sarasa-only' }
           - { key: none, suffix: '-no-fonts' }
-        # The default (no-suffix) build drops the sing-box native API; the
-        # -singbox variant includes it.
-        singbox:
-          - { enable: 'false', suffix: '' }
-          - { enable: 'true', suffix: '-singbox-native' }
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -54,14 +49,13 @@ jobs:
       - name: Build and Zip the dist folder
         env:
           FONT: ${{ matrix.font.key }}
-          SINGBOX_NATIVE: ${{ matrix.singbox.enable }}
         run: |
           pnpm i
           pnpm run build
-          zip -r dist${{ matrix.font.suffix }}${{ matrix.singbox.suffix }}.zip dist
+          zip -r dist${{ matrix.font.suffix }}.zip dist
 
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v3
         with:
-          files: dist${{ matrix.font.suffix }}${{ matrix.singbox.suffix }}.zip
+          files: dist${{ matrix.font.suffix }}.zip
           tag_name: ${{ needs.release-please.outputs.tag_name }}
