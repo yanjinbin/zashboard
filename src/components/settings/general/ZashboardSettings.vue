@@ -49,16 +49,55 @@
       </div>
     </div>
 
+    <div
+      v-if="isVisibleActions"
+      class="settings-grid my-3 gap-2 p-3 md:grid-cols-2!"
+    >
+      <button
+        :class="twMerge('btn btn-neutral btn-sm', isUIUpgrading ? 'animate-pulse' : '')"
+        @click="handlerClickUpgradeUI"
+      >
+        {{ $t('upgradeDashboard') }}
+      </button>
+      <DashboardSettings />
+    </div>
+
     <StyleSettings />
     <GeneralSettings />
   </div>
 </template>
 
 <script setup lang="ts">
-import { isUIUpdateAvailable, zashboardVersion } from '@/assembly/version'
+import { isUIUpdateAvailable, upgradeUIAPI, zashboardVersion } from '@/assembly/version'
+import DashboardSettings from '@/components/common/DashboardSettings.vue'
+import { useIsSettingVisible } from '@/composables/settings'
+import { GENERAL_ITEM_KEYS } from '@/config/settingsItems'
+import { handlerUpgradeSuccess } from '@/helper'
 import { showPanelTitleBanner } from '@/store/settings'
+import { twMerge } from 'tailwind-merge'
+import { ref } from 'vue'
 import GeneralSettings from './GeneralSettings.vue'
 import StyleSettings from './StyleSettings.vue'
 
+const k = GENERAL_ITEM_KEYS
+const isVisibleActions = useIsSettingVisible(k.actions)
+
 const commitId = __COMMIT_ID__
+
+const isUIUpgrading = ref(false)
+
+const handlerClickUpgradeUI = async () => {
+  if (isUIUpgrading.value) return
+  isUIUpgrading.value = true
+  try {
+    await upgradeUIAPI()
+    isUIUpgrading.value = false
+    handlerUpgradeSuccess()
+    setTimeout(() => {
+      window.location.reload()
+    }, 1000)
+  } catch {
+    isUIUpgrading.value = false
+  }
+}
 </script>

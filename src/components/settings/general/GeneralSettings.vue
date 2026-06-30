@@ -4,26 +4,6 @@
       {{ $t('general') }}
     </div>
     <div class="settings-grid">
-      <SettingItem
-        :setting-key="k.actions"
-        :when="!isSingboxBackend"
-      >
-        <div class="setting-item-label">
-          {{ $t('upgradeDashboard') }}
-        </div>
-        <button
-          :class="twMerge('btn btn-sm', isUIUpgrading ? 'animate-pulse' : '')"
-          @click="handlerClickUpgradeUI"
-        >
-          {{ $t('upgradeDashboard') }}
-        </button>
-      </SettingItem>
-      <SettingItem :setting-key="k.actions">
-        <div class="setting-item-label">
-          {{ $t('dashboardSettings') }}
-        </div>
-        <DashboardSettings />
-      </SettingItem>
       <LanguageSelect />
       <SettingItem
         :setting-key="k.autoUpgradeDashboard"
@@ -178,18 +158,15 @@
 
 <script setup lang="ts">
 import { isSingboxBackend } from '@/assembly/backend'
-import { isSingBoxCore, upgradeUIAPI } from '@/assembly/version'
-import DashboardSettings from '@/components/common/DashboardSettings.vue'
+import { isSingBoxCore } from '@/assembly/version'
 import KeyboardShortcutsSettings from '@/components/settings/general/KeyboardShortcutsSettings.vue'
 import LanguageSelect from '@/components/settings/general/LanguageSelect.vue'
 import SettingItem from '@/components/settings/SettingItem.vue'
 import { useIsSettingVisible } from '@/composables/settings'
 import { GENERAL_ITEM_KEYS } from '@/config/settingsItems'
 import { IP_INFO_API } from '@/constant'
-import { handlerUpgradeSuccess } from '@/helper'
 import { useTooltip } from '@/helper/tooltip'
 import { isMiddleScreen } from '@/helper/utils'
-import { twMerge } from 'tailwind-merge'
 import {
   autoDisconnectIdleUDP,
   autoDisconnectIdleUDPTime,
@@ -203,12 +180,11 @@ import {
   swipeInTabs,
 } from '@/store/settings'
 import { QuestionMarkCircleIcon } from '@heroicons/vue/24/outline'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 
 const { showTip } = useTooltip()
 
 const k = GENERAL_ITEM_KEYS
-const isVisibleActions = useIsSettingVisible(k.actions)
 const isVisibleLanguage = useIsSettingVisible(k.language)
 const isVisibleShortcutsSetting = useIsSettingVisible(k.keyboardShortcuts)
 const isVisibleShortcuts = computed(() => isVisibleShortcutsSetting.value && !isMiddleScreen.value)
@@ -223,25 +199,8 @@ const isVisibleDisablePullToRefresh = useIsSettingVisible(k.disablePullToRefresh
 const isVisibleDisplayAllFeatures = useIsSettingVisible(k.displayAllFeatures)
 const isVisibleShowPanelTitleBanner = useIsSettingVisible(k.showPanelTitleBanner)
 
-const isUIUpgrading = ref(false)
-const handlerClickUpgradeUI = async () => {
-  if (isUIUpgrading.value) return
-  isUIUpgrading.value = true
-  try {
-    await upgradeUIAPI()
-    isUIUpgrading.value = false
-    handlerUpgradeSuccess()
-    setTimeout(() => {
-      window.location.reload()
-    }, 1000)
-  } catch {
-    isUIUpgrading.value = false
-  }
-}
-
 const hasVisibleGeneralItems = computed(() => {
   return (
-    isVisibleActions.value ||
     isVisibleLanguage.value ||
     isVisibleShortcuts.value ||
     isVisibleAutoUpgrade.value ||
