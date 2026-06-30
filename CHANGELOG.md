@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.11.6](https://github.com/yanjinbin/zashboard/compare/v3.11.5...v3.11.6) (2026-06-30)
+
+
+### Bug Fixes
+
+* **settings:** update ipapi.co logo to GitHub avatar URL ([615aa5d](https://github.com/yanjinbin/zashboard/commit/615aa5d2510d3581c502eeac7f72e23f98e5f86d))
+
 ## [3.11.5](https://github.com/yanjinbin/zashboard/compare/v3.11.4...v3.11.5) (2026-06-29)
 
 
