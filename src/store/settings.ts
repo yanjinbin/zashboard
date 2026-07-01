@@ -104,7 +104,7 @@ const migrateEnableProxySettingsByDefault = () => {
 migrateEnableProxySettingsByDefault()
 
 // global
-export const defaultTheme = useStorage<string>('config/default-theme', 'light')
+export const defaultTheme = useStorage<string>('config/default-theme', 'forest')
 export const darkTheme = useStorage<string>('config/dark-theme', 'dark')
 export const autoTheme = useStorage<boolean>('config/auto-theme', true)
 export const theme = computed(() => {
@@ -187,7 +187,7 @@ export const autoDisconnectIdleUDPTime = useStorage('config/auto-disconnect-idle
 export const keyboardShortcuts = useStorage<Record<string, string>>('config/keyboard-shortcuts', {})
 
 // overview
-export const splitOverviewPage = useStorage('config/split-overview-page', false)
+export const splitOverviewPage = useStorage('config/split-overview-page', true)
 export const autoIPCheck = useStorage('config/auto-ip-check', true)
 export const autoConnectionCheck = useStorage('config/auto-connection-check', true)
 export const showStatisticsWhenSidebarCollapsed = useStorage(
@@ -276,7 +276,7 @@ export const proxySortType = useStorage<PROXY_SORT_TYPE>(
   PROXY_SORT_TYPE.DEFAULT,
 )
 export const automaticDisconnection = useStorage('config/automatic-disconnection', true)
-export const truncateProxyName = useStorage('config/truncate-proxy-name', true)
+export const truncateProxyName = useStorage('config/truncate-proxy-name', false)
 export const disableProxiesPageTextSelect = useStorage(
   'config/disable-proxies-page-text-select',
   true,
@@ -390,4 +390,4 @@ export const settingsMenuOrder = useStorage<SETTINGS_MENU_KEY[]>(
 export const settingsPageTwoColumns = useStorage<boolean>('config/settings-page-two-columns', true)
 
 // custom panel title banner (shown below each page header)
-export const showPanelTitleBanner = useStorage<boolean>('config/show-panel-title-banner', true)
+export const showPanelTitleBanner = useStorage<boolean>('config/show-panel-title-banner', false)

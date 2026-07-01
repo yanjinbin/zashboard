@@ -386,7 +386,7 @@ const totalSize = computed(() => rowVirtualizer.value.getTotalSize() + 24)
 const showClearDialog = ref(false)
 const autoCleanupInterval = useStorage<AutoCleanupInterval>(
   'config/connection-history-auto-cleanup-interval',
-  AutoCleanupInterval.Month,
+  AutoCleanupInterval.Never,
 )
 const startTime = useStorage<number>('cache/connection-history-stats-start-time', Date.now())
 const totalConnectionsTip = computed(() => {

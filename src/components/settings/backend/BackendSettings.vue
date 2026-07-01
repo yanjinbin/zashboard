@@ -389,11 +389,6 @@ const IP_CHECK_SITES = [
     logo: 'https://ipleak.net/static/images/logotitle.png',
   },
   {
-    label: 'dnsleaktest.com',
-    url: 'https://dnsleaktest.com',
-    logo: 'https://dnsleaktest.com/assets/img/logo.png',
-  },
-  {
     label: 'ipapi.co',
     url: 'https://ipapi.co',
     logo: 'https://avatars.githubusercontent.com/u/18582121?v=4',
