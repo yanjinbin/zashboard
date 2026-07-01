@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.13.0](https://github.com/yanjinbin/zashboard/compare/v3.12.7...v3.13.0) (2026-07-01)
+
+
+### Features
+
+* **settings:** update default values and remove dnsleaktest tool ([258b348](https://github.com/yanjinbin/zashboard/commit/258b3483a3679955b116e900bc8a30e5ae3041f2))
+
 ## [3.12.7](https://github.com/yanjinbin/zashboard/compare/v3.12.6...v3.12.7) (2026-06-30)
 
 
