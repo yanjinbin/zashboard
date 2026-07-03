@@ -11,7 +11,6 @@ import {
   GEOIP_COUNTRY_DATABASE_URL,
   GLOBAL,
   IP_INFO_API,
-  IS_APPLE_DEVICE,
   LANG,
   OVERVIEW_CARD,
   PROXY_CARD_SIZE,
@@ -168,10 +167,7 @@ export const font = computed({
     fontConfig.value = val
   },
 })
-export const emoji = useStorage<EMOJIS>(
-  'config/emoji',
-  IS_APPLE_DEVICE ? EMOJIS.TWEMOJI : EMOJIS.NOTO_COLOR_EMOJI,
-)
+export const emoji = useStorage<EMOJIS>('config/emoji', EMOJIS.TWEMOJI)
 export const customBackgroundURL = useStorage('config/custom-background-image', '')
 export const dashboardTransparent = useStorage('config/dashboard-transparent', 90)
 export const autoUpgradeDashboard = useStorage('config/auto-upgrade', false)
@@ -304,7 +300,7 @@ export const minProxyCardWidth = useStorage<number>(
   'config/min-proxy-card-width',
   getMinCardWidth(proxyCardSize.value),
 )
-export const manageHiddenGroup = useStorage('config/manage-hidden-group-mode', true)
+export const manageHiddenGroup = useStorage('config/manage-hidden-group-mode', false)
 
 export const displayGlobalByMode = useStorage('config/display-global-by-mode', false)
 export const customGlobalNode = useStorage('config/custom-global-node-name', GLOBAL)
