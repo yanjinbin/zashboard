@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.13.2](https://github.com/yanjinbin/zashboard/compare/v3.13.1...v3.13.2) (2026-07-04)
+
+
+### Bug Fixes
+
+* **settings:** default `manageHiddenGroup` to off and `emoji` to twemoji on all platforms ([ae37322](https://github.com/yanjinbin/zashboard/commit/ae37322a47f6f15967e254084fefc37720562e8a))
+
 ## [3.12.7](https://github.com/yanjinbin/zashboard/compare/v3.12.6...v3.12.7) (2026-06-30)
 
 
