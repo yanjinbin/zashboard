@@ -38,6 +38,26 @@ export const fetchProxyLatencyAPI = (proxyName: string, url: string, timeout: nu
   })
 }
 
+// provider 节点可能不在全局 /proxies 映射中(或与其他 provider 的同名节点冲突),
+// 已知所属 provider 时用该端点测指定节点;与 /proxies/{name}/delay 共用内核的
+// getProxyDelay,同样返回 { delay }
+export const fetchProxyProviderLatencyAPI = (
+  providerName: string,
+  proxyName: string,
+  url: string,
+  timeout: number,
+) => {
+  return axios.get<{ delay: number }>(
+    `/providers/proxies/${encodeURIComponent(providerName)}/${encodeURIComponent(proxyName)}/healthcheck`,
+    {
+      params: {
+        url,
+        timeout,
+      },
+    },
+  )
+}
+
 export const fetchProxyGroupLatencyAPI = (proxyName: string, url: string, timeout: number) => {
   return axios.get<Record<string, number>>(`/group/${encodeURIComponent(proxyName)}/delay`, {
     params: {

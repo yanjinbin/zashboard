@@ -82,6 +82,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      // mmdb-lib imports Node's `net`; back it with a tiny browser shim.
+      net: fileURLToPath(new URL('./src/helper/netShim.ts', import.meta.url)),
     },
   },
 })

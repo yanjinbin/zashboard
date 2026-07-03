@@ -1,6 +1,6 @@
-// sing-box native 后端的概览统计组装:经跨 tab 共享流拿到 SubscribeStatus,本 tab 内
-// 再把一条 Status 扇出给多个订阅者(memory / traffic),以与 Clash WS 相同的 { data, close } 形状产出。
-import { subscribeSharedStream } from '@/api/singbox/sharedStream'
+// sing-box native 后端的概览统计组装:订阅 SubscribeStatus,把一条 Status 扇出给
+// 多个订阅者(memory / traffic),以与 Clash WS 相同的 { data, close } 形状产出。
+import { subscribeStream } from '@/api/singbox/subscriptions'
 import type { Status } from '@/gen/daemon/started_service_pb'
 import { ref, watch, type Ref } from 'vue'
 
@@ -24,7 +24,7 @@ const closeSharedStatusStream = () => {
 const ensureSharedStatusStream = () => {
   if (statusHandle) return true
 
-  statusHandle = subscribeSharedStream<Status>('status', (status) => {
+  statusHandle = subscribeStream<Status>('status', (status) => {
     latestStatus = status
     statusListeners.forEach((listener) => listener(status))
   })
@@ -62,6 +62,8 @@ const createSingboxStat = <T>(kind: 'memory' | 'traffic'): SingboxStream<T> => {
       : subscribeSingboxStatus((status) => ({
           down: Number(status.downlink),
           up: Number(status.uplink),
+          downTotal: Number(status.downlinkTotal),
+          upTotal: Number(status.uplinkTotal),
         }))
 
   if (!sub) return { data, close: () => {} }

@@ -46,14 +46,6 @@ export const getSingboxClient = (): SingboxClient | null => {
   return current.client
 }
 
-// 当前 sing-box 通道的稳定标识。用于把跨 tab 的共享订阅(master/slave)按后端隔离:
-// 不同后端各自一套 master,互不串流。
-export const getActiveSingboxKey = (): string | null => {
-  const backend = activeBackend.value
-  if (!backend || !getSingboxUrlFromBackend(backend)) return null
-  return backendKey(backend)
-}
-
 // Probe the sing-box channel for the Setup connectivity test.
 export const probeSingboxChannel = async (backend: Backend, timeout = 10000): Promise<boolean> => {
   const baseUrl = getSingboxUrlFromBackend(backend)

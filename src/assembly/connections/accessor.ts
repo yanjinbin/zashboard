@@ -3,6 +3,7 @@
 // 读取/派生 view 需要的字段 —— 不再把 sing-box 塑造成 clash 形状。
 // createGetConnectionDisplayValue 基于某一份 accessor 生成对应后端的 getConnectionDisplayValue,
 // 由 index.ts 门面按当前后端动态选用。
+import { getGeoIPInfoSync } from '@/api/geoip'
 import { CONNECTIONS_TABLE_ACCESSOR_KEY, PROXY_CHAIN_DIRECTION } from '@/constant'
 import { getIPLabelFromMap } from '@/helper/sourceip'
 import { fromNow, prettyBytesHelper } from '@/helper/utils'
@@ -22,8 +23,10 @@ export interface ConnectionsSnapshot {
   active: Connection[]
   // 本拍新关闭的连接(增量),供 store 追加进已关闭列表并落历史。
   closed: Connection[]
-  downloadTotal: number
-  uploadTotal: number
+  // 内核自启动的上/下行累计。clash 的连接 WS 消息原生携带,在此透传;
+  // sing-box 的连接流不带总量,由 status 统计流另行提供(见 store/overview)。
+  downloadTotal?: number
+  uploadTotal?: number
 }
 
 // 各后端原始数据 → view 字段的读取契约。实现内部按各自后端的原始类型取值。
@@ -121,6 +124,11 @@ export const createGetConnectionDisplayValue =
         return accessor.destination(connection)
       case CONNECTIONS_TABLE_ACCESSOR_KEY.DestinationType:
         return getDestinationType(accessor.destination(connection))
+      case CONNECTIONS_TABLE_ACCESSOR_KEY.GeoIP: {
+        const { country, organization } = getGeoIPInfoSync(accessor.destination(connection))
+
+        return [country, organization].filter(Boolean).join(' / ')
+      }
       case CONNECTIONS_TABLE_ACCESSOR_KEY.RemoteAddress:
         return accessor.remoteAddress(connection) || '-'
       case CONNECTIONS_TABLE_ACCESSOR_KEY.InboundUser:

@@ -55,53 +55,58 @@ export default defineComponent<{
           filter={connectionFilter.value}
         />
       )
-      const componentMap: Record<CONNECTIONS_TABLE_ACCESSOR_KEY, JSX.Element> = {
-        [CONNECTIONS_TABLE_ACCESSOR_KEY.Host]: (
+      const componentMap: Record<CONNECTIONS_TABLE_ACCESSOR_KEY, () => JSX.Element> = {
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.Host]: () => (
           <span class="text-main w-80 grow truncate">
             {highlightedText(CONNECTIONS_TABLE_ACCESSOR_KEY.Host)}
           </span>
         ),
-        [CONNECTIONS_TABLE_ACCESSOR_KEY.Destination]: (
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.Destination]: () => (
           <span class="w-80 grow truncate break-all">
             {highlightedText(CONNECTIONS_TABLE_ACCESSOR_KEY.Destination)}
           </span>
         ),
-        [CONNECTIONS_TABLE_ACCESSOR_KEY.RemoteAddress]: (
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.RemoteAddress]: () => (
           <span class="w-80 grow truncate break-all">
             {highlightedText(CONNECTIONS_TABLE_ACCESSOR_KEY.RemoteAddress)}
           </span>
         ),
-        [CONNECTIONS_TABLE_ACCESSOR_KEY.SourceIP]: (
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.GeoIP]: () => (
+          <span class="w-80 grow truncate break-all">
+            {highlightedText(CONNECTIONS_TABLE_ACCESSOR_KEY.GeoIP)}
+          </span>
+        ),
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.SourceIP]: () => (
           <span class="w-40 grow truncate break-all">
             {highlightedText(CONNECTIONS_TABLE_ACCESSOR_KEY.SourceIP)}
           </span>
         ),
-        [CONNECTIONS_TABLE_ACCESSOR_KEY.SourcePort]: (
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.SourcePort]: () => (
           <span class="w-20 grow truncate break-all">
             {highlightedText(CONNECTIONS_TABLE_ACCESSOR_KEY.SourcePort)}
           </span>
         ),
-        [CONNECTIONS_TABLE_ACCESSOR_KEY.SniffHost]: (
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.SniffHost]: () => (
           <span class="w-80 grow truncate break-all">
             {highlightedText(CONNECTIONS_TABLE_ACCESSOR_KEY.SniffHost)}
           </span>
         ),
-        [CONNECTIONS_TABLE_ACCESSOR_KEY.Type]: (
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.Type]: () => (
           <span class="w-60 grow truncate break-all">
             {highlightedText(CONNECTIONS_TABLE_ACCESSOR_KEY.Type)}
           </span>
         ),
-        [CONNECTIONS_TABLE_ACCESSOR_KEY.Rule]: (
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.Rule]: () => (
           <span class="w-80 grow truncate break-all">
             {highlightedText(CONNECTIONS_TABLE_ACCESSOR_KEY.Rule)}
           </span>
         ),
-        [CONNECTIONS_TABLE_ACCESSOR_KEY.Process]: (
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.Process]: () => (
           <span class="w-60 grow truncate break-all">
             {highlightedText(CONNECTIONS_TABLE_ACCESSOR_KEY.Process)}
           </span>
         ),
-        [CONNECTIONS_TABLE_ACCESSOR_KEY.Chains]: (
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.Chains]: () => (
           <span
             class={[
               'flex w-80 grow items-center gap-1 truncate break-all',
@@ -128,66 +133,66 @@ export default defineComponent<{
             )}
           </span>
         ),
-        [CONNECTIONS_TABLE_ACCESSOR_KEY.Outbound]: (
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.Outbound]: () => (
           <span class="w-60 grow truncate break-all">
             {highlightedText(CONNECTIONS_TABLE_ACCESSOR_KEY.Outbound)}
           </span>
         ),
-        [CONNECTIONS_TABLE_ACCESSOR_KEY.Download]: (
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.Download]: () => (
           <div class="flex items-center text-xs whitespace-nowrap">
             {highlightedText(CONNECTIONS_TABLE_ACCESSOR_KEY.Download)}
             <ArrowDownIcon class="text-success ml-1 h-3 w-3" />
           </div>
         ),
-        [CONNECTIONS_TABLE_ACCESSOR_KEY.Upload]: (
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.Upload]: () => (
           <div class="flex items-center text-xs whitespace-nowrap">
             {highlightedText(CONNECTIONS_TABLE_ACCESSOR_KEY.Upload)}
             <ArrowUpIcon class="text-info ml-1 h-3 w-3" />
           </div>
         ),
-        [CONNECTIONS_TABLE_ACCESSOR_KEY.DlSpeed]: (
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.DlSpeed]: () => (
           <div class="flex items-center text-xs whitespace-nowrap">
             {highlightedText(CONNECTIONS_TABLE_ACCESSOR_KEY.DlSpeed)}
             <ArrowDownCircleIcon class="text-success ml-1 h-4 w-4" />
           </div>
         ),
-        [CONNECTIONS_TABLE_ACCESSOR_KEY.UlSpeed]: (
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.UlSpeed]: () => (
           <div class="flex items-center text-xs whitespace-nowrap">
             {highlightedText(CONNECTIONS_TABLE_ACCESSOR_KEY.UlSpeed)}
             <ArrowUpCircleIcon class="text-info ml-1 h-4 w-4" />
           </div>
         ),
-        [CONNECTIONS_TABLE_ACCESSOR_KEY.ConnectTime]: (
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.ConnectTime]: () => (
           <div class="whitespace-nowrap">
             {highlightedText(CONNECTIONS_TABLE_ACCESSOR_KEY.ConnectTime)}
           </div>
         ),
-        [CONNECTIONS_TABLE_ACCESSOR_KEY.DestinationType]: (
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.DestinationType]: () => (
           <div class="whitespace-nowrap">
             {highlightedText(CONNECTIONS_TABLE_ACCESSOR_KEY.DestinationType)}
           </div>
         ),
-        [CONNECTIONS_TABLE_ACCESSOR_KEY.InboundUser]: (
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.InboundUser]: () => (
           <div class="whitespace-nowrap">
             {highlightedText(CONNECTIONS_TABLE_ACCESSOR_KEY.InboundUser)}
           </div>
         ),
-        [CONNECTIONS_TABLE_ACCESSOR_KEY.Protocol]: (
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.Protocol]: () => (
           <div class="whitespace-nowrap">
             {highlightedText(CONNECTIONS_TABLE_ACCESSOR_KEY.Protocol)}
           </div>
         ),
-        [CONNECTIONS_TABLE_ACCESSOR_KEY.OutboundType]: (
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.OutboundType]: () => (
           <div class="whitespace-nowrap">
             {highlightedText(CONNECTIONS_TABLE_ACCESSOR_KEY.OutboundType)}
           </div>
         ),
-        [CONNECTIONS_TABLE_ACCESSOR_KEY.FromOutbound]: (
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.FromOutbound]: () => (
           <div class="whitespace-nowrap">
             {highlightedText(CONNECTIONS_TABLE_ACCESSOR_KEY.FromOutbound)}
           </div>
         ),
-        [CONNECTIONS_TABLE_ACCESSOR_KEY.Close]: (() => {
+        [CONNECTIONS_TABLE_ACCESSOR_KEY.Close]: () => {
           const closeButton = (
             <button
               class="btn btn-circle btn-xs"
@@ -220,7 +225,7 @@ export default defineComponent<{
             )
           }
           return closeButton
-        })(),
+        },
       }
       return (
         <div
@@ -238,7 +243,7 @@ export default defineComponent<{
                     connectionTabShow.value !== CONNECTION_TAB_TYPE.CLOSED,
                 )
                 .map((key) => {
-                  return componentMap[key]
+                  return componentMap[key]()
                 })}
             </div>
           ))}

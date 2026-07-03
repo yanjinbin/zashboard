@@ -3,8 +3,8 @@
 // 每次推送直接重建门面 index.ts 的共享状态,因此选择/测速后无需手动刷新,
 // 结果会随流自动回填到 UI。
 import { getSingboxClient } from '@/api/singbox/client'
-import { subscribeSharedStream } from '@/api/singbox/sharedStream'
 import type { StreamHandle } from '@/api/singbox/streams'
+import { subscribeStream } from '@/api/singbox/subscriptions'
 import { disconnectByIdAPI } from '@/assembly/connections'
 import type { Group, GroupItem, Groups, OutboundList } from '@/gen/daemon/started_service_pb'
 import { getConnectionChains } from '@/helper'
@@ -110,7 +110,7 @@ const ensureSession = () => {
   ready = new Promise<void>((r) => (resolveReady = r))
 
   handles = [
-    subscribeSharedStream<Groups>('groups', (msg) => {
+    subscribeStream<Groups>('groups', (msg) => {
       groups = new Map()
       for (const g of msg.group) groups.set(g.tag, g)
       rebuild()
@@ -119,7 +119,7 @@ const ensureSession = () => {
         resolveReady()
       }
     }),
-    subscribeSharedStream<OutboundList>('outbounds', (msg) => {
+    subscribeStream<OutboundList>('outbounds', (msg) => {
       outbounds = new Map()
       for (const o of msg.outbounds) outbounds.set(o.tag, o)
       rebuild()

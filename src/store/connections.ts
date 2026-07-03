@@ -51,6 +51,8 @@ export const activeConnections = ref<Connection[]>([])
 export const closedConnections = ref<Connection[]>([])
 export const isPaused = ref(false)
 
+// 内核自启动的上/下行总量。clash 随连接 WS 消息携带,在下方快照 watch 写入;
+// sing-box 的连接流不带总量,由 status 统计流经 store/overview 的 traffic watch 写入。
 export const downloadTotal = ref(0)
 export const uploadTotal = ref(0)
 
@@ -68,8 +70,10 @@ export const initConnections = () => {
   const unwatch = watch(ws.data, (snapshot) => {
     if (!snapshot) return
 
-    downloadTotal.value = snapshot.downloadTotal
-    uploadTotal.value = snapshot.uploadTotal
+    if (snapshot.downloadTotal != null && snapshot.uploadTotal != null) {
+      downloadTotal.value = snapshot.downloadTotal
+      uploadTotal.value = snapshot.uploadTotal
+    }
 
     if (isPaused.value) {
       return

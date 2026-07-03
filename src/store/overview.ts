@@ -1,6 +1,6 @@
 import { fetchMemoryAPI, fetchTrafficAPI } from '@/assembly/overview'
 import { ref, watch } from 'vue'
-import { activeConnections } from './connections'
+import { activeConnections, downloadTotal, uploadTotal } from './connections'
 
 export const timeSaved = 60
 const initValue = new Array(timeSaved).fill(0).map((v, i) => ({ name: i, value: v }))
@@ -57,6 +57,8 @@ export const initSatistic = () => {
   const { data: trafficWsData, close: trafficWsClose } = fetchTrafficAPI<{
     down: number
     up: number
+    downTotal?: number
+    upTotal?: number
   }>()
   const unwatchTraffic = watch(
     () => trafficWsData.value,
@@ -67,6 +69,12 @@ export const initSatistic = () => {
 
       downloadSpeed.value = data.down
       uploadSpeed.value = data.up
+      // sing-box 的总量随统计流下发;clash 的总量由连接 WS 消息携带,
+      // 在 store/connections 写入,此处字段缺失时不覆盖。
+      if (data.downTotal != null && data.upTotal != null) {
+        downloadTotal.value = data.downTotal
+        uploadTotal.value = data.upTotal
+      }
 
       downloadSpeedHistory.value.push({
         value: data.down,

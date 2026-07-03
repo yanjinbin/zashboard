@@ -2,7 +2,7 @@
 // 维护成活跃连接表,并直接产出统一的 ConnectionsSnapshot(active 带瞬时速率、closed 为本拍增量)。
 // 速率由事件自带的 uplinkDelta/downlinkDelta 累计得到,CLOSED 事件直接产出已关闭连接 —— 无需快照 diff。
 import { getSingboxClient } from '@/api/singbox/client'
-import { subscribeSharedStream } from '@/api/singbox/sharedStream'
+import { subscribeStream } from '@/api/singbox/subscriptions'
 import {
   ConnectionEventType,
   type ConnectionEvents,
@@ -28,8 +28,6 @@ const fetchSingboxConnections = (): {
   const conns = new Map<string, Connection>()
   // 本窗口新关闭的连接,emit 时随快照一并产出。
   let newlyClosed: Connection[] = []
-  let downloadTotal = 0
-  let uploadTotal = 0
   let timer: ReturnType<typeof setTimeout> | null = null
 
   // UPDATE 事件不携带 connection,只有 id + delta;速率即取本秒 delta(与官方 dashboard 一致)。
@@ -49,8 +47,6 @@ const fetchSingboxConnections = (): {
     data.value = {
       active: Array.from(conns.values()),
       closed: newlyClosed,
-      downloadTotal,
-      uploadTotal,
     }
     newlyClosed = []
   }
@@ -59,19 +55,17 @@ const fetchSingboxConnections = (): {
     timer = setTimeout(emit, 100)
   }
 
-  const handle = subscribeSharedStream<ConnectionEvents>('connections', (msg) => {
+  const handle = subscribeStream<ConnectionEvents>('connections', (msg) => {
     if (msg.reset) {
       conns.clear()
     }
     for (const event of msg.events) {
       const downDelta = Number(event.downlinkDelta)
       const upDelta = Number(event.uplinkDelta)
-      uploadTotal += upDelta
-      downloadTotal += downDelta
 
       switch (event.type) {
         case ConnectionEventType.CONNECTION_EVENT_NEW:
-          // 新建连接当拍速率记 0(delta 是建连前的累计,不代表瞬时速率)。
+          // 新建连接当拍速率记 0(NEW 事件不带 delta)。
           // 初始快照可能把已关闭连接也当 NEW 下发(closedAt > 0),这类不进活跃表,直接归 closed。
           if (event.connection) {
             if (event.connection.closedAt > 0n) close(event.id, event.connection)
