@@ -1,0 +1,85 @@
+name: Sync release zips to gh-pages
+
+# Mirrors the dist*.zip assets from each GitHub Release onto the gh-pages
+# branch so they're servable through jsDelivr's GitHub CDN
+# (cdn.jsdelivr.net/gh/<owner>/<repo>@gh-pages/dist.zip) without any manual
+# upload step. jsDelivr only serves files that live in a git ref's tree, not
+# release binaries directly, hence the mirror.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to sync (defaults to the latest release)'
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gh-pages-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      EXPECTED_ASSETS: >-
+        dist.zip
+        dist-cdn-fonts.zip
+        dist-firasans-only.zip
+        dist-misans-only.zip
+        dist-pingfang-only.zip
+        dist-sarasa-only.zip
+        dist-no-fonts.zip
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Resolve release tag
+        id: tag
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          if [ -z "$TAG" ]; then TAG="${{ inputs.tag }}"; fi
+          if [ -z "$TAG" ]; then
+            TAG=$(gh release view --repo "${{ github.repository }}" --json tagName -q .tagName)
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      # release-dist's font-variant matrix uploads assets one at a time, so
+      # wait until every expected zip has landed before mirroring the set.
+      - name: Wait for all build assets to be uploaded
+        run: |
+          for i in $(seq 1 30); do
+            names=$(gh release view "${{ steps.tag.outputs.tag }}" --repo "${{ github.repository }}" --json assets -q '.assets[].name')
+            missing=0
+            for f in $EXPECTED_ASSETS; do
+              echo "$names" | grep -qx "$f" || missing=1
+            done
+            [ "$missing" -eq 0 ] && break
+            echo "Waiting for release assets... ($i/30)"
+            sleep 20
+          done
+
+      - name: Download release assets
+        run: |
+          mkdir -p gh-pages-assets
+          gh release download "${{ steps.tag.outputs.tag }}" --repo "${{ github.repository }}" \
+            --dir gh-pages-assets --clobber --pattern '*.zip'
+          ls -la gh-pages-assets
+
+      - name: Publish to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./gh-pages-assets
+          keep_files: true
+
+      - name: Purge jsDelivr cache
+        run: |
+          for f in gh-pages-assets/*.zip; do
+            name=$(basename "$f")
+            curl -fsS "https://purge.jsdelivr.net/gh/${{ github.repository }}@gh-pages/$name" >/dev/null || true
+          done
