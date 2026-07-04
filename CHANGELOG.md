@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.13.3](https://github.com/yanjinbin/zashboard/compare/v3.13.2...v3.13.3) (2026-07-04)
+
+
+### Bug Fixes
+
+* **settings:** always show router banner in settings, 6-char commit hash ([4e6d6f8](https://github.com/yanjinbin/zashboard/commit/4e6d6f8086a433c06d6f9b3b70c2b5a0ab1527a3))
+
+
+### CI
+
+* mirror release dist zips to gh-pages for jsDelivr CDN ([5103583](https://github.com/yanjinbin/zashboard/commit/51035835527478619a4b24d611f84ab7f248e5a4))
+
 ## [3.13.2](https://github.com/yanjinbin/zashboard/compare/v3.13.1...v3.13.2) (2026-07-04)
 
 
