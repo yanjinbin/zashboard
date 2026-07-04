@@ -8,13 +8,7 @@ import { version } from './package.json'
 
 const getGitCommitId = (): string => {
   try {
-    const commitMessage = execSync('git log -1 --pretty=%B', { encoding: 'utf8' }).trim()
-
-    if (commitMessage.includes('chore(main): release')) {
-      return ''
-    }
-
-    return execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim()
+    return execSync('git rev-parse --short=6 HEAD', { encoding: 'utf8' }).trim()
   } catch (error) {
     console.warn('无法获取git commit ID:', error)
     return ''

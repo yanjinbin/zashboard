@@ -1,7 +1,6 @@
 <template>
   <div class="relative flex flex-col text-sm">
     <div
-      v-if="showPanelTitleBanner"
       class="border-base-300/40 bg-base-100 rounded-box mx-1 mb-3 flex items-center gap-3 border p-3"
     >
       <img
@@ -73,7 +72,6 @@ import DashboardSettings from '@/components/common/DashboardSettings.vue'
 import { useIsSettingVisible } from '@/composables/settings'
 import { GENERAL_ITEM_KEYS } from '@/config/settingsItems'
 import { handlerUpgradeSuccess } from '@/helper'
-import { showPanelTitleBanner } from '@/store/settings'
 import { twMerge } from 'tailwind-merge'
 import { ref } from 'vue'
 import GeneralSettings from './GeneralSettings.vue'
