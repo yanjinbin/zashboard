@@ -8,7 +8,6 @@
       class="max-md:scrollbar-hidden relative h-full min-w-0 flex-1"
       :class="disableProxiesPageScroll ? 'overflow-y-hidden' : 'overflow-y-scroll'"
       :style="padding"
-      :id="PROXIES_PAGE"
       ref="proxiesRef"
       @scroll.passive="handleScroll"
     >
@@ -42,6 +41,7 @@
         />
       </div>
     </div>
+    <ProxyGroupChainModal />
   </div>
 </template>
 
@@ -52,6 +52,7 @@ import FolderTopBar from '@/components/proxies/folders/FolderTopBar.vue'
 import ProxyGroup from '@/components/proxies/ProxyGroup.vue'
 import ProxyGroupForMobile from '@/components/proxies/ProxyGroupForMobile.vue'
 import ProxyProvider from '@/components/proxies/ProxyProvider.vue'
+import ProxyGroupChainModal from '@/components/proxies/ProxyGroupChainModal.vue'
 import { usePaddingForViews } from '@/composables/paddingViews'
 import {
   disableProxiesPageScroll,
@@ -59,7 +60,7 @@ import {
   renderProxiesPageItems,
 } from '@/composables/proxies'
 import { PROXY_TAB_TYPE } from '@/constant'
-import { isMiddleScreen, PROXIES_PAGE } from '@/helper/utils'
+import { isMiddleScreen } from '@/helper/utils'
 import { fetchProxies } from '@/assembly/proxies'
 import { proxiesTabShow } from '@/assembly/proxies'
 import { disableProxiesPageTextSelect, twoColumnProxyGroup } from '@/store/settings'

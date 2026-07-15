@@ -88,7 +88,6 @@ import {
   downloadSpeedHistory,
   goroutines,
   memory,
-  timeSaved,
   uploadSpeed,
   uploadSpeedHistory,
 } from '@/store/overview'
@@ -126,12 +125,12 @@ const connLabelFormatter = (value: number) => {
 const connTooltipFormatter = (value: ToolTipParams[]) => {
   return value
     .map((item) => {
-      if (item.data.name < timeSaved + 1) return
+      if (item.data.init) return
       return `
     <div class="flex items-center my-2 gap-1">
       <div class="w-4 h-4 rounded-full" style="background-color: ${item.color}"></div>
       ${item.seriesName}
-      (${dayjs(item.data.name).format('HH:mm:ss')}): ${item.data.value}
+      (${dayjs(item.data.name).format('HH:mm:ss')}): ${item.data.value[1]}
     </div>`
     })
     .join('\n')

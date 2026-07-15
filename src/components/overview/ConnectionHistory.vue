@@ -40,6 +40,9 @@
             <option :value="ConnectionHistoryType.Outbound">
               {{ $t('aggregateByOutbound') }}
             </option>
+            <option :value="ConnectionHistoryType.ProxyGroup">
+              {{ $t('aggregateByProxyGroup') }}
+            </option>
           </select>
         </div>
         <div class="flex items-center gap-2">
@@ -275,6 +278,8 @@ const aggregateSourceLabel = computed(() => {
     return t('host')
   } else if (aggregationType.value === ConnectionHistoryType.Process) {
     return t('process')
+  } else if (aggregationType.value === ConnectionHistoryType.ProxyGroup) {
+    return t('proxyGroup')
   } else {
     return t('outbound')
   }

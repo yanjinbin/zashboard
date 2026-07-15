@@ -1,8 +1,5 @@
 <template>
-  <div
-    ref="containerRef"
-    class="border-base-content/8 grid gap-2 border-b p-3 last:border-b-0"
-  >
+  <div ref="containerRef">
     <div :class="gridClass">
       <div
         v-for="(port, index) in ports"

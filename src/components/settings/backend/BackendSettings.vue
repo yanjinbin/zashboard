@@ -30,7 +30,7 @@
 
     <div
       class="settings-grid"
-      v-if="isVisibleActions || isVisibleBackendSwitch || isVisibleDnsQuery"
+      v-if="hasVisibleActions || isVisibleBackendSwitch || isVisibleDnsQuery"
     >
       <SettingItem
         :setting-key="k.backend"
@@ -39,147 +39,199 @@
         <BackendSwitch />
       </SettingItem>
 
-      <div
-        v-if="isVisibleActions && !isSingboxBackend"
-        class="relative"
-        :class="settingsEditMode && isSettingHidden(k.actions) ? 'opacity-40' : ''"
-      >
-        <SettingVisibilityToggle
-          :setting-key="k.actions"
-          class="absolute top-2 left-2 z-10"
-        />
-        <div class="grid grid-cols-1 gap-2 px-4 py-3 md:grid-cols-2">
-          <template v-if="!isSingBoxCore || displayAllFeatures">
-            <button
-              v-if="!activeBackend?.disableUpgradeCore"
-              class="btn btn-neutral btn-sm"
-              @click="showUpgradeCoreModal = true"
-            >
-              {{ $t('upgradeCore') }}
-            </button>
-            <button
-              class="btn btn-sm"
-              @click="handlerClickRestartCore"
-            >
-              <span
-                v-if="isCoreRestarting"
-                class="loading loading-spinner loading-md"
-              ></span>
-              {{ $t('restartCore') }}
-            </button>
-            <button
-              class="btn btn-sm"
-              @click="handlerClickReloadConfigs"
-            >
-              <span
-                v-if="isConfigReloading"
-                class="loading loading-spinner loading-md"
-              ></span>
-              {{ $t('reloadConfigs') }}
-            </button>
-            <button
-              v-if="!isSingBoxCore"
-              class="btn btn-sm"
-              @click="showUpdateConfigModal = true"
-            >
-              {{ $t('updateConfigs') }}
-            </button>
-            <button
-              class="btn btn-sm"
-              @click="handlerClickUpdateGeo"
-            >
-              <span
-                v-if="isGeoUpdating"
-                class="loading loading-spinner loading-md"
-              ></span>
-              {{ $t('updateGeoDatabase') }}
-            </button>
-          </template>
+      <template v-if="!isSingboxBackend">
+        <SettingItem
+          :setting-key="k.upgradeCore"
+          :when="canShowCoreActions && !activeBackend?.disableUpgradeCore"
+        >
+          <div class="setting-item-label">
+            {{ $t('upgradeCore') }}
+          </div>
+          <button
+            class="btn btn-neutral btn-sm"
+            @click="showUpgradeCoreModal = true"
+          >
+            <ArrowUpCircleIcon class="h-4 w-4" />
+          </button>
+        </SettingItem>
+        <SettingItem
+          :setting-key="k.restartCore"
+          :when="canShowCoreActions"
+        >
+          <div class="setting-item-label">
+            {{ $t('restartCore') }}
+          </div>
+          <button
+            class="btn btn-sm"
+            @click="handlerClickRestartCore"
+          >
+            <span
+              v-if="isCoreRestarting"
+              class="loading loading-spinner h-4 w-4"
+            ></span>
+            <ArrowPathRoundedSquareIcon
+              v-else
+              class="h-4 w-4"
+            />
+          </button>
+        </SettingItem>
+        <SettingItem
+          :setting-key="k.reloadConfigs"
+          :when="canShowCoreActions"
+        >
+          <div class="setting-item-label">
+            {{ $t('reloadConfigs') }}
+          </div>
+          <button
+            class="btn btn-sm"
+            @click="handlerClickReloadConfigs"
+          >
+            <span
+              v-if="isConfigReloading"
+              class="loading loading-spinner h-4 w-4"
+            ></span>
+            <ArrowPathIcon
+              v-else
+              class="h-4 w-4"
+            />
+          </button>
+        </SettingItem>
+        <SettingItem
+          :setting-key="k.updateConfigs"
+          :when="canShowCoreActions && !isSingBoxCore"
+        >
+          <div class="setting-item-label">
+            {{ $t('updateConfigs') }}
+          </div>
+          <button
+            class="btn btn-sm"
+            @click="showUpdateConfigModal = true"
+          >
+            <PencilSquareIcon class="h-4 w-4" />
+          </button>
+        </SettingItem>
+        <SettingItem
+          :setting-key="k.updateGeoDatabase"
+          :when="canShowCoreActions"
+        >
+          <div class="setting-item-label">
+            {{ $t('updateGeoDatabase') }}
+          </div>
+          <button
+            class="btn btn-sm"
+            @click="handlerClickUpdateGeo"
+          >
+            <span
+              v-if="isGeoUpdating"
+              class="loading loading-spinner h-4 w-4"
+            ></span>
+            <ArrowDownTrayIcon
+              v-else
+              class="h-4 w-4"
+            />
+          </button>
+        </SettingItem>
+        <SettingItem :setting-key="k.flushDNSCache">
+          <div class="setting-item-label">
+            {{ $t('flushDNSCache') }}
+          </div>
           <button
             class="btn btn-sm"
             @click="handleFlushDNSCache"
           >
-            {{ $t('flushDNSCache') }}
+            <TrashIcon class="h-4 w-4" />
           </button>
+        </SettingItem>
+        <SettingItem :setting-key="k.flushFakeIP">
+          <div class="setting-item-label">
+            {{ $t('flushFakeIP') }}
+          </div>
           <button
             class="btn btn-sm"
             @click="handleFlushFakeIP"
           >
-            {{ $t('flushFakeIP') }}
+            <TrashIcon class="h-4 w-4" />
           </button>
+        </SettingItem>
+        <SettingItem
+          :setting-key="k.flushSmartWeights"
+          :when="hasSmartGroup"
+        >
+          <div class="setting-item-label">
+            {{ $t('flushSmartWeights') }}
+          </div>
           <button
-            v-if="hasSmartGroup"
             class="btn btn-sm"
             @click="handleFlushSmartWeights"
           >
-            {{ $t('flushSmartWeights') }}
+            <TrashIcon class="h-4 w-4" />
           </button>
+        </SettingItem>
+        <div
+          v-if="!isSingBoxCore || displayAllFeatures"
+          class="col-span-full space-y-1.5"
+        >
           <div
-            v-if="!isSingBoxCore || displayAllFeatures"
-            class="col-span-full space-y-1.5"
+            class="tooltip w-full"
+            :data-tip="$t('fullRefreshTip')"
           >
-            <div
-              class="tooltip w-full"
-              :data-tip="$t('fullRefreshTip')"
-            >
-              <button
-                class="btn btn-primary btn-sm relative w-full overflow-hidden"
-                :disabled="isFullRefreshing"
-                @click="handleFullRefresh"
-              >
-                <div
-                  v-if="isFullRefreshing || fullRefreshLogs.length > 0"
-                  class="absolute inset-y-0 left-0 transition-[width] duration-300 ease-linear"
-                  :class="fullRefreshHasWarning ? 'bg-warning/30' : 'bg-blue-500/40'"
-                  :style="{ width: fullRefreshProgress + '%' }"
-                />
-                <span class="relative flex items-center gap-1.5">
-                  <span
-                    v-if="isFullRefreshing"
-                    class="loading loading-spinner loading-sm"
-                  />
-                  {{ $t('fullRefresh') }}
-                </span>
-              </button>
-            </div>
-
-            <div
-              v-if="isFullRefreshing || fullRefreshLogs.length > 0"
-              class="space-y-1"
+            <button
+              class="btn btn-primary btn-sm relative w-full overflow-hidden"
+              :disabled="isFullRefreshing"
+              @click="handleFullRefresh"
             >
               <div
-                v-for="log in fullRefreshLogs"
-                :key="log.key"
-                class="flex items-start gap-1.5 text-xs"
-              >
+                v-if="isFullRefreshing || fullRefreshLogs.length > 0"
+                class="absolute inset-y-0 left-0 transition-[width] duration-300 ease-linear"
+                :class="fullRefreshHasWarning ? 'bg-warning/30' : 'bg-blue-500/40'"
+                :style="{ width: fullRefreshProgress + '%' }"
+              />
+              <span class="relative flex items-center gap-1.5">
                 <span
-                  v-if="log.status === 'running'"
-                  class="loading loading-spinner loading-xs mt-px shrink-0"
+                  v-if="isFullRefreshing"
+                  class="loading loading-spinner loading-sm"
                 />
-                <span
-                  v-else
-                  class="mt-px shrink-0 leading-none font-bold"
-                  :class="{
-                    'text-success': log.status === 'success',
-                    'text-warning': log.status === 'warning',
-                    'text-error': log.status === 'error',
-                  }"
-                  >{{ log.status === 'success' ? '✓' : log.status === 'warning' ? '⚠' : '✕' }}</span
-                >
-                <span
-                  :class="{
-                    'text-base-content/50': log.status === 'running',
-                    'text-success': log.status === 'success',
-                    'text-warning': log.status === 'warning',
-                    'text-error': log.status === 'error',
-                  }"
-                  >{{ log.text }}</span
-                >
-              </div>
+                {{ $t('fullRefresh') }}
+              </span>
+            </button>
+          </div>
+
+          <div
+            v-if="isFullRefreshing || fullRefreshLogs.length > 0"
+            class="space-y-1"
+          >
+            <div
+              v-for="log in fullRefreshLogs"
+              :key="log.key"
+              class="flex items-start gap-1.5 text-xs"
+            >
+              <span
+                v-if="log.status === 'running'"
+                class="loading loading-spinner loading-xs mt-px shrink-0"
+              />
+              <span
+                v-else
+                class="mt-px shrink-0 leading-none font-bold"
+                :class="{
+                  'text-success': log.status === 'success',
+                  'text-warning': log.status === 'warning',
+                  'text-error': log.status === 'error',
+                }"
+                >{{ log.status === 'success' ? '✓' : log.status === 'warning' ? '⚠' : '✕' }}</span
+              >
+              <span
+                :class="{
+                  'text-base-content/50': log.status === 'running',
+                  'text-success': log.status === 'success',
+                  'text-warning': log.status === 'warning',
+                  'text-error': log.status === 'error',
+                }"
+                >{{ log.text }}</span
+              >
             </div>
           </div>
         </div>
-      </div>
+      </template>
 
       <SettingItem
         :setting-key="k.DNSQuery"
@@ -270,47 +322,42 @@
         {{ $t('settings') }}
       </div>
       <div class="settings-grid">
-        <div
-          v-if="isVisiblePorts"
-          class="relative"
-          :class="settingsEditMode && isSettingHidden(k.ports) ? 'opacity-40' : ''"
+        <SettingItem
+          :setting-key="k.ports"
+          class="py-3"
         >
-          <SettingVisibilityToggle
-            :setting-key="k.ports"
-            class="absolute top-1 right-1 z-10"
-          />
-          <BackendPortsGrid />
-        </div>
-        <div
-          v-if="configs?.tun && canShowTunMode"
-          class="setting-item"
+          <div class="flex w-full flex-col">
+            <BackendPortsGrid />
+          </div>
+        </SettingItem>
+        <SettingItem
+          :setting-key="k.tunMode"
+          :when="!!configs?.tun && !activeBackend?.disableTunMode"
         >
-          <SettingVisibilityToggle :setting-key="k.tunMode" />
           <div class="setting-item-label">
             {{ $t('tunMode') }}
           </div>
           <input
             class="toggle"
             type="checkbox"
-            v-model="configs.tun.enable"
+            v-model="configs!.tun.enable"
             @change="hanlderTunModeChange"
           />
-        </div>
-        <div
-          v-if="configs && isVisibleAllowLan"
-          class="setting-item"
+        </SettingItem>
+        <SettingItem
+          :setting-key="k.allowLan"
+          :when="!!configs"
         >
-          <SettingVisibilityToggle :setting-key="k.allowLan" />
           <div class="setting-item-label">
             {{ $t('allowLan') }}
           </div>
           <input
             class="toggle"
             type="checkbox"
-            v-model="configs['allow-lan']"
+            v-model="configs!['allow-lan']"
             @change="handlerAllowLanChange"
           />
-        </div>
+        </SettingItem>
         <template v-if="!activeBackend?.disableUpgradeCore">
           <SettingItem :setting-key="k.checkCoreUpgrade">
             <div class="setting-item-label">
@@ -361,8 +408,7 @@ import BackendSwitch from '@/components/settings/backend/BackendSwitch.vue'
 import DnsQuery from '@/components/settings/backend/DnsQuery.vue'
 import { isSingboxBackend } from '@/assembly/backend'
 import SettingItem from '@/components/settings/SettingItem.vue'
-import SettingVisibilityToggle from '@/components/settings/SettingVisibilityToggle.vue'
-import { isSettingHidden, settingsEditMode, useIsSettingVisible } from '@/composables/settings'
+import { isSettingVisible, useIsSettingVisible } from '@/composables/settings'
 import { BACKEND_ITEM_KEYS } from '@/config/settingsItems'
 import { MIHOMO, MIHOMO_CHANNEL } from '@/constant'
 import { showNotification } from '@/helper/notification'
@@ -377,6 +423,14 @@ import { configs, fetchConfigs, updateConfigs } from '@/assembly/config'
 import { fetchRules, ruleProviderList, rules } from '@/assembly/rules'
 import { autoUpgradeCore, checkUpgradeCore, displayAllFeatures } from '@/store/settings'
 import { activeBackend } from '@/store/setup'
+import {
+  ArrowDownTrayIcon,
+  ArrowPathIcon,
+  ArrowPathRoundedSquareIcon,
+  ArrowUpCircleIcon,
+  PencilSquareIcon,
+  TrashIcon,
+} from '@heroicons/vue/24/outline'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import UpdateConfigModal from './UpdateConfigModal.vue'
@@ -457,17 +511,39 @@ const isVisibleTunMode = useIsSettingVisible(k.tunMode)
 const isVisibleAllowLan = useIsSettingVisible(k.allowLan)
 const isVisibleCheckUpgrade = useIsSettingVisible(k.checkCoreUpgrade)
 const isVisibleAutoUpgrade = useIsSettingVisible(k.autoUpgradeCore)
-const isVisibleActions = useIsSettingVisible(k.actions)
 const isVisibleDnsQuery = useIsSettingVisible(k.DNSQuery)
 const canShowTunMode = computed(
   () => isVisibleTunMode.value && !activeBackend.value?.disableTunMode,
 )
 
+/** sing-box 内核下只保留 flush 类操作，除非用户开启了「显示全部功能」 */
+const canShowCoreActions = computed(() => !isSingBoxCore.value || displayAllFeatures.value)
+
+/** 当前后端/内核下实际可渲染的操作项 */
+const renderableActionKeys = computed(() => {
+  if (isSingboxBackend.value) return []
+
+  const keys: string[] = []
+
+  if (canShowCoreActions.value) {
+    if (!activeBackend.value?.disableUpgradeCore) keys.push(k.upgradeCore)
+    keys.push(k.restartCore, k.reloadConfigs)
+    if (!isSingBoxCore.value) keys.push(k.updateConfigs)
+    keys.push(k.updateGeoDatabase)
+  }
+  keys.push(k.flushDNSCache, k.flushFakeIP)
+  if (hasSmartGroup.value) keys.push(k.flushSmartWeights)
+
+  return keys
+})
+
+const hasVisibleActions = computed(() => renderableActionKeys.value.some(isSettingVisible))
+
 const hasVisibleItems = computed(() => {
   return (
     isVisibleBackendSwitch.value ||
     hasVisibleSettings.value ||
-    isVisibleActions.value ||
+    hasVisibleActions.value ||
     isVisibleDnsQuery.value
   )
 })
