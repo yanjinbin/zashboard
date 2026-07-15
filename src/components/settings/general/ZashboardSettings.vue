@@ -52,12 +52,20 @@
       v-if="isVisibleActions"
       class="settings-grid my-3 gap-2 p-3 md:grid-cols-2!"
     >
-      <button
-        :class="twMerge('btn btn-neutral btn-sm', isUIUpgrading ? 'animate-pulse' : '')"
-        @click="handlerClickUpgradeUI"
-      >
-        {{ $t('upgradeDashboard') }}
-      </button>
+      <div class="flex items-center gap-2">
+        <button
+          :class="twMerge('btn btn-neutral btn-sm flex-1', isUIUpgrading ? 'animate-pulse' : '')"
+          @click="handlerClickUpgradeUI"
+        >
+          {{ $t('upgradeDashboard') }}
+        </button>
+        <TextInput
+          v-model="targetUIVersion"
+          class="w-24 shrink-0"
+          :placeholder="zashboardVersion"
+          clearable
+        />
+      </div>
       <DashboardSettings />
     </div>
 
@@ -67,8 +75,10 @@
 </template>
 
 <script setup lang="ts">
+import { patchConfigsAPI } from '@/api/clash'
 import { isUIUpdateAvailable, upgradeUIAPI, zashboardVersion } from '@/assembly/version'
 import DashboardSettings from '@/components/common/DashboardSettings.vue'
+import TextInput from '@/components/common/TextInput.vue'
 import { useIsSettingVisible } from '@/composables/settings'
 import { GENERAL_ITEM_KEYS } from '@/config/settingsItems'
 import { handlerUpgradeSuccess } from '@/helper'
@@ -83,11 +93,21 @@ const isVisibleActions = useIsSettingVisible(k.actions)
 const commitId = __COMMIT_ID__
 
 const isUIUpgrading = ref(false)
+const targetUIVersion = ref('')
 
 const handlerClickUpgradeUI = async () => {
   if (isUIUpgrading.value) return
   isUIUpgrading.value = true
   try {
+    let ver = targetUIVersion.value.trim()
+    if (ver) {
+      if (!ver.startsWith('v') && /^\d/.test(ver)) {
+        ver = 'v' + ver
+      }
+      await patchConfigsAPI({
+        'external-ui-url': `https://github.com/yanjinbin/zashboard/releases/download/${ver}/dist-cdn-fonts.zip`,
+      })
+    }
     await upgradeUIAPI()
     isUIUpgrading.value = false
     handlerUpgradeSuccess()
