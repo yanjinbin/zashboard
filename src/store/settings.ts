@@ -129,7 +129,7 @@ defaultTheme.value = replaceLegacyTheme(defaultTheme.value, 'light')
 darkTheme.value = replaceLegacyTheme(darkTheme.value, 'dark')
 
 export const language = useStorage<LANG>('config/language', LANG.ZH_CN)
-export const isSidebarCollapsedConfig = useStorage('config/is-sidebar-collapsed', true)
+export const isSidebarCollapsedConfig = useStorage('config/is-sidebar-collapsed', false)
 export const isSidebarCollapsed = computed({
   get: () => {
     if (isMiddleScreen.value) {
