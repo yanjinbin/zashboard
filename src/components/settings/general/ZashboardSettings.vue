@@ -189,6 +189,7 @@ const testResults = ref<
   {
     name: string
     url: string
+    testUrl?: string
     icon: string
     status: 'idle' | 'testing' | 'success' | 'error'
     delay: number
@@ -211,6 +212,7 @@ const testResults = ref<
   {
     name: 'Claude',
     url: 'https://claude.ai/login',
+    testUrl: 'https://claude.ai/favicon.ico',
     icon: claudeLogo,
     status: 'idle',
     delay: 0,
@@ -232,7 +234,8 @@ const testAIWebsites = async () => {
 
         // Generate a random query parameter to prevent caching
         const cacheBuster = `?_t=${Date.now()}`
-        await fetch(site.url + cacheBuster, {
+        const targetUrl = site.testUrl || site.url
+        await fetch(targetUrl + cacheBuster, {
           mode: 'no-cors',
           signal: controller.signal,
         })
