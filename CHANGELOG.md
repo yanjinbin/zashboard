@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.18.0](https://github.com/yanjinbin/zashboard/compare/v3.17.0...v3.18.0) (2026-07-16)
+
+
+### Features
+
+* update AI tests with icons, emojis, and login URL ([aae2481](https://github.com/yanjinbin/zashboard/commit/aae24814eefd678bbf50edd25a8b99e58500ef53))
+
+
+### Bug Fixes
+
+* force trigger release 3.17.1 ([bc63df9](https://github.com/yanjinbin/zashboard/commit/bc63df957f5d68769796d3ee1ecb14ddc2303a0c))
+
 ## [3.17.0](https://github.com/yanjinbin/zashboard/compare/v3.16.1...v3.17.0) (2026-07-16)
 
 
