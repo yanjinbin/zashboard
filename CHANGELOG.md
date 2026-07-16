@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.17.0](https://github.com/yanjinbin/zashboard/compare/v3.16.1...v3.17.0) (2026-07-16)
+
+
+### Features
+
+* add one-click test for AI websites connectivity ([3442d63](https://github.com/yanjinbin/zashboard/commit/3442d633502e2611f835522630ced40716517ebf))
+
+
+### Bug Fixes
+
+* sidebar should be expanded by default ([95ffad8](https://github.com/yanjinbin/zashboard/commit/95ffad8eca32302cfa0b4be51b097571848faa7b))
+
 ## [3.16.1](https://github.com/yanjinbin/zashboard/compare/v3.16.0...v3.16.1) (2026-07-16)
 
 
