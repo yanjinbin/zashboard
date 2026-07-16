@@ -212,7 +212,7 @@ const testResults = ref<
   {
     name: 'Claude',
     url: 'https://claude.ai/login',
-    testUrl: 'https://claude.ai/favicon.ico',
+    testUrl: 'https://api.anthropic.com/v1/models',
     icon: claudeLogo,
     status: 'idle',
     delay: 0,
