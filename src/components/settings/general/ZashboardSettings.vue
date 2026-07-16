@@ -235,10 +235,32 @@ const testAIWebsites = async () => {
         // Generate a random query parameter to prevent caching
         const cacheBuster = `?_t=${Date.now()}`
         const targetUrl = site.testUrl || site.url
-        await fetch(targetUrl + cacheBuster, {
-          mode: 'no-cors',
-          signal: controller.signal,
+
+        await new Promise<void>((resolve, reject) => {
+          const onAbort = () => reject(new Error('timeout'))
+          controller.signal.addEventListener('abort', onAbort)
+
+          if (
+            targetUrl.endsWith('.ico') ||
+            targetUrl.endsWith('.png') ||
+            targetUrl.endsWith('.webp') ||
+            targetUrl.endsWith('.svg') ||
+            targetUrl.endsWith('.jpg')
+          ) {
+            const img = new Image()
+            img.onload = () => resolve()
+            img.onerror = () => reject(new Error('network error'))
+            img.src = targetUrl + cacheBuster
+          } else {
+            fetch(targetUrl + cacheBuster, {
+              mode: 'no-cors',
+              signal: controller.signal,
+            })
+              .then(() => resolve())
+              .catch(reject)
+          }
         })
+
         clearTimeout(timeoutId)
 
         const delay = Date.now() - start
