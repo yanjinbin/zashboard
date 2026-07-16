@@ -69,6 +69,54 @@
       <DashboardSettings />
     </div>
 
+    <div class="settings-grid my-3 gap-2 p-3 md:grid-cols-2!">
+      <div class="border-base-300/40 bg-base-100 rounded-box col-span-full border p-3">
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium">AI 网站连通性测试</span>
+          <button
+            class="btn btn-sm"
+            :disabled="isTestingAI"
+            @click="testAIWebsites"
+          >
+            <span
+              v-if="isTestingAI"
+              class="loading loading-spinner loading-xs"
+            ></span>
+            一键测试
+          </button>
+        </div>
+        <div
+          v-if="testResults.length > 0"
+          class="mt-3 grid grid-cols-1 gap-2 md:grid-cols-3"
+        >
+          <div
+            v-for="res in testResults"
+            :key="res.name"
+            class="border-base-300 bg-base-200/50 flex flex-col gap-1 rounded-lg border p-2"
+          >
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-semibold">{{ res.name }}</span>
+              <span
+                v-if="res.status === 'testing'"
+                class="loading loading-spinner loading-xs text-primary"
+              ></span>
+              <span
+                v-else-if="res.status === 'success'"
+                class="text-success text-xs font-bold"
+                >{{ res.delay }}ms</span
+              >
+              <span
+                v-else
+                class="text-error text-xs font-bold"
+                >失败</span
+              >
+            </div>
+            <span class="text-base-content/50 truncate text-[10px]">{{ res.url }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <StyleSettings />
     <GeneralSettings />
   </div>
@@ -121,5 +169,49 @@ const handlerClickUpgradeUI = async () => {
   } catch {
     isUIUpgrading.value = false
   }
+}
+
+const isTestingAI = ref(false)
+const testResults = ref<
+  { name: string; url: string; status: 'testing' | 'success' | 'error'; delay: number }[]
+>([])
+
+const testAIWebsites = async () => {
+  if (isTestingAI.value) return
+  isTestingAI.value = true
+
+  const sites = [
+    { name: 'Gemini', url: 'https://gemini.google.com/app' },
+    { name: 'ChatGPT', url: 'https://chatgpt.com/' },
+    { name: 'Claude', url: 'https://claude.ai' },
+  ]
+
+  testResults.value = sites.map((s) => ({ ...s, status: 'testing', delay: 0 }))
+
+  await Promise.allSettled(
+    sites.map(async (site, idx) => {
+      const start = Date.now()
+      try {
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 10000)
+
+        // Generate a random query parameter to prevent caching
+        const cacheBuster = `?_t=${Date.now()}`
+        await fetch(site.url + cacheBuster, {
+          mode: 'no-cors',
+          signal: controller.signal,
+        })
+        clearTimeout(timeoutId)
+
+        const delay = Date.now() - start
+        testResults.value[idx].status = 'success'
+        testResults.value[idx].delay = delay
+      } catch {
+        testResults.value[idx].status = 'error'
+      }
+    }),
+  )
+
+  isTestingAI.value = false
 }
 </script>
