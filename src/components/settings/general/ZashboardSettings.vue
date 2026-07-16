@@ -95,7 +95,14 @@
             class="border-base-300 bg-base-200/50 flex flex-col gap-1 rounded-lg border p-2"
           >
             <div class="flex items-center justify-between">
-              <span class="text-sm font-semibold">{{ res.name }}</span>
+              <div class="flex items-center gap-2">
+                <img
+                  :src="res.icon"
+                  class="h-4 w-4 object-contain"
+                  alt=""
+                />
+                <span class="text-sm font-semibold">{{ res.name }}</span>
+              </div>
               <span
                 v-if="res.status === 'testing'"
                 class="loading loading-spinner loading-xs text-primary"
@@ -103,12 +110,12 @@
               <span
                 v-else-if="res.status === 'success'"
                 class="text-success text-xs font-bold"
-                >{{ res.delay }}ms</span
+                >✅ 成功 {{ res.delay }}ms</span
               >
               <span
                 v-else
                 class="text-error text-xs font-bold"
-                >失败</span
+                >❌ 失败</span
               >
             </div>
             <span class="text-base-content/50 truncate text-[10px]">{{ res.url }}</span>
@@ -173,7 +180,13 @@ const handlerClickUpgradeUI = async () => {
 
 const isTestingAI = ref(false)
 const testResults = ref<
-  { name: string; url: string; status: 'testing' | 'success' | 'error'; delay: number }[]
+  {
+    name: string
+    url: string
+    icon: string
+    status: 'testing' | 'success' | 'error'
+    delay: number
+  }[]
 >([])
 
 const testAIWebsites = async () => {
@@ -181,9 +194,21 @@ const testAIWebsites = async () => {
   isTestingAI.value = true
 
   const sites = [
-    { name: 'Gemini', url: 'https://gemini.google.com/app' },
-    { name: 'ChatGPT', url: 'https://chatgpt.com/' },
-    { name: 'Claude', url: 'https://claude.ai' },
+    {
+      name: 'Gemini',
+      url: 'https://gemini.google.com/app',
+      icon: 'https://raw.githubusercontent.com/yanjinbin/dotfiles/master/mihomo/rules/icons/antigravity-color.webp',
+    },
+    {
+      name: 'ChatGPT',
+      url: 'https://chatgpt.com/',
+      icon: 'https://raw.githubusercontent.com/yanjinbin/dotfiles/master/mihomo/rules/icons/openai-text.webp',
+    },
+    {
+      name: 'Claude',
+      url: 'https://claude.ai/login',
+      icon: 'https://raw.githubusercontent.com/yanjinbin/dotfiles/master/mihomo/rules/icons/claude-text.webp',
+    },
   ]
 
   testResults.value = sites.map((s) => ({ ...s, status: 'testing', delay: 0 }))
