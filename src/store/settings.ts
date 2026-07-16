@@ -129,18 +129,7 @@ const replaceLegacyTheme = (theme: string, defaultTheme: string) => {
 defaultTheme.value = replaceLegacyTheme(defaultTheme.value, 'light')
 darkTheme.value = replaceLegacyTheme(darkTheme.value, 'dark')
 
-const detectBrowserLanguage = (): LANG => {
-  const supported = Object.values(LANG)
-  for (const lang of navigator.languages ?? [navigator.language]) {
-    if (supported.includes(lang as LANG)) return lang as LANG
-    const prefix = lang.split('-')[0].toLowerCase()
-    const match = supported.find((l) => l.toLowerCase().startsWith(prefix))
-    if (match) return match
-  }
-  return LANG.ZH_CN
-}
-
-export const language = useStorage<LANG>('config/language', detectBrowserLanguage())
+export const language = useStorage<LANG>('config/language', LANG.ZH_CN)
 export const isSidebarCollapsedConfig = useStorage('config/is-sidebar-collapsed', true)
 export const isSidebarCollapsed = computed({
   get: () => {
