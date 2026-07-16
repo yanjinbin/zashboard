@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.19.0](https://github.com/yanjinbin/zashboard/compare/v3.18.0...v3.19.0) (2026-07-16)
+
+
+### Features
+
+* default display AI test logos with new Claude logo ([c939921](https://github.com/yanjinbin/zashboard/commit/c939921b952e0674d079363a5a9d23785d8f4708))
+
 ## [3.18.0](https://github.com/yanjinbin/zashboard/compare/v3.17.0...v3.18.0) (2026-07-16)
 
 
