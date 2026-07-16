@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.16.1](https://github.com/yanjinbin/zashboard/compare/v3.16.0...v3.16.1) (2026-07-16)
+
+
+### Bug Fixes
+
+* set manage hidden proxy group to false by default ([85d470a](https://github.com/yanjinbin/zashboard/commit/85d470a5f7582bc6457dda8fb8d8540e33bcea07))
+
 ## [3.16.0](https://github.com/yanjinbin/zashboard/compare/v3.15.1...v3.16.0) (2026-07-16)
 
 
