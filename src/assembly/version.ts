@@ -161,6 +161,10 @@ export const isUIUpdateAvailable = ref(false)
 export const checkUIUpdate = async () => {
   isUIUpdateAvailable.value = await fetchIsUIUpdateAvailable()
   if (isUIUpdateAvailable.value && autoUpgradeDashboard.value) {
+    const { patchConfigsAPI } = await import('@/api/clash')
+    await patchConfigsAPI({
+      'external-ui-url': `https://github.com/yanjinbin/zashboard/releases/latest/download/dist-cdn-fonts.zip`,
+    })
     upgradeUIAPI()
   }
 }

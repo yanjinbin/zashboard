@@ -107,6 +107,10 @@ const handlerClickUpgradeUI = async () => {
       await patchConfigsAPI({
         'external-ui-url': `https://github.com/yanjinbin/zashboard/releases/download/${ver}/dist-cdn-fonts.zip`,
       })
+    } else {
+      await patchConfigsAPI({
+        'external-ui-url': `https://github.com/yanjinbin/zashboard/releases/latest/download/dist-cdn-fonts.zip`,
+      })
     }
     await upgradeUIAPI()
     isUIUpgrading.value = false
