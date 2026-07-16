@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.19.2](https://github.com/yanjinbin/zashboard/compare/v3.19.1...v3.19.2) (2026-07-16)
+
+
+### Bug Fixes
+
+* use Image ping for favicon testing to bypass stricter WAF rules ([08da6ce](https://github.com/yanjinbin/zashboard/commit/08da6ce02147940fc04876fe3c8055838e88d367))
+
 ## [3.19.1](https://github.com/yanjinbin/zashboard/compare/v3.19.0...v3.19.1) (2026-07-16)
 
 
