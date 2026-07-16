@@ -113,9 +113,14 @@
                 >✅ 成功 {{ res.delay }}ms</span
               >
               <span
-                v-else
+                v-else-if="res.status === 'error'"
                 class="text-error text-xs font-bold"
                 >❌ 失败</span
+              >
+              <span
+                v-else
+                class="text-base-content/50 text-xs font-bold"
+                >待测试</span
               >
             </div>
             <span class="text-base-content/50 truncate text-[10px]">{{ res.url }}</span>
@@ -139,6 +144,7 @@ import { GENERAL_ITEM_KEYS } from '@/config/settingsItems'
 import { handlerUpgradeSuccess } from '@/helper'
 import { twMerge } from 'tailwind-merge'
 import { ref } from 'vue'
+import claudeLogo from '@/assets/images/claude-logo.webp'
 import GeneralSettings from './GeneralSettings.vue'
 import StyleSettings from './StyleSettings.vue'
 
@@ -184,37 +190,41 @@ const testResults = ref<
     name: string
     url: string
     icon: string
-    status: 'testing' | 'success' | 'error'
+    status: 'idle' | 'testing' | 'success' | 'error'
     delay: number
   }[]
->([])
+>([
+  {
+    name: 'Gemini',
+    url: 'https://gemini.google.com/app',
+    icon: 'https://raw.githubusercontent.com/yanjinbin/dotfiles/master/mihomo/rules/icons/antigravity-color.webp',
+    status: 'idle',
+    delay: 0,
+  },
+  {
+    name: 'ChatGPT',
+    url: 'https://chatgpt.com/',
+    icon: 'https://raw.githubusercontent.com/yanjinbin/dotfiles/master/mihomo/rules/icons/openai-text.webp',
+    status: 'idle',
+    delay: 0,
+  },
+  {
+    name: 'Claude',
+    url: 'https://claude.ai/login',
+    icon: claudeLogo,
+    status: 'idle',
+    delay: 0,
+  },
+])
 
 const testAIWebsites = async () => {
   if (isTestingAI.value) return
   isTestingAI.value = true
 
-  const sites = [
-    {
-      name: 'Gemini',
-      url: 'https://gemini.google.com/app',
-      icon: 'https://raw.githubusercontent.com/yanjinbin/dotfiles/master/mihomo/rules/icons/antigravity-color.webp',
-    },
-    {
-      name: 'ChatGPT',
-      url: 'https://chatgpt.com/',
-      icon: 'https://raw.githubusercontent.com/yanjinbin/dotfiles/master/mihomo/rules/icons/openai-text.webp',
-    },
-    {
-      name: 'Claude',
-      url: 'https://claude.ai/login',
-      icon: 'https://raw.githubusercontent.com/yanjinbin/dotfiles/master/mihomo/rules/icons/claude-text.webp',
-    },
-  ]
-
-  testResults.value = sites.map((s) => ({ ...s, status: 'testing', delay: 0 }))
+  testResults.value = testResults.value.map((s) => ({ ...s, status: 'testing', delay: 0 }))
 
   await Promise.allSettled(
-    sites.map(async (site, idx) => {
+    testResults.value.map(async (site, idx) => {
       const start = Date.now()
       try {
         const controller = new AbortController()
