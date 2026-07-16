@@ -137,7 +137,7 @@ const detectBrowserLanguage = (): LANG => {
     const match = supported.find((l) => l.toLowerCase().startsWith(prefix))
     if (match) return match
   }
-  return LANG.EN_US
+  return LANG.ZH_CN
 }
 
 export const language = useStorage<LANG>('config/language', detectBrowserLanguage())
