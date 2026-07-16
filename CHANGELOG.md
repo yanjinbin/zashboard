@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.19.3](https://github.com/yanjinbin/zashboard/compare/v3.19.2...v3.19.3) (2026-07-16)
+
+
+### Bug Fixes
+
+* use api.anthropic.com/v1/models for claude connectivity test ([6d79c77](https://github.com/yanjinbin/zashboard/commit/6d79c77bca661368f05cf4e6ce081dff72e7c3ba))
+
 ## [3.19.2](https://github.com/yanjinbin/zashboard/compare/v3.19.1...v3.19.2) (2026-07-16)
 
 
