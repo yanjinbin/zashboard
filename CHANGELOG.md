@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.19.1](https://github.com/yanjinbin/zashboard/compare/v3.19.0...v3.19.1) (2026-07-16)
+
+
+### Bug Fixes
+
+* use favicon for claude connectivity test to bypass WAF ([ccdc17c](https://github.com/yanjinbin/zashboard/commit/ccdc17c19600b23f33f9520d6ed11a4cee5899a6))
+
 ## [3.19.0](https://github.com/yanjinbin/zashboard/compare/v3.18.0...v3.19.0) (2026-07-16)
 
 
