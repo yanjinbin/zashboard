@@ -93,7 +93,6 @@ const migrateEnableProxySettingsByDefault = () => {
   ;[
     'config/show-selected-for-now-node',
     'config/hide-unavailable-proxies',
-    'config/manage-hidden-group-mode',
     'config/group-proxies-by-provider',
   ].forEach((key) => {
     localStorage.setItem(key, 'true')
