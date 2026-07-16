@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.16.0](https://github.com/yanjinbin/zashboard/compare/v3.15.1...v3.16.0) (2026-07-16)
+
+
+### Features
+
+* Add target version input for core upgrade ([c339de5](https://github.com/yanjinbin/zashboard/commit/c339de5e6d5055650e46d413d8666beadb975bc9))
+
+
+### Bug Fixes
+
+* change default language to zh-CN ([1c57271](https://github.com/yanjinbin/zashboard/commit/1c57271759e2e31d4ac09531c3a2da60d707141a))
+* ignore browser language, default to zh-CN ([8506ee1](https://github.com/yanjinbin/zashboard/commit/8506ee11b131eeaf9c7954f08a5fa21d233b7c68))
+
 ## [3.13.3](https://github.com/yanjinbin/zashboard/compare/v3.13.2...v3.13.3) (2026-07-04)
 
 
