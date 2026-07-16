@@ -4,6 +4,11 @@
     :title="$t('upgradeCore')"
   >
     <div class="flex flex-col gap-2 p-2">
+      <TextInput
+        v-model="targetCoreVersion"
+        :placeholder="$t('targetVersion')"
+        clearable
+      />
       <button
         class="btn btn-primary"
         :disabled="isCoreUpgrading && upgradingType !== 'auto'"
@@ -50,6 +55,7 @@ import { fetchProxies } from '@/assembly/proxies'
 import { fetchRules } from '@/assembly/rules'
 import { ref } from 'vue'
 import DialogWrapper from '../../common/DialogWrapper.vue'
+import TextInput from '../../common/TextInput.vue'
 
 const reloadAll = () => {
   fetchConfigs()
@@ -60,13 +66,19 @@ const reloadAll = () => {
 const upgradingType = ref<'release' | 'alpha' | 'auto'>('auto')
 const modalValue = defineModel<boolean>()
 const isCoreUpgrading = ref(false)
+const targetCoreVersion = ref('')
+
 const handlerClickUpgradeCore = async (type: 'release' | 'alpha' | 'auto') => {
   if (isCoreUpgrading.value) return
 
   upgradingType.value = type
   isCoreUpgrading.value = true
   try {
-    await upgradeCoreAPI(type)
+    let ver = targetCoreVersion.value.trim()
+    if (ver && !ver.startsWith('v') && /^\d/.test(ver)) {
+      ver = 'v' + ver
+    }
+    await upgradeCoreAPI(type, ver || undefined)
     reloadAll()
     modalValue.value = false
     handlerUpgradeSuccess()

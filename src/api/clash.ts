@@ -173,9 +173,11 @@ export const updateGeoDataAPI = () => {
   return axios.post('/configs/geo')
 }
 
-export const upgradeCoreAPI = (type: 'release' | 'alpha' | 'auto') => {
-  const url = type === 'auto' ? '/upgrade' : `/upgrade?channel=${type}`
-
+export const upgradeCoreAPI = (type: 'release' | 'alpha' | 'auto', version?: string) => {
+  let url = type === 'auto' ? '/upgrade' : `/upgrade?channel=${type}`
+  if (version) {
+    url = url.includes('?') ? `${url}&version=${version}` : `${url}?version=${version}`
+  }
   return axios.post(url)
 }
 
