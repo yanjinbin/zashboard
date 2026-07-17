@@ -9,6 +9,7 @@ import { autoUpgradeCore, autoUpgradeDashboard, checkUpgradeCore } from '@/store
 import { activeBackend } from '@/store/setup'
 import { computed, ref, watch } from 'vue'
 import { isSingboxBackend } from './backend'
+import { getZashboardLatestReleaseApiUrl, getZashboardReleaseAssetUrl } from './dashboardRelease'
 
 export const version = ref()
 export const isCoreUpdateAvailable = ref(false)
@@ -134,7 +135,7 @@ async function fetchWithLocalCache<T>(url: string, version: string): Promise<T> 
 
 export const fetchIsUIUpdateAvailable = async () => {
   const { tag_name } = await fetchWithLocalCache<{ tag_name: string }>(
-    'https://api.github.com/repos/yanjinbin/zashboard/releases/latest',
+    getZashboardLatestReleaseApiUrl(),
     zashboardVersion.value,
   )
 
@@ -163,7 +164,7 @@ export const checkUIUpdate = async () => {
   if (isUIUpdateAvailable.value && autoUpgradeDashboard.value) {
     const { patchConfigsAPI } = await import('@/api/clash')
     await patchConfigsAPI({
-      'external-ui-url': `https://github.com/yanjinbin/zashboard/releases/latest/download/dist-cdn-fonts.zip`,
+      'external-ui-url': getZashboardReleaseAssetUrl(),
     })
     upgradeUIAPI()
   }

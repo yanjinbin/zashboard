@@ -30,7 +30,7 @@
           <span class="bg-secondary h-2 w-2 rounded-full"></span>
         </span>
         <a
-          href="https://github.com/yanjinbin/zashboard"
+          :href="getZashboardRepoUrl()"
           target="_blank"
           class="text-lg font-semibold"
         >
@@ -136,6 +136,7 @@
 
 <script setup lang="ts">
 import { patchConfigsAPI } from '@/api/clash'
+import { getZashboardReleaseAssetUrl, getZashboardRepoUrl } from '@/assembly/dashboardRelease'
 import { isUIUpdateAvailable, upgradeUIAPI, zashboardVersion } from '@/assembly/version'
 import DashboardSettings from '@/components/common/DashboardSettings.vue'
 import TextInput from '@/components/common/TextInput.vue'
@@ -160,19 +161,9 @@ const handlerClickUpgradeUI = async () => {
   if (isUIUpgrading.value) return
   isUIUpgrading.value = true
   try {
-    let ver = targetUIVersion.value.trim()
-    if (ver) {
-      if (!ver.startsWith('v') && /^\d/.test(ver)) {
-        ver = 'v' + ver
-      }
-      await patchConfigsAPI({
-        'external-ui-url': `https://github.com/yanjinbin/zashboard/releases/download/${ver}/dist-cdn-fonts.zip`,
-      })
-    } else {
-      await patchConfigsAPI({
-        'external-ui-url': `https://github.com/yanjinbin/zashboard/releases/latest/download/dist-cdn-fonts.zip`,
-      })
-    }
+    await patchConfigsAPI({
+      'external-ui-url': getZashboardReleaseAssetUrl(targetUIVersion.value),
+    })
     await upgradeUIAPI()
     isUIUpgrading.value = false
     handlerUpgradeSuccess()
@@ -190,6 +181,7 @@ const testResults = ref<
     name: string
     url: string
     testUrl?: string
+    method?: 'GET' | 'HEAD'
     icon: string
     status: 'idle' | 'testing' | 'success' | 'error'
     delay: number
@@ -198,6 +190,7 @@ const testResults = ref<
   {
     name: 'Gemini',
     url: 'https://gemini.google.com/app',
+    method: 'HEAD',
     icon: 'https://raw.githubusercontent.com/yanjinbin/dotfiles/master/mihomo/rules/icons/antigravity-color.webp',
     status: 'idle',
     delay: 0,
@@ -205,6 +198,7 @@ const testResults = ref<
   {
     name: 'ChatGPT',
     url: 'https://chatgpt.com/',
+    testUrl: 'https://api.openai.com/v1/models',
     icon: 'https://raw.githubusercontent.com/yanjinbin/dotfiles/master/mihomo/rules/icons/openai-text.webp',
     status: 'idle',
     delay: 0,
@@ -228,9 +222,10 @@ const testAIWebsites = async () => {
   await Promise.allSettled(
     testResults.value.map(async (site, idx) => {
       const start = Date.now()
+      let timeoutId: ReturnType<typeof setTimeout> | undefined
       try {
         const controller = new AbortController()
-        const timeoutId = setTimeout(() => controller.abort(), 10000)
+        timeoutId = setTimeout(() => controller.abort(), 10000)
 
         // Generate a random query parameter to prevent caching
         const cacheBuster = `?_t=${Date.now()}`
@@ -253,6 +248,7 @@ const testAIWebsites = async () => {
             img.src = targetUrl + cacheBuster
           } else {
             fetch(targetUrl + cacheBuster, {
+              method: site.method || 'GET',
               mode: 'no-cors',
               signal: controller.signal,
             })
@@ -261,13 +257,13 @@ const testAIWebsites = async () => {
           }
         })
 
-        clearTimeout(timeoutId)
-
         const delay = Date.now() - start
         testResults.value[idx].status = 'success'
         testResults.value[idx].delay = delay
       } catch {
         testResults.value[idx].status = 'error'
+      } finally {
+        if (timeoutId) clearTimeout(timeoutId)
       }
     }),
   )
