@@ -46,12 +46,16 @@ jobs:
           if [ -z "$TAG" ]; then
             TAG=$(gh release view --repo "${{ github.repository }}" --json tagName -q .tagName)
           fi
+          if [ -n "$TAG" ] && ! echo "$TAG" | grep -q '^v' && echo "$TAG" | grep -Eq '^[0-9]'; then
+            TAG="v$TAG"
+          fi
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
       # release-dist's font-variant matrix uploads assets one at a time, so
       # wait until every expected zip has landed before mirroring the set.
       - name: Wait for all build assets to be uploaded
         run: |
+          missing=1
           for i in $(seq 1 30); do
             names=$(gh release view "${{ steps.tag.outputs.tag }}" --repo "${{ github.repository }}" --json assets -q '.assets[].name')
             missing=0
@@ -62,6 +66,10 @@ jobs:
             echo "Waiting for release assets... ($i/30)"
             sleep 20
           done
+          if [ "$missing" -ne 0 ]; then
+            echo "Timed out waiting for release assets" >&2
+            exit 1
+          fi
 
       - name: Download release assets
         run: |
