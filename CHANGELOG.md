@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.20.0](https://github.com/yanjinbin/zashboard/compare/v3.19.3...v3.20.0) (2026-07-17)
+
+
+### Features
+
+* improve dashboard release and AI probes ([0306207](https://github.com/yanjinbin/zashboard/commit/0306207e9a9d4b1b5dfb4a117f193429fb5622f3))
+
 ## [3.19.3](https://github.com/yanjinbin/zashboard/compare/v3.19.2...v3.19.3) (2026-07-16)
 
 
