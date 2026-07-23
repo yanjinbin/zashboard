@@ -94,7 +94,7 @@ jobs:
   release-dist:
     needs: resolve-release
     runs-on: ubuntu-latest
-    if: ${{ needs.resolve-release.outputs.should_build == 'true' }}
+    if: ${{ always() && needs.resolve-release.outputs.should_build == 'true' }}
     strategy:
       fail-fast: false
       matrix:
@@ -133,7 +133,7 @@ jobs:
       - resolve-release
       - release-dist
     runs-on: ubuntu-latest
-    if: ${{ needs.resolve-release.outputs.should_build == 'true' }}
+    if: ${{ always() && needs.resolve-release.outputs.should_build == 'true' && needs.release-dist.result == 'success' }}
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
