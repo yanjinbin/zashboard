@@ -32,32 +32,6 @@ export const getIPFromIpipnetAPI = async () => {
   }
 }
 
-// global
-const getIPFromIpsbAPI = async (ip = '') => {
-  const response = await fetch(
-    'https://api.ip.sb/geoip' + (ip ? `/${ip}` : '') + '?t=' + Date.now(),
-  )
-
-  return (await response.json()) as {
-    organization: string
-    longitude: number
-    city: string
-    region: string
-    timezone: string
-    isp: string
-    offset: number
-    asn: number
-    asn_organization: string
-    country: string
-    ip: string
-    latitude: number
-    postal_code: string
-    continent_code: string
-    country_code: string
-    region_code: string
-  }
-}
-
 const getIPFromIPWhoisAPI = async (ip = '') => {
   const response = await fetch('https://ipwho.is' + (ip ? `/${ip}` : '') + '?t=' + Date.now())
 
@@ -200,17 +174,16 @@ export const getIPInfo = async (ip = ''): Promise<IPInfo> => {
         asn: ipwhois.connection.asn?.toString(),
         organization: ipwhois.connection.org,
       }
-    case IP_INFO_API.IPSB:
     default:
-      const ipsb = await getIPFromIpsbAPI(ip)
+      const defaultIpapi = await getIPFromIPapiisAPI(ip)
 
       return {
-        ip: ipsb.ip,
-        country: ipsb.country,
-        region: ipsb.region,
-        city: ipsb.city,
-        asn: ipsb.asn?.toString(),
-        organization: ipsb.organization,
+        ip: defaultIpapi.ip,
+        country: defaultIpapi.location.country,
+        region: defaultIpapi.location.state,
+        city: defaultIpapi.location.city,
+        asn: defaultIpapi.asn.asn?.toString(),
+        organization: defaultIpapi.asn.org,
       }
   }
 }

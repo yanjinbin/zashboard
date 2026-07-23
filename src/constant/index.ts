@@ -287,9 +287,8 @@ export const DEFAULT_THEME = {
 export type THEME = Record<string, string>
 
 export enum IP_INFO_API {
-  IPSB = 'ip.sb',
-  IPWHOIS = 'ipwho.is',
   IPAPI = 'ipapi.is',
+  IPWHOIS = 'ipwho.is',
 }
 
 // GeoLite2 databases (country + ASN), loaded once from the CDN and cached in the
