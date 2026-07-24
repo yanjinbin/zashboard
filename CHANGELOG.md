@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.20.2](https://github.com/yanjinbin/zashboard/compare/v3.20.1...v3.20.2) (2026-07-24)
+
+
+### Bug Fixes
+
+* show network info by default ([8a5e971](https://github.com/yanjinbin/zashboard/commit/8a5e971546b60ea35ea9d502891fe8c21dca2be9))
+
 ## [3.20.0](https://github.com/yanjinbin/zashboard/compare/v3.19.3...v3.20.0) (2026-07-17)
 
 
