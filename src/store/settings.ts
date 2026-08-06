@@ -167,9 +167,9 @@ export const disablePullToRefresh = useStorage('config/disable-pull-to-refresh',
 export const displayAllFeatures = useStorage('config/display-all-features', false)
 export const blurIntensity = useStorage('config/blur-intensity', 10)
 export const scrollAnimationEffect = useStorage('config/scroll-animation-effect', true)
-export const IPInfoAPI = useStorage<IP_INFO_API>('config/geoip-info-api', IP_INFO_API.IPAPI)
+export const IPInfoAPI = useStorage<IP_INFO_API>('config/geoip-info-api', IP_INFO_API.IPWHOIS)
 if (!Object.values(IP_INFO_API).includes(IPInfoAPI.value)) {
-  IPInfoAPI.value = IP_INFO_API.IPAPI
+  IPInfoAPI.value = IP_INFO_API.IPWHOIS
 }
 export const geoipCountryDatabaseURL = useStorage(
   'config/geoip-country-database-url',

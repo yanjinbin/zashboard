@@ -175,15 +175,15 @@ export const getIPInfo = async (ip = ''): Promise<IPInfo> => {
         organization: ipwhois.connection.org,
       }
     default:
-      const defaultIpapi = await getIPFromIPapiisAPI(ip)
+      const defaultIpwhois = await getIPFromIPWhoisAPI(ip)
 
       return {
-        ip: defaultIpapi.ip,
-        country: defaultIpapi.location.country,
-        region: defaultIpapi.location.state,
-        city: defaultIpapi.location.city,
-        asn: defaultIpapi.asn.asn?.toString(),
-        organization: defaultIpapi.asn.org,
+        ip: defaultIpwhois.ip,
+        country: defaultIpwhois.country,
+        region: defaultIpwhois.region,
+        city: defaultIpwhois.city,
+        asn: defaultIpwhois.connection.asn?.toString(),
+        organization: defaultIpwhois.connection.org,
       }
   }
 }
