@@ -119,6 +119,7 @@ jobs:
         run: |
           pnpm i
           pnpm run build
+          rm -f dist${{ matrix.font.suffix }}.zip
           zip -r dist${{ matrix.font.suffix }}.zip dist
 
       - name: Upload to GitHub Release
