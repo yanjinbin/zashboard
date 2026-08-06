@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.20.3](https://github.com/yanjinbin/zashboard/compare/v3.20.2...v3.20.3) (2026-08-06)
+
+
+### Bug Fixes
+
+* default IP info lookup to ipwho.is ([e239c9f](https://github.com/yanjinbin/zashboard/commit/e239c9f66b7b4d340d4462fbd51b63b8b78b1d48))
+
 ## [3.20.0](https://github.com/yanjinbin/zashboard/compare/v3.19.3...v3.20.0) (2026-07-17)
 
 
