@@ -214,7 +214,7 @@ const defaultOverviewCardOrder: { card: OVERVIEW_CARD; visible: boolean }[] = [
   },
   {
     card: OVERVIEW_CARD.ConnectionHistory,
-    visible: true,
+    visible: false,
   },
   {
     card: OVERVIEW_CARD.RuleHitCountCard,
@@ -226,6 +226,20 @@ export const overviewCardOrder = useStorage<{ card: OVERVIEW_CARD; visible: bool
   'config/overview-card-order',
   defaultOverviewCardOrder,
 )
+
+// 3.20.4: 概览默认隐藏连接统计卡片；仅当用户从未自定义卡片顺序/可见性时应用新默认值
+const legacyDefaultOverviewCardOrder: { card: OVERVIEW_CARD; visible: boolean }[] = [
+  { card: OVERVIEW_CARD.ChartsCard, visible: true },
+  { card: OVERVIEW_CARD.NetworkCard, visible: true },
+  { card: OVERVIEW_CARD.TopologyCharts, visible: true },
+  { card: OVERVIEW_CARD.ProviderTrafficOverview, visible: true },
+  { card: OVERVIEW_CARD.ConnectionHistory, visible: true },
+  { card: OVERVIEW_CARD.RuleHitCountCard, visible: true },
+]
+
+if (JSON.stringify(overviewCardOrder.value) === JSON.stringify(legacyDefaultOverviewCardOrder)) {
+  overviewCardOrder.value = defaultOverviewCardOrder
+}
 
 // 确保所有卡片都在配置中，缺失的卡片添加到末尾
 const allCardTypes = Object.values(OVERVIEW_CARD)
