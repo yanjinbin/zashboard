@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.20.4](https://github.com/yanjinbin/zashboard/compare/v3.20.3...v3.20.4) (2026-08-12)
+
+
+### Bug Fixes
+
+* hide connection statistics on overview by default ([77f4fc4](https://github.com/yanjinbin/zashboard/commit/77f4fc49fdb8b3086a4d343c43e2bf3359cd0996))
+
 ## [3.20.0](https://github.com/yanjinbin/zashboard/compare/v3.19.3...v3.20.0) (2026-07-17)
 
 
