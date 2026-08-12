@@ -16,7 +16,18 @@
           {{ confirmDialogState.message }}
         </p>
       </div>
-      <div class="flex shrink-0 justify-end gap-2">
+      <div class="flex shrink-0 items-center justify-end gap-2">
+        <label
+          v-if="confirmDialogState.checkboxText"
+          class="mr-auto flex cursor-pointer items-center gap-2 text-sm"
+        >
+          <input
+            v-model="checked"
+            type="checkbox"
+            class="checkbox checkbox-sm"
+          />
+          {{ confirmDialogState.checkboxText }}
+        </label>
         <button
           class="btn btn-sm"
           @click="handleCancel"
@@ -36,13 +47,19 @@
 
 <script setup lang="ts">
 import { confirmDialogState, resolveConfirmDialog } from '@/helper/confirmDialog'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import DialogWrapper from './DialogWrapper.vue'
 
 const isReady = ref(false)
+const checked = ref(false)
 
 onMounted(() => {
   isReady.value = true
+})
+
+// 每次弹出新的对话框都重置复选框
+watch(confirmDialogState, () => {
+  checked.value = false
 })
 
 const handleModelValue = (value: boolean | undefined) => {
@@ -52,10 +69,10 @@ const handleModelValue = (value: boolean | undefined) => {
 }
 
 const handleCancel = () => {
-  resolveConfirmDialog(false)
+  resolveConfirmDialog(false, checked.value)
 }
 
 const handleConfirm = () => {
-  resolveConfirmDialog(true)
+  resolveConfirmDialog(true, checked.value)
 }
 </script>

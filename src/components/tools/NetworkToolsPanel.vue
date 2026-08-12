@@ -90,62 +90,92 @@
         </div>
         <div
           v-if="nqProgress"
-          class="settings-grid mt-2"
+          class="bg-base-100 mt-3 flex flex-col gap-3 rounded-xl p-4"
         >
-          <DataLine :label="$t('idleLatency')">
-            {{ nqProgress.idleLatencyMs > 0 ? `${nqProgress.idleLatencyMs} ms` : '-' }}
-          </DataLine>
-          <DataLine :label="$t('download')">
-            <ResultValue
-              :pending="nqRunning && !nqFinished && nqProgress.phase === 1"
-              :value="
-                nqProgress.downloadCapacity > 0n ? formatBitrate(nqProgress.downloadCapacity) : '-'
-              "
-            >
-              <AccuracyBadge
-                v-if="nqFinished && nqProgress.downloadCapacity > 0n"
-                :accuracy="nqProgress.downloadCapacityAccuracy"
-              />
-            </ResultValue>
-          </DataLine>
-          <DataLine :label="$t('upload')">
-            <ResultValue
-              :pending="nqRunning && !nqFinished && nqProgress.phase === 2"
-              :value="
-                nqProgress.uploadCapacity > 0n ? formatBitrate(nqProgress.uploadCapacity) : '-'
-              "
-            >
-              <AccuracyBadge
-                v-if="nqFinished && nqProgress.uploadCapacity > 0n"
-                :accuracy="nqProgress.uploadCapacityAccuracy"
-              />
-            </ResultValue>
-          </DataLine>
-          <DataLine :label="$t('downloadRPM')">
-            <ResultValue
-              :pending="nqRunning && !nqFinished && nqProgress.phase === 1"
-              :value="nqProgress.downloadRPM > 0 ? String(nqProgress.downloadRPM) : '-'"
-            >
-              <AccuracyBadge
-                v-if="nqFinished && nqProgress.downloadRPM > 0"
-                :accuracy="nqProgress.downloadRPMAccuracy"
-              />
-            </ResultValue>
-          </DataLine>
-          <DataLine :label="$t('uploadRPM')">
-            <ResultValue
-              :pending="nqRunning && !nqFinished && nqProgress.phase === 2"
-              :value="nqProgress.uploadRPM > 0 ? String(nqProgress.uploadRPM) : '-'"
-            >
-              <AccuracyBadge
-                v-if="nqFinished && nqProgress.uploadRPM > 0"
-                :accuracy="nqProgress.uploadRPMAccuracy"
-              />
-            </ResultValue>
-          </DataLine>
-          <DataLine :label="$t('elapsed')">
-            {{ `${(Number(nqProgress.elapsedMs) / 1000).toFixed(1)} s` }}
-          </DataLine>
+          <div class="text-base-content/60 text-xs font-semibold tracking-wider uppercase">
+            {{ $t('networkQuality') }} · {{ $t('results') }}
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="flex flex-col gap-1">
+              <div class="text-base-content/60 text-xs">{{ $t('download') }}</div>
+              <div class="flex flex-wrap items-baseline gap-1.5">
+                <span
+                  v-if="nqRunning && !nqFinished && nqProgress.phase === 1"
+                  class="loading loading-spinner loading-xs self-center"
+                ></span>
+                <span class="text-xl font-extralight tabular-nums">{{ dlParts.value }}</span>
+                <span class="text-base-content/60 text-sm">{{ dlParts.unit }}</span>
+                <AccuracyBadge
+                  v-if="nqFinished && nqProgress.downloadCapacity > 0n"
+                  :accuracy="nqProgress.downloadCapacityAccuracy"
+                />
+              </div>
+            </div>
+            <div class="flex flex-col gap-1">
+              <div class="text-base-content/60 text-xs">{{ $t('upload') }}</div>
+              <div class="flex flex-wrap items-baseline gap-1.5">
+                <span
+                  v-if="nqRunning && !nqFinished && nqProgress.phase === 2"
+                  class="loading loading-spinner loading-xs self-center"
+                ></span>
+                <span class="text-xl font-extralight tabular-nums">{{ ulParts.value }}</span>
+                <span class="text-base-content/60 text-sm">{{ ulParts.unit }}</span>
+                <AccuracyBadge
+                  v-if="nqFinished && nqProgress.uploadCapacity > 0n"
+                  :accuracy="nqProgress.uploadCapacityAccuracy"
+                />
+              </div>
+            </div>
+            <div class="flex flex-col gap-1">
+              <div class="text-base-content/60 text-xs">{{ $t('idleLatency') }}</div>
+              <div class="flex flex-wrap items-baseline gap-1.5">
+                <span class="text-xl font-extralight tabular-nums">
+                  {{ nqProgress.idleLatencyMs > 0 ? nqProgress.idleLatencyMs : '-' }}
+                </span>
+                <span class="text-base-content/60 text-sm">ms</span>
+              </div>
+            </div>
+            <div class="flex flex-col gap-0.5 text-sm">
+              <div class="text-base-content/60 text-xs">{{ $t('downloadRPM') }}</div>
+              <ResultValue
+                class="tabular-nums"
+                :pending="nqRunning && !nqFinished && nqProgress.phase === 1"
+                :value="nqProgress.downloadRPM > 0 ? String(nqProgress.downloadRPM) : '-'"
+              >
+                <AccuracyBadge
+                  v-if="nqFinished && nqProgress.downloadRPM > 0"
+                  :accuracy="nqProgress.downloadRPMAccuracy"
+                />
+              </ResultValue>
+            </div>
+            <div class="flex flex-col gap-0.5 text-sm">
+              <div class="text-base-content/60 text-xs">{{ $t('uploadRPM') }}</div>
+              <ResultValue
+                class="tabular-nums"
+                :pending="nqRunning && !nqFinished && nqProgress.phase === 2"
+                :value="nqProgress.uploadRPM > 0 ? String(nqProgress.uploadRPM) : '-'"
+              >
+                <AccuracyBadge
+                  v-if="nqFinished && nqProgress.uploadRPM > 0"
+                  :accuracy="nqProgress.uploadRPMAccuracy"
+                />
+              </ResultValue>
+            </div>
+            <div class="flex flex-col gap-0.5 text-sm">
+              <div class="text-base-content/60 text-xs">{{ $t('elapsed') }}</div>
+              <span class="tabular-nums">
+                {{ `${(Number(nqProgress.elapsedMs) / 1000).toFixed(1)} s` }}
+              </span>
+            </div>
+          </div>
+          <TimeSeriesChart
+            :data="nqChartData"
+            :label-formatter="formatBitrate"
+            :tooltip-formatter="nqTooltipFormatter"
+            x-axis-mode="seconds"
+            :window-seconds="nqWindowSec"
+            :show-pause-button="false"
+          />
         </div>
         <div
           v-else-if="nqRunning"
@@ -270,6 +300,9 @@
 
 <script setup lang="ts">
 import { getSingboxClient } from '@/assembly/tools'
+import TimeSeriesChart from '@/components/charts/TimeSeriesChart.vue'
+import { chartTooltipRow } from '@/components/charts/chartTooltip'
+import { getChartPointValue, type ChartTooltipParam } from '@/components/charts/chartTypes'
 import type { NetworkQualityTestProgress, STUNTestProgress } from '@/gen/daemon/started_service_pb'
 import { proxyMap } from '@/assembly/proxies'
 import { computed, defineComponent, h, onBeforeUnmount, ref } from 'vue'
@@ -288,7 +321,7 @@ const DataLine = defineComponent({
     () =>
       h('div', { class: 'setting-item' }, [
         h('div', { class: 'setting-item-label' }, props.label),
-        h('span', { class: 'text-right font-medium break-all' }, slots.default?.()),
+        h('span', { class: 'text-right  break-all' }, slots.default?.()),
       ]),
 })
 
@@ -328,6 +361,12 @@ const formatBitrate = (bps: number | bigint): string => {
   return `${Math.round(value)} bps`
 }
 
+const splitBitrate = (bps: number | bigint): { value: string; unit: string } => {
+  if (Number(bps) <= 0) return { value: '-', unit: '' }
+  const [value, unit] = formatBitrate(bps).split(' ')
+  return { value, unit }
+}
+
 type Tone = 'neutral' | 'good' | 'medium' | 'bad'
 
 const toneBadge = (tone: Tone): string =>
@@ -357,7 +396,41 @@ const nqRunning = ref(false)
 const nqError = ref('')
 const nqProgress = ref<NetworkQualityTestProgress>()
 const nqFinished = computed(() => nqProgress.value?.isFinal ?? false)
+// 折线图历史点: [已用秒数, bps]
+const nqDownloadHistory = ref<[number, number][]>([])
+const nqUploadHistory = ref<[number, number][]>([])
+// 图表时间窗,测试开始时按最长运行时间固定,避免测试中调整设置影响横轴
+const nqWindowSec = ref(21)
 let nqController: AbortController | null = null
+
+const dlParts = computed(() => splitBitrate(nqProgress.value?.downloadCapacity ?? 0n))
+const ulParts = computed(() => splitBitrate(nqProgress.value?.uploadCapacity ?? 0n))
+// 末位序列使用 primary 色,与 overview 图表保持下载为主色的约定
+const nqChartData = computed(() => [
+  { name: t('upload'), data: nqUploadHistory.value },
+  { name: t('download'), data: nqDownloadHistory.value },
+])
+
+const nqTooltipFormatter = (params: ChartTooltipParam[]) => {
+  // 每个序列只展示一条,防止同一 x 上的多个点在 tooltip 中重复
+  const seen = new Set<string>()
+  return params
+    .filter((item) => !seen.has(item.seriesName) && seen.add(item.seriesName))
+    .map((item) => {
+      const [seconds, bitrate] = getChartPointValue(item.data)
+      return chartTooltipRow({
+        color: item.color,
+        label: item.seriesName,
+        detail: `(${seconds.toFixed(1)} s): ${formatBitrate(bitrate)}`,
+      })
+    })
+    .join('\n')
+}
+
+// 重新赋值数组以触发响应式更新(push 不会让下游 computed 重算);
+// 同一时间点只保留最新值,避免 tooltip 里同一序列出现重复条目
+const appendPoint = (points: [number, number][], x: number, y: number): [number, number][] =>
+  points.at(-1)?.[0] === x ? [...points.slice(0, -1), [x, y]] : [...points, [x, y]]
 
 const startNetworkQuality = async () => {
   const c = client()
@@ -365,6 +438,10 @@ const startNetworkQuality = async () => {
   nqRunning.value = true
   nqError.value = ''
   nqProgress.value = undefined
+  nqDownloadHistory.value = []
+  nqUploadHistory.value = []
+  // +1s 余量,收尾时略超 maxRuntime 的点也能完整落在窗口内
+  nqWindowSec.value = nqMaxRuntime.value + 1
   nqController = new AbortController()
   try {
     for await (const update of c.client.startNetworkQualityTest(
@@ -378,6 +455,19 @@ const startNetworkQuality = async () => {
       { signal: nqController.signal },
     )) {
       nqProgress.value = update
+      if (update.phase !== 3) {
+        const elapsedSec = Number(update.elapsedMs) / 1000
+        nqDownloadHistory.value = appendPoint(
+          nqDownloadHistory.value,
+          elapsedSec,
+          Number(update.downloadCapacity),
+        )
+        nqUploadHistory.value = appendPoint(
+          nqUploadHistory.value,
+          elapsedSec,
+          Number(update.uploadCapacity),
+        )
+      }
       if (update.error) nqError.value = update.error
       if (update.isFinal) break
     }

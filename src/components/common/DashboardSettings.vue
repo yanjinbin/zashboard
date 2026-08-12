@@ -74,6 +74,21 @@
             class="toggle"
           />
         </div>
+        <div
+          v-if="autoSyncSettings || skipSyncSettingsConfirm"
+          class="setting-item"
+        >
+          <div class="setting-item-label">
+            {{ $t('confirmBeforeOverride') }}
+          </div>
+          <input
+            v-model="skipSyncSettingsConfirm"
+            type="checkbox"
+            class="toggle"
+            :true-value="false"
+            :false-value="true"
+          />
+        </div>
       </div>
     </template>
 
@@ -117,7 +132,7 @@
           <div class="join flex-1">
             <TextInput
               v-model="importSettingsUrl"
-              class="max-w-none flex-1"
+              class="join-item max-w-none flex-1"
             />
             <button
               class="btn btn-sm join-item"
@@ -162,6 +177,21 @@
           class="toggle"
         />
       </div>
+      <div
+        v-if="autoImportSettings || skipImportSettingsConfirm"
+        class="setting-item"
+      >
+        <div class="setting-item-label">
+          {{ $t('confirmBeforeOverride') }}
+        </div>
+        <input
+          v-model="skipImportSettingsConfirm"
+          type="checkbox"
+          class="toggle"
+          :true-value="false"
+          :false-value="true"
+        />
+      </div>
     </div>
     <input
       ref="inputRef"
@@ -175,13 +205,15 @@
 
 <script setup lang="ts">
 import { deleteStorageAPI, setStorageAPI } from '@/assembly/storage'
-import { isSingBoxCore } from '@/assembly/version'
+import { can } from '@/assembly/backend'
 import {
   autoImportSettings,
   autoSyncSettings,
   DEFAULT_SETTINGS_URL,
   importSettingsFromUrl,
   importSettingsUrl,
+  skipImportSettingsConfirm,
+  skipSyncSettingsConfirm,
   syncSettingsFromCore,
 } from '@/helper/autoImportSettings'
 import { LOCAL_IMAGE } from '@/helper/indexeddb'
@@ -193,7 +225,7 @@ import {
   getDashboardSettingsFromStorage,
   resetSettings,
 } from '@/helper/utils'
-import { customBackgroundURL, displayAllFeatures } from '@/store/settings'
+import { customBackgroundURL } from '@/store/settings'
 import {
   ArrowDownCircleIcon,
   ArrowDownTrayIcon,
@@ -221,7 +253,7 @@ withDefaults(
 const inputRef = ref<HTMLInputElement>()
 const dashboardSettingsDialogShow = ref(false)
 const isStorageSubmitting = ref(false)
-const showSyncSettings = computed(() => !isSingBoxCore.value || displayAllFeatures.value)
+const showSyncSettings = computed(() => can('syncSettings'))
 
 const { showTip } = useTooltip()
 const { t } = useI18n()

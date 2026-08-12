@@ -1,5 +1,5 @@
 // 组装层 · connection 字段访问器。
-// 每种后端(clash / sing-box native)各实现一份 ConnectionAccessor,直接从「原始数据」
+// 每种后端(clash / sing-box)各实现一份 ConnectionAccessor,直接从「原始数据」
 // 读取/派生 view 需要的字段 —— 不再把 sing-box 塑造成 clash 形状。
 // createGetConnectionDisplayValue 基于某一份 accessor 生成对应后端的 getConnectionDisplayValue,
 // 由 index.ts 门面按当前后端动态选用。
@@ -144,16 +144,23 @@ export const createGetConnectionDisplayValue =
     }
   }
 
-export const createGetConnectionVisibleSearchValues =
-  (accessor: ConnectionAccessor) =>
-  (
+export const createGetConnectionVisibleSearchValues = (accessor: ConnectionAccessor) => {
+  // getDisplayValue 在工厂层建一次、keys 过滤结果按引用缓存 —— 二者原先都在
+  // 每条连接的每次调用里重建,每拍数千次纯浪费。
+  const getDisplayValue = createGetConnectionDisplayValue(accessor)
+  let lastKeys: CONNECTIONS_TABLE_ACCESSOR_KEY[] | null = null
+  let visibleKeys: CONNECTIONS_TABLE_ACCESSOR_KEY[] = []
+
+  return (
     connection: Connection,
     keys: CONNECTIONS_TABLE_ACCESSOR_KEY[],
     options: ConnectionDisplayOptions,
   ) => {
-    const getDisplayValue = createGetConnectionDisplayValue(accessor)
+    if (keys !== lastKeys) {
+      lastKeys = keys
+      visibleKeys = keys.filter((key) => key !== CONNECTIONS_TABLE_ACCESSOR_KEY.Close)
+    }
 
-    return keys
-      .filter((key) => key !== CONNECTIONS_TABLE_ACCESSOR_KEY.Close)
-      .map((key) => getDisplayValue(connection, key, options))
+    return visibleKeys.map((key) => getDisplayValue(connection, key, options))
   }
+}

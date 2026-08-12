@@ -1,7 +1,24 @@
+/*
+ * 样式入口。按 Tailwind 的分层顺序引入，import 顺序即层叠顺序，不要随意调整：
+ *
+ *   theme/       设计令牌与主题定义（框架配置、字体、主题预设、自定义令牌）
+ *   base/        元素级全局样式
+ *   components/  组件样式（daisyUI 覆写、项目自有组件、第三方库覆写）
+ *   utilities/   跨组件的工具类（用户可调外观、动画）
+ */
+
 @import 'tailwindcss';
 
-@import './styles/framework.css';
-@import './styles/override.css';
-@import './styles/components.css';
-@import './styles/motion.css';
-@import './styles/tooltip.css';
+@import './styles/theme/setup.css';
+@import './styles/theme/fonts.css';
+@import './styles/theme/presets.css';
+@import './styles/theme/tokens.css';
+
+@import './styles/base/elements.css';
+
+@import './styles/components/daisyui.css';
+@import './styles/components/app.css';
+@import './styles/components/tooltip.css';
+
+@import './styles/utilities/appearance.css';
+@import './styles/utilities/motion.css';

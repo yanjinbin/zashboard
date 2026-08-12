@@ -5,10 +5,21 @@
     ref="cardWrapperRef"
     @click="handlerGroupClick"
   >
-    <div
-      v-if="modalMode"
-      class="fixed inset-0 z-40 overflow-hidden bg-transparent backdrop-blur-sm"
-    />
+    <!--
+      压暗强度与 .modal 的遮罩一致（daisyUI 默认 40%），淡入淡出刻意和下面卡片
+      生长动画同时长同曲线（200ms ease-out），让两者读起来是一个动作而非两个。
+    -->
+    <Transition
+      enter-active-class="transition-opacity duration-200 ease-out"
+      enter-from-class="opacity-0"
+      leave-active-class="transition-opacity duration-200 ease-out"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="modalMode"
+        class="fixed inset-0 z-40 overflow-hidden bg-black/40"
+      />
+    </Transition>
     <div
       class="base-container absolute flex flex-col gap-2 overflow-hidden p-2 transition-[width,transform,max-height] duration-200 ease-out will-change-transform"
       :class="modalMode && blurIntensity < 5 && 'backdrop-blur-sm!'"

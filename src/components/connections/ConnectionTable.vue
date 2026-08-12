@@ -117,7 +117,7 @@
               <div class="flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
                 <CircleStackIcon class="h-10 w-10 opacity-60" />
                 <div class="space-y-1">
-                  <div class="text-base font-medium">{{ t('noData') }}</div>
+                  <div class="text-base">{{ t('noData') }}</div>
                 </div>
               </div>
             </td>
@@ -133,6 +133,10 @@
             :class="[
               virtualRow.index % 2 === 0 ? 'bg-base-150' : 'bg-base-100',
               !isDragging ? 'cursor-pointer' : 'cursor-grabbing',
+              connectionTabShow === CONNECTION_TAB_TYPE.ALL &&
+              isClosedConnection(rows[virtualRow.index].original)
+                ? 'opacity-60'
+                : '',
             ]"
             @click="handlerClickRow(rows[virtualRow.index])"
           >
@@ -226,7 +230,12 @@ import {
 } from '@/helper'
 import { backgroundImage } from '@/helper/indexeddb'
 import { showNotification } from '@/helper/notification'
-import { connectionFilter, connectionTabShow, renderConnections } from '@/store/connections'
+import {
+  connectionFilter,
+  connectionTabShow,
+  isClosedConnection,
+  renderConnections,
+} from '@/store/connections'
 import {
   connectionTableColumns,
   proxyChainDirection,
@@ -316,6 +325,11 @@ const columns: ColumnDef<Connection>[] = [
     enableSorting: false,
     id: CONNECTIONS_TABLE_ACCESSOR_KEY.Close,
     cell: ({ row }) => {
+      // 「全部」tab 下已关闭的连接关不掉,不给按钮。
+      if (isClosedConnection(row.original)) {
+        return null
+      }
+
       const closeButton = h(
         'button',
         {

@@ -1,0 +1,169 @@
+/*
+ * daisyUI 组件的项目级覆写：只改 daisyUI 自带的类（card / input / btn / tabs …）。
+ * 项目自有的组件写在 app.css，用户可调的外观开关写在 utilities/appearance.css。
+ */
+
+/* ---------- 容器 ---------- */
+
+@utility card {
+  @apply bg-base-100 rounded-xl shadow-xs;
+  .card-body {
+    @apply p-4;
+  }
+}
+
+@utility collapse {
+  @apply bg-base-100 rounded-xl shadow-xs;
+}
+
+.collapse.transparent-collapse {
+  @apply bg-transparent! shadow-none! backdrop-blur-none!;
+}
+
+/* ---------- 表单控件 ---------- */
+
+@utility select {
+  @apply w-auto;
+  appearance: none;
+}
+
+.input,
+.select,
+.textarea {
+  @apply border-base-border transition-[color,background-color,border-color,box-shadow] duration-200 ease-out;
+  border-width: var(--border, 1px);
+}
+
+.input:hover:not(:focus, :focus-within, :disabled, [disabled]),
+.select:hover:not(:focus, :focus-within, :disabled, [disabled]),
+.textarea:hover:not(:focus, :focus-within, :disabled, [disabled]) {
+  border-color: color-mix(in srgb, var(--color-base-content) 18%, transparent);
+}
+
+.input:focus,
+.input:focus-within,
+.select:focus,
+.select:focus-within,
+.textarea:focus,
+.textarea:focus-within {
+  @apply border-primary;
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 16%, transparent);
+}
+
+.input.input-error,
+.select.select-error,
+.textarea.textarea-error {
+  @apply border-error;
+}
+.input.input-error:focus,
+.input.input-error:focus-within,
+.select.select-error:focus,
+.textarea.textarea-error:focus,
+.textarea.textarea-error:focus-within {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-error) 16%, transparent);
+}
+
+.checkbox,
+.radio,
+.toggle {
+  @apply border-base-border transition-all duration-200 ease-out;
+}
+.checkbox:focus-visible,
+.radio:focus-visible,
+.toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 18%, transparent);
+}
+
+.toggle {
+  transition:
+    color 0.3s,
+    background-color 0.3s ease-out,
+    border-color 0.3s ease-out,
+    grid-template-columns 0.32s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+.toggle::before {
+  transition:
+    background-color 0.2s ease-out,
+    scale 0.18s ease-out;
+}
+.toggle:active::before {
+  /* 按下时滑块横向拉伸，模拟物理开关的挤压反馈 */
+  scale: 1.15 1;
+}
+
+/* ---------- 按钮与导航 ---------- */
+
+@utility btn {
+  @apply border-none;
+}
+
+@utility tabs {
+  .tab {
+    @apply px-2;
+  }
+  .tab.tab-active {
+    @apply bg-primary text-primary-content;
+  }
+}
+
+@utility tab {
+  @apply max-md:min-w-24;
+}
+
+/* ---------- 表格与弹层 ---------- */
+
+@utility table {
+  & tr,
+  & th,
+  & td {
+    @apply border-0;
+  }
+  @apply border-separate border-spacing-0;
+}
+
+/*
+ * 移动端弹窗改为底部抽屉：贴底、撑满宽度、只保留顶部圆角，高度随内容自适应。
+ *
+ * 压暗层用回 daisyUI 默认的 40%，不再覆写成透明 —— 压暗表达的是「这一层被禁用了」，
+ * 属于交互状态而非外观偏好，所以刻意不接入 utilities/appearance.css 那套用户可调的
+ * 循环（调到 0 就等于关掉了模态语义）。顺带去掉了整屏的 backdrop-blur：.modal-box
+ * 自己已经有一层 backdrop-filter，在压暗层之上再模糊一次是零收益的 GPU 开销。
+ *
+ * 高度绑到 --dialog-viewport-height（由 composables/dialog.ts 在弹窗打开时发布）而不是
+ * dvh：iOS Safari 键盘弹起时不收缩 layout viewport，dvh 也不变，贴底的抽屉会被键盘整个
+ * 盖住。daisyUI 的 .modal 是 inset: 0，必须先把 bottom 解绑，否则 height 不生效。
+ */
+@utility modal {
+  @apply max-md:bottom-auto max-md:h-[var(--dialog-viewport-height,100dvh)] max-md:place-items-end;
+}
+
+/* 圆角走 daisyUI 的 --modal-* 变量，底部归零、顶部继续跟随主题的 --radius-box。 */
+@utility modal-box {
+  @apply max-md:w-full max-md:max-w-none max-md:[--modal-bl:0] max-md:[--modal-br:0];
+}
+
+/* ---------- 尺寸微调 ---------- */
+
+.select.select-sm,
+.input.input-sm,
+.btn.btn-sm,
+.tabs.tabs-xs .tab {
+  @apply text-sm;
+}
+
+/* ---------- loading ---------- */
+
+/*
+ * daisyUI 5.7 起 .loading-dots 拆成了两条：基础规则是 dur=3s 的降级版，
+ * 只有 @media (prefers-reduced-motion: no-preference) 里那条 dur=1.05s 才是正常速度。
+ * 但两条同层同权重，构建产物里 media 那条被排到了基础规则前面，于是 3s 永远赢——
+ * 表现就是圆点跳得明显偏慢。这里把正常速度的 mask 原样补一遍压回去。
+ * daisyUI 侧修好排序后可以删掉。
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .loading-dots {
+    mask-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='4' cy='12' r='3'%3E%3Canimate attributeName='cy' values='12;6;12;12' keyTimes='0;0.286;0.571;1' dur='1.05s' repeatCount='indefinite' keySplines='.33,0,.66,.33;.33,.66,.66,1'/%3E%3C/circle%3E%3Ccircle cx='12' cy='12' r='3'%3E%3Canimate attributeName='cy' values='12;6;12;12' keyTimes='0;0.286;0.571;1' dur='1.05s' repeatCount='indefinite' keySplines='.33,0,.66,.33;.33,.66,.66,1' begin='0.1s'/%3E%3C/circle%3E%3Ccircle cx='20' cy='12' r='3'%3E%3Canimate attributeName='cy' values='12;6;12;12' keyTimes='0;0.286;0.571;1' dur='1.05s' repeatCount='indefinite' keySplines='.33,0,.66,.33;.33,.66,.66,1' begin='0.2s'/%3E%3C/circle%3E%3C/svg%3E");
+  }
+}

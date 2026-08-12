@@ -12,22 +12,29 @@
       v-if="data.length > 0"
     >
       <div
-        :class="['base-container virtual-scroller absolute top-3 right-3 left-3', contentClass]"
+        :class="['absolute top-3 right-3 left-3', contentClass]"
         :style="{
           transform: `translateY(${virtualRows[0]?.start ?? 0}px)`,
         }"
       >
+        <!--
+          每条自成一张卡片、靠间距分隔。间距做在被测量的行容器的 padding 上，不能用
+          margin 或 flex gap——虚拟滚动按 getBoundingClientRect 累加行高，两者都不计入，
+          totalSize 会和实际布局对不上。
+        -->
         <div
           v-for="row in virtualRows"
           :key="row.key.toString()"
           :data-index="row.index"
           :ref="(ref) => measureElement(ref as Element | null)"
-          :class="getBorderClass(row.index)"
+          class="pb-2"
         >
-          <slot
-            :item="data[row.index]"
-            :index="row.index"
-          />
+          <div class="base-container">
+            <slot
+              :item="data[row.index]"
+              :index="row.index"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -81,13 +88,6 @@ const virutalOptions = computed(() => {
 const rowVirtualizer = useVirtualizer(virutalOptions)
 const virtualRows = computed(() => rowVirtualizer.value.getVirtualItems())
 const totalSize = computed(() => rowVirtualizer.value.getTotalSize())
-const getBorderClass = (index: number) => {
-  if (index !== 0) {
-    return 'border-base-border border-t'
-  }
-  return ''
-}
-
 const measureElement = (el: Element | null) => {
   if (!el) {
     return

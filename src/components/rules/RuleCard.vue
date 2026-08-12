@@ -1,11 +1,11 @@
 <template>
-  <div :class="{ 'opacity-50': isDisabled, 'scroller-item': 1 }">
+  <div :class="{ 'opacity-50': isDisabled }">
     <div
       class="transparent-collapse collapse rounded-none!"
       :class="isExpanded ? 'collapse-open' : 'collapse-close'"
     >
       <div
-        class="collapse-title hover:bg-base-200/40 flex min-h-0 flex-col gap-3 overflow-hidden px-3 py-2 text-sm transition-colors"
+        class="collapse-title hover:bg-base-200/40 flex min-h-0 flex-col gap-1.5 overflow-hidden px-3 py-2.5 text-sm transition-colors"
         :class="{
           'cursor-pointer': isSelectable,
         }"
@@ -88,7 +88,7 @@
         @transitionend="handlerExpandTransitionEnd"
       >
         <template v-if="showExpandedContent">
-          <div class="border-base-content/3 border-b"></div>
+          <div class="border-base-border border-b"></div>
           <ProxyGroup
             :name="selected"
             :force-open="true"
@@ -101,25 +101,17 @@
 </template>
 
 <script setup lang="ts">
-import { disconnectByIdAPI } from '@/assembly/connections'
 import { useBounceOnVisible } from '@/composables/bouncein'
-import { getConnectionRulePayload } from '@/helper'
+import {
+  getRuleSize,
+  isRuleDisabled,
+  isUpdateableRuleSet as checkUpdateableRuleSet,
+  toggleRuleDisabledWithSideEffects,
+} from '@/composables/rules'
 import { useTooltip } from '@/helper/tooltip'
-import { activeConnections } from '@/store/connections'
 import { proxyGroupList } from '@/assembly/proxies'
-import {
-  fetchRules,
-  ruleProviderList,
-  rulesFilter,
-  toggleRuleDisabledAPI,
-  toggleRuleDisabledSingBoxAPI,
-  updateRuleProviderAPI,
-} from '@/assembly/rules'
-import {
-  disconnectOnRuleDisable,
-  displayLatencyInRule,
-  displayNowNodeInRule,
-} from '@/store/settings'
+import { fetchRules, rulesFilter, updateRuleProviderAPI } from '@/assembly/rules'
+import { displayLatencyInRule, displayNowNodeInRule } from '@/store/settings'
 import type { Rule } from '@/types'
 import {
   ArrowPathIcon,
@@ -164,39 +156,13 @@ const handlerExpandTransitionEnd = () => {
 const { t } = useI18n()
 const { showTip } = useTooltip()
 
-const size = computed(() => {
-  if (props.rule.type === 'RuleSet') {
-    return ruleProviderList.value.find((provider) => provider.name === props.rule.payload)
-      ?.ruleCount
-  }
-
-  return props.rule.size
-})
+const size = computed(() => getRuleSize(props.rule))
 
 const isUpdating = ref(false)
 const isTogglingDisabled = ref(false)
-const isDisabled = computed(() => {
-  const rule = props.rule
+const isDisabled = computed(() => isRuleDisabled(props.rule))
 
-  if (rule.extra) {
-    return rule.extra.disabled
-  }
-
-  return rule.disabled
-})
-
-const isUpdateableRuleSet = computed(() => {
-  if (props.rule.type !== 'RuleSet') {
-    return false
-  }
-
-  const provider = ruleProviderList.value.find((provider) => provider.name === props.rule.payload)
-
-  if (!provider) {
-    return false
-  }
-  return provider.vehicleType !== 'Inline'
-})
+const isUpdateableRuleSet = computed(() => checkUpdateableRuleSet(props.rule))
 
 const updateRuleProviderClickHandler = async () => {
   if (isUpdating.value) return
@@ -212,28 +178,7 @@ const toggleRuleDisabledHandler = async () => {
 
   try {
     isTogglingDisabled.value = true
-    const willBeDisabled = !isDisabled.value
-
-    if (props.rule.uuid) {
-      await toggleRuleDisabledSingBoxAPI(props.rule.uuid)
-    } else {
-      await toggleRuleDisabledAPI({ [props.rule.index]: willBeDisabled })
-    }
-
-    if (willBeDisabled && disconnectOnRuleDisable.value) {
-      const matchingConnections = activeConnections.value.filter((conn) => {
-        const ruleTypeMatches = conn.rule === props.rule.type
-        const rulePayloadMatches = getConnectionRulePayload(conn) === (props.rule.payload || '')
-
-        return ruleTypeMatches && rulePayloadMatches
-      })
-
-      if (matchingConnections.length > 0) {
-        matchingConnections.forEach((conn) => disconnectByIdAPI(conn.id))
-      }
-    }
-
-    await fetchRules()
+    await toggleRuleDisabledWithSideEffects(props.rule)
   } finally {
     isTogglingDisabled.value = false
   }

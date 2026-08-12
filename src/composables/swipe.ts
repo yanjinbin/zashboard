@@ -1,5 +1,6 @@
 import { proxiesTabShow, proxyProviederList } from '@/assembly/proxies'
 import { ruleProviderList, rulesTabShow } from '@/assembly/rules'
+import { openDialogCount } from '@/composables/dialog'
 import { CONNECTION_TAB_TYPE, PROXY_TAB_TYPE, ROUTE_NAME, RULE_TAB_TYPE } from '@/constant'
 import { renderRoutes } from '@/helper'
 import { connectionTabShow } from '@/store/connections'
@@ -93,7 +94,7 @@ export const useSwipeRouter = () => {
     if (!swipeInPages.value) return
 
     if (
-      document.querySelector('dialog:modal') ||
+      openDialogCount.value > 0 ||
       isInputActive() ||
       window.getSelection()?.toString()?.length ||
       disableSwipe.value

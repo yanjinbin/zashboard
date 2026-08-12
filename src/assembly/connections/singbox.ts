@@ -1,4 +1,4 @@
-// sing-box native 后端的连接组装:订阅 gRPC SubscribeConnections,把 protobuf 事件
+// sing-box 后端的连接组装:订阅 gRPC SubscribeConnections,把 protobuf 事件
 // 维护成活跃连接表,并直接产出统一的 ConnectionsSnapshot(active 带瞬时速率、closed 为本拍增量)。
 // 速率由事件自带的 uplinkDelta/downlinkDelta 累计得到,CLOSED 事件直接产出已关闭连接 —— 无需快照 diff。
 import { getSingboxClient } from '@/api/singbox/client'
@@ -9,7 +9,7 @@ import {
   type Connection as PbConnection,
 } from '@/gen/daemon/started_service_pb'
 import type { Connection } from '@/types'
-import { ref, type Ref } from 'vue'
+import { shallowRef, type Ref } from 'vue'
 import {
   createGetConnectionDisplayValue,
   createGetConnectionVisibleSearchValues,
@@ -21,7 +21,7 @@ const fetchSingboxConnections = (): {
   data: Ref<ConnectionsSnapshot | undefined>
   close: () => void
 } => {
-  const data = ref<ConnectionsSnapshot>()
+  const data = shallowRef<ConnectionsSnapshot>()
 
   // 活跃连接表,条目已带瞬时速率。每次变更都整体替换条目(immutable),不就地改写,
   // 因此 emit 直接产出表内引用即可,无需再拷贝。

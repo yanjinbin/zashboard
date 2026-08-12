@@ -1,21 +1,15 @@
-div {
-  @apply scrollbar-thin;
+/*
+ * 项目自有组件：不属于 daisyUI 也不属于第三方库的类。
+ * daisyUI 类的覆写请放 daisyui.css。
+ */
+
+/* ---------- 通用容器 ---------- */
+
+@utility base-container {
+  @apply bg-base-100 overflow-hidden rounded-xl shadow-xs;
 }
 
-.text-main {
-  @apply text-base-content;
-}
-
-.search-highlight {
-  @apply rounded-xs bg-yellow-300 text-black;
-}
-
-[data-theme='light-neutral'],
-[data-theme='dark-neutral'] {
-  --color-low-latency: oklch(0.551 0.08 167);
-  --color-medium-latency: oklch(0.72 0.14 85);
-  --color-high-latency: oklch(0.56 0.17 22);
-}
+/* ---------- 底部 dock ---------- */
 
 .dock {
   @apply absolute right-2 left-2 z-30 rounded-3xl;
@@ -27,8 +21,21 @@ div {
     inset 0 0 0 1px color-mix(in srgb, white 6%, transparent);
 }
 
+/* ---------- 侧栏 ---------- */
+
+/* 高亮完全交给滑动指示器（见 utilities/motion.css），因此清掉 daisyUI menu 自带的态背景 */
+.sidebar-route-menu > li > a:hover,
+.sidebar-route-menu > li > a:active,
+.sidebar-route-menu > li > a:focus-visible {
+  background-color: transparent;
+  background-image: none;
+  box-shadow: none;
+}
+
+/* ---------- 设置页 ---------- */
+
 .settings-section-label {
-  @apply px-1 pt-5 pb-2 text-xs font-medium tracking-wider uppercase first:pt-2;
+  @apply px-1 pt-5 pb-2 text-xs tracking-wider uppercase first:pt-2;
   color: color-mix(in srgb, var(--color-base-content) 40%, transparent);
 }
 .settings-grid {

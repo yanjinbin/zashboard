@@ -1,37 +1,7 @@
-@config '../../../tailwind.config.ts';
-
-@plugin 'daisyui' {
-  themes: all;
-  exclude: rootscrollgutter;
-}
-
-@theme {
-  --font-MiSans-NotoEmoji: 'MiSans-VF', 'NotoEmoji', system-ui;
-  --font-SarasaUI-NotoEmoji: 'SarasaUiSC-Regular', 'NotoEmoji', system-ui;
-  --font-PingFang-NotoEmoji: 'PingFangSC-Regular', 'NotoEmoji', system-ui;
-  --font-FiraSans-NotoEmoji: 'Fira Sans', 'NotoEmoji', system-ui;
-  --font-SystemUI-NotoEmoji: 'NotoEmoji', system-ui;
-
-  --font-MiSans-Twemoji: 'MiSans-VF', 'Twemoji', system-ui;
-  --font-SarasaUI-Twemoji: 'SarasaUiSC-Regular', 'Twemoji', system-ui;
-  --font-PingFang-Twemoji: 'PingFangSC-Regular', 'Twemoji', system-ui;
-  --font-FiraSans-Twemoji: 'Fira Sans', 'Twemoji', system-ui;
-  --font-SystemUI-Twemoji: 'Twemoji', system-ui;
-}
-
-@layer utilities {
-  @font-face {
-    font-family: 'NotoEmoji';
-    src: url('/src/assets/fonts/NotoColorEmoji-flagsonly.ttf') format('truetype');
-  }
-}
-
-@layer utilities {
-  @font-face {
-    font-family: 'Twemoji';
-    src: url('/src/assets/fonts/TwemojiMozilla-flags.woff2') format('woff2');
-  }
-}
+/*
+ * 主题预设：每个 daisyUI 主题的完整调色板。
+ * 跨主题共享的令牌放 tokens.css，不要在这里逐个主题重复。
+ */
 
 @plugin 'daisyui/theme' {
   name: 'light-monet';

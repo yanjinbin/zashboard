@@ -32,7 +32,7 @@
             :class="peer.online ? 'bg-success' : 'bg-base-content/20'"
           ></span>
           <span class="setting-item-label flex min-w-0 items-center gap-2">
-            <span class="truncate text-sm font-medium">{{ peerDisplayName(peer) }}</span>
+            <span class="truncate text-sm">{{ peerDisplayName(peer) }}</span>
             <span class="text-base-content/40 truncate text-xs">{{ peer.tailscaleIPs[0] }}</span>
           </span>
           <CheckIcon

@@ -1,6 +1,6 @@
 <template>
   <select
-    class="join-item select select-sm"
+    class="select select-sm"
     v-model="sourceIPFilter"
   >
     <option :value="null">{{ $t('all') }}</option>

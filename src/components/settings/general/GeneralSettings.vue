@@ -4,10 +4,30 @@
       {{ $t('general') }}
     </div>
     <div class="settings-grid">
+      <SettingItem
+        :setting-key="k.actions"
+        :when="can('dashboardUpgrade')"
+      >
+        <div class="setting-item-label">
+          {{ $t('upgradeDashboard') }}
+        </div>
+        <button
+          :class="twMerge('btn btn-sm', isUIUpgrading ? 'animate-pulse' : '')"
+          @click="handlerClickUpgradeUI"
+        >
+          <ArrowUpCircleIcon class="h-4 w-4" />
+        </button>
+      </SettingItem>
+      <SettingItem :setting-key="k.actions">
+        <div class="setting-item-label">
+          {{ $t('dashboardSettings') }}
+        </div>
+        <DashboardSettings icon-only />
+      </SettingItem>
       <LanguageSelect />
       <SettingItem
         :setting-key="k.autoUpgradeDashboard"
-        :when="!isSingboxBackend"
+        :when="can('dashboardUpgrade')"
       >
         <div class="setting-item-label">
           {{ $t('autoUpgradeDashboard') }}
@@ -155,7 +175,7 @@
       <KeyboardShortcutsSettings />
       <SettingItem
         :setting-key="k.displayAllFeatures"
-        :when="isSingBoxCore"
+        :when="showDisplayAllFeatures"
       >
         <div class="setting-item-label">
           {{ $t('displayAllFeatures') }}
@@ -185,8 +205,9 @@
 </template>
 
 <script setup lang="ts">
-import { isSingboxBackend } from '@/assembly/backend'
-import { isSingBoxCore } from '@/assembly/version'
+import { can, showDisplayAllFeatures } from '@/assembly/backend'
+import { upgradeUIAPI } from '@/assembly/version'
+import DashboardSettings from '@/components/common/DashboardSettings.vue'
 import KeyboardShortcutsSettings from '@/components/settings/general/KeyboardShortcutsSettings.vue'
 import LanguageSelect from '@/components/settings/general/LanguageSelect.vue'
 import SettingItem from '@/components/settings/SettingItem.vue'
@@ -194,8 +215,10 @@ import TextInput from '@/components/common/TextInput.vue'
 import { useIsSettingVisible } from '@/composables/settings'
 import { GENERAL_ITEM_KEYS } from '@/config/settingsItems'
 import { IP_INFO_API } from '@/constant'
+import { handlerUpgradeSuccess } from '@/helper'
 import { useTooltip } from '@/helper/tooltip'
 import { isMiddleScreen } from '@/helper/utils'
+import { twMerge } from 'tailwind-merge'
 import {
   autoDisconnectIdleUDP,
   autoDisconnectIdleUDPTime,
@@ -210,12 +233,13 @@ import {
   swipeInPages,
   swipeInTabs,
 } from '@/store/settings'
-import { QuestionMarkCircleIcon } from '@heroicons/vue/24/outline'
-import { computed } from 'vue'
+import { ArrowUpCircleIcon, QuestionMarkCircleIcon } from '@heroicons/vue/24/outline'
+import { computed, ref } from 'vue'
 
 const { showTip } = useTooltip()
 
 const k = GENERAL_ITEM_KEYS
+const isVisibleActions = useIsSettingVisible(k.actions)
 const isVisibleLanguage = useIsSettingVisible(k.language)
 const isVisibleShortcutsSetting = useIsSettingVisible(k.keyboardShortcuts)
 const isVisibleShortcuts = computed(() => isVisibleShortcutsSetting.value && !isMiddleScreen.value)
@@ -232,8 +256,25 @@ const isVisibleDisablePullToRefresh = useIsSettingVisible(k.disablePullToRefresh
 const isVisibleDisplayAllFeatures = useIsSettingVisible(k.displayAllFeatures)
 const isVisibleShowPanelTitleBanner = useIsSettingVisible(k.showPanelTitleBanner)
 
+const isUIUpgrading = ref(false)
+const handlerClickUpgradeUI = async () => {
+  if (isUIUpgrading.value) return
+  isUIUpgrading.value = true
+  try {
+    await upgradeUIAPI()
+    isUIUpgrading.value = false
+    handlerUpgradeSuccess()
+    setTimeout(() => {
+      window.location.reload()
+    }, 1000)
+  } catch {
+    isUIUpgrading.value = false
+  }
+}
+
 const hasVisibleGeneralItems = computed(() => {
   return (
+    isVisibleActions.value ||
     isVisibleLanguage.value ||
     isVisibleShortcuts.value ||
     isVisibleAutoUpgrade.value ||
@@ -246,7 +287,7 @@ const hasVisibleGeneralItems = computed(() => {
     isVisibleSwipeInPages.value ||
     (swipeInPages.value && isVisibleSwipeInTabs.value) ||
     isVisibleDisablePullToRefresh.value ||
-    (isSingBoxCore.value && isVisibleDisplayAllFeatures.value) ||
+    (showDisplayAllFeatures.value && isVisibleDisplayAllFeatures.value) ||
     isVisibleShowPanelTitleBanner.value
   )
 })

@@ -1,12 +1,5 @@
 <template>
   <div class="mx-auto flex max-w-2xl flex-col p-2 sm:p-4">
-    <div
-      v-if="endpoints.length === 0"
-      class="text-base-content/50 p-12 text-center text-sm"
-    >
-      {{ $t('noEndpoints') }}
-    </div>
-
     <template
       v-for="endpoint in endpoints"
       :key="endpoint.endpointTag"
@@ -18,15 +11,15 @@
             {{ endpoint.endpointTag || 'Tailscale' }}
           </span>
           <span
-            class="rounded-full px-2 py-0.5 text-[0.65rem] font-medium tracking-normal"
+            class="rounded-full px-2 py-0.5 text-[0.65rem] tracking-normal"
             :class="statePill(endpoint.backendState)"
           >
-            {{ endpoint.backendState || $t('unknown') }}
+            {{ endpoint.stateText || endpoint.backendState || $t('unknown') }}
           </span>
         </span>
         <button
           v-if="!endpoint.keyAuth"
-          class="text-error/90 hover:text-error flex items-center gap-1 text-xs font-medium tracking-normal"
+          class="text-error/90 hover:text-error flex items-center gap-1 text-xs tracking-normal"
           @click="logout(endpoint.endpointTag)"
         >
           <ArrowRightOnRectangleIcon class="h-4 w-4" />
@@ -108,23 +101,23 @@
                 class="inline-block h-2 w-2 shrink-0 rounded-full"
                 :class="peer.online ? 'bg-success' : 'bg-base-content/20'"
               ></span>
-              <span class="truncate text-sm font-medium">{{ peerDisplayName(peer) }}</span>
+              <span class="truncate text-sm">{{ peerDisplayName(peer) }}</span>
               <span class="text-base-content/40 truncate text-xs">{{ peer.tailscaleIPs[0] }}</span>
             </button>
             <span
               v-if="peer.exitNode || peer.exitNodeOption"
-              class="shrink-0 rounded-full px-2 py-0.5 text-[0.65rem] font-medium"
+              class="shrink-0 rounded-full px-2 py-0.5 text-[0.65rem]"
               :class="peer.exitNode ? 'bg-primary/15 text-primary' : 'bg-info/15 text-info'"
               >{{ $t('exitNode') }}</span
             >
             <span
               v-if="peer.shareeNode"
-              class="bg-base-content/8 text-base-content/60 shrink-0 rounded-full px-2 py-0.5 text-[0.65rem] font-medium"
+              class="bg-base-content/8 text-base-content/60 shrink-0 rounded-full px-2 py-0.5 text-[0.65rem]"
               >{{ $t('sharedIn') }}</span
             >
             <span
               v-if="peer.expired"
-              class="bg-error/15 text-error shrink-0 rounded-full px-2 py-0.5 text-[0.65rem] font-medium"
+              class="bg-error/15 text-error shrink-0 rounded-full px-2 py-0.5 text-[0.65rem]"
               >{{ $t('expired') }}</span
             >
             <button
@@ -187,7 +180,7 @@
 </template>
 
 <script setup lang="ts">
-import { getSingboxClient, runStream, serverStream, type StreamHandle } from '@/assembly/tools'
+import { getSingboxClient } from '@/assembly/tools'
 import DialogWrapper from '@/components/common/DialogWrapper.vue'
 import QRCodeView from '@/components/tools/QRCodeView.vue'
 import TailscaleExitNodeDialog from '@/components/tools/TailscaleExitNodeDialog.vue'
@@ -202,7 +195,6 @@ import {
   type SSHSessionOptions,
 } from '@/composables/tailscaleSSH'
 import {
-  StartedService,
   type TailscaleEndpointStatus,
   type TailscalePeer,
   type TailscaleUserGroup,
@@ -213,12 +205,11 @@ import {
   CommandLineIcon,
   QrCodeIcon,
 } from '@heroicons/vue/24/outline'
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { ref } from 'vue'
+
+defineProps<{ endpoints: TailscaleEndpointStatus[] }>()
 
 const emit = defineEmits<{ ssh: [session: SSHSessionOptions] }>()
-
-const endpoints = ref<TailscaleEndpointStatus[]>([])
-let statusHandle: StreamHandle | null = null
 
 const groupsOf = (endpoint: TailscaleEndpointStatus): TailscaleUserGroup[] =>
   endpoint.userGroups.filter((g) => g.peers.length > 0)
@@ -327,14 +318,4 @@ const onSSHPromptConnect = (username: string, terminalType: string, remember: bo
   }
   launchSSH(ctx.endpoint, ctx.peer, username, terminalType)
 }
-
-onMounted(() => {
-  if (!getSingboxClient()) return
-  statusHandle = runStream(
-    (signal) => serverStream(StartedService.method.subscribeTailscaleStatus, {}, signal),
-    (msg) => (endpoints.value = msg.endpoints),
-  )
-})
-
-onBeforeUnmount(() => statusHandle?.close())
 </script>

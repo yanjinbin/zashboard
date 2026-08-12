@@ -25,7 +25,7 @@ import TopologyCharts from '@/components/overview/TopologyCharts.vue'
 import { usePaddingForViews } from '@/composables/paddingViews'
 import { overviewCardOrder } from '@/store/settings'
 import type { Component } from 'vue'
-import { computed } from 'vue'
+import { computed, defineAsyncComponent } from 'vue'
 
 const { padding } = usePaddingForViews({
   offsetTop: 0,
@@ -40,6 +40,7 @@ const cardComponents: Record<string, Component> = {
   NetworkCard,
   ProviderTrafficOverview,
   TopologyCharts,
+  EarthGlobeCard: defineAsyncComponent(() => import('@/components/overview/EarthGlobeCard.vue')),
   ConnectionHistory,
   RuleHitCountCard,
 }

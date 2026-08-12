@@ -1,4 +1,4 @@
-// sing-box native 后端的日志订阅:拿到原始 gRPC Log,保留 ANSI 颜色码、
+// sing-box 后端的日志订阅:拿到原始 gRPC Log,保留 ANSI 颜色码、
 // 按选定的级别过滤并映射级别。日志本就按批到达,直接整批产出(不再伪装成 Clash 逐条投递)。
 import { subscribeStream } from '@/api/singbox/subscriptions'
 import { LOG_LEVEL } from '@/constant'

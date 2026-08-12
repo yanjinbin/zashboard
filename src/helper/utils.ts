@@ -70,7 +70,7 @@ export const getUrlFromBackend = (end: {
   return `${end.protocol}://${end.host}:${end.port}${end.secondaryPath || ''}`
 }
 
-// sing-box native 后端复用顶层连接字段作为 gRPC baseUrl(secondaryPath 留空)。
+// sing-box 后端复用顶层连接字段作为 gRPC baseUrl(secondaryPath 留空)。
 export const getSingboxUrlFromBackend = (
   end: Pick<Backend, 'type' | 'protocol' | 'host' | 'port'>,
 ) => {
@@ -96,13 +96,15 @@ export const scrollIntoCenter = (el: HTMLElement) => {
 
   if (!scrollableParent) return
 
-  const elRect = el.getBoundingClientRect()
-  const parentRect = scrollableParent.getBoundingClientRect()
-
-  if (elRect.top >= parentRect.top && elRect.bottom <= parentRect.bottom) return
-
   const parentTop = scrollableParent.offsetTop
   const childTop = el.offsetTop
+
+  // 判断可见性只能用布局位置(offsetTop),不能用 getBoundingClientRect:
+  // 列表重排时 TransitionGroup 的 FLIP 会给卡片挂 transform,rect 停在动画起点(旧位置,
+  // 通常还在视口内),会被误判成"已经可见"而跳过滚动。
+  const relativeTop = childTop - parentTop - scrollableParent.scrollTop
+
+  if (relativeTop >= 0 && relativeTop + el.clientHeight <= scrollableParent.clientHeight) return
 
   const centerOffset =
     childTop - parentTop - scrollableParent.clientHeight / 2 + el.clientHeight / 2
@@ -133,7 +135,7 @@ export const getBackendFromUrl = () => {
 
   if (query.has('hostname')) {
     return {
-      // 后端类型:'singbox' 走 sing-box native gRPC,其余(含缺省)按 'clash' 处理。
+      // 后端类型:'singbox' 走 sing-box API(gRPC),其余(含缺省)按 'clash' 处理。
       type: (query.get('type') === 'singbox' ? 'singbox' : 'clash') as BackendType,
       protocol: query.get('http')
         ? 'http'

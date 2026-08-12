@@ -26,7 +26,6 @@ import { initSmartWeights } from '@/store/smart'
 import type { Proxy } from '@/types'
 import { last } from 'lodash'
 import pLimit from 'p-limit'
-import { isSingBoxCore } from '../version'
 import {
   getHistoryByName,
   getLatencyByName,
@@ -152,12 +151,10 @@ const getProviderNameByProxy = (proxyName: string) => {
 // provider 节点走 provider 作用域的 healthcheck 端点,避免节点不在
 // 全局 /proxies 映射(或同名冲突)导致测速失败
 const fetchNodeLatency = (proxyName: string, url: string, timeout: number) => {
-  if (!isSingBoxCore.value) {
-    const providerName = getProviderNameByProxy(proxyName)
+  const providerName = getProviderNameByProxy(proxyName)
 
-    if (providerName) {
-      return fetchProxyProviderLatencyAPI(providerName, proxyName, url, timeout)
-    }
+  if (providerName) {
+    return fetchProxyProviderLatencyAPI(providerName, proxyName, url, timeout)
   }
 
   return fetchProxyLatencyAPI(proxyName, url, timeout)
@@ -218,6 +215,13 @@ const setHistory = (proxyName: string, delay: number) => {
 
 const TIP_KEY = 'testLatencyOneByOneWithTip'
 const limiter = pLimit(5)
+const untestableProxyTypes = new Set([PROXY_TYPE.Reject, PROXY_TYPE.RejectDrop, PROXY_TYPE.Block])
+const isLatencyTestable = (name: string) => {
+  const type = proxyMap.value[name]?.type.toLowerCase() as PROXY_TYPE | undefined
+
+  return !type || !untestableProxyTypes.has(type)
+}
+
 const testLatencyOneByOneWithTip = async (
   proxyGroupName: string,
   nodes: string[],
@@ -269,7 +273,7 @@ const testLatencyOneByOneWithTip = async (
 
 export const proxyGroupLatencyTest = async (proxyGroupName: string) => {
   const proxyNode = proxyMap.value[proxyGroupName]
-  const all = proxyNode.all ?? []
+  const all = (proxyNode.all ?? []).filter(isLatencyTestable)
   const url = getTestUrl(proxyGroupName)
 
   if (

@@ -8,7 +8,7 @@
     >
       <button
         tabindex="0"
-        class="text-primary hover:bg-primary/10 flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium tracking-normal transition-colors"
+        class="text-primary hover:bg-primary/10 flex items-center gap-1 rounded-md px-2 py-1 text-xs tracking-normal transition-colors"
         @click="openAddMenu"
       >
         <PlusIcon class="h-4 w-4" />
@@ -96,7 +96,7 @@
             class="inline-block h-2 w-2 shrink-0 rounded-full"
             :class="dotClass(row.state?.tone)"
           ></span>
-          <span class="truncate text-sm font-medium">{{ row.name }}</span>
+          <span class="truncate text-sm">{{ row.name }}</span>
           <span
             v-if="row.state"
             class="text-base-content/40 truncate text-xs"
@@ -147,7 +147,7 @@
       class="flex flex-col gap-4 text-sm"
     >
       <div>
-        <div class="text-base-content/45 mb-1 px-1 text-xs font-medium">
+        <div class="text-base-content/45 mb-1 px-1 text-xs">
           {{ $t('usbipIdentity') }}
         </div>
         <div class="divide-base-content/8 bg-base-200/40 divide-y overflow-hidden rounded-xl">
@@ -178,7 +178,7 @@
       </div>
 
       <div>
-        <div class="text-base-content/45 mb-1 px-1 text-xs font-medium">
+        <div class="text-base-content/45 mb-1 px-1 text-xs">
           {{ $t('usbipConnection') }}
         </div>
         <div class="divide-base-content/8 bg-base-200/40 divide-y overflow-hidden rounded-xl">
@@ -209,7 +209,7 @@
       </div>
 
       <div>
-        <div class="text-base-content/45 mb-1 px-1 text-xs font-medium">
+        <div class="text-base-content/45 mb-1 px-1 text-xs">
           {{ $t('usbipClassInterfaces') }}
         </div>
         <div class="divide-base-content/8 bg-base-200/40 divide-y overflow-hidden rounded-xl">

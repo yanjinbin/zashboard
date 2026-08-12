@@ -21,6 +21,7 @@ import VirtualScroller from '../common/VirtualScroller.vue'
 import ConnectionCtrl from '../controls/ConnectionCtrl.tsx'
 import ConnectionCard from './ConnectionCard'
 const size = computed(() => {
-  return connectionCardLines.value.length * 28 + 4
+  // +8 是行与行之间的间距，算进估算值可以少一轮测量回跳
+  return connectionCardLines.value.length * 28 + 12
 })
 </script>

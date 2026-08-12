@@ -7,12 +7,13 @@ import {
   updateRuleProviderAPI,
 } from '@/assembly/rules'
 import { useCtrlsBar } from '@/composables/useCtrlsBar'
-import { RULE_TAB_TYPE } from '@/constant'
+import { LIST_DISPLAY_STYLE, RULE_TAB_TYPE } from '@/constant'
 import { showNotification } from '@/helper/notification'
 import {
   disconnectOnRuleDisable,
   displayLatencyInRule,
   displayNowNodeInRule,
+  ruleDisplayStyle,
 } from '@/store/settings'
 import { ArrowPathIcon, WrenchScrewdriverIcon } from '@heroicons/vue/24/outline'
 import { computed, defineComponent, ref } from 'vue'
@@ -119,6 +120,22 @@ export default defineComponent({
           >
             <div class="flex flex-col gap-3 text-sm">
               <div class="settings-grid">
+                <div class="setting-item">
+                  <div class="setting-item-label">{t('ruleStyle')}</div>
+                  <select
+                    class="select select-sm min-w-24"
+                    v-model={ruleDisplayStyle.value}
+                  >
+                    {Object.values(LIST_DISPLAY_STYLE).map((opt) => (
+                      <option
+                        key={opt}
+                        value={opt}
+                      >
+                        {t(opt)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 <div class="setting-item">
                   <div class="setting-item-label">{t('displaySelectedNode')}</div>
                   <input

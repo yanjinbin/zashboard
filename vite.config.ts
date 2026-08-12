@@ -35,6 +35,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'favicon-dark.svg'],
       workbox: {
+        // The globe is lazy-loaded, but its local textures and bundled attribution must
+        // remain available after the first PWA install/update for offline cache reuse.
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,webp,jpg,md}'],
         // The bundle is above Workbox's 2 MiB default because sing-box native
         // API support and the Tools page are always bundled.
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,

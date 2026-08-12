@@ -14,9 +14,7 @@
     <div class="grid grid-cols-2 gap-3 px-4 pb-2">
       <!-- displayed columns -->
       <div class="flex flex-col gap-2">
-        <div
-          class="text-base-content/60 flex items-center justify-between px-1 text-xs font-medium"
-        >
+        <div class="text-base-content/60 flex items-center justify-between px-1 text-xs">
           <span>{{ $t('activeLabel') }}</span>
           <span class="badge badge-ghost badge-sm">{{ connectionTableColumns.length }}</span>
         </div>
@@ -55,9 +53,7 @@
       </div>
       <!-- available columns -->
       <div class="flex flex-col gap-2">
-        <div
-          class="text-base-content/60 flex items-center justify-between px-1 text-xs font-medium"
-        >
+        <div class="text-base-content/60 flex items-center justify-between px-1 text-xs">
           <span>{{ $t('availableLabel') }}</span>
           <span class="badge badge-ghost badge-sm">{{ restOfColumns.length }}</span>
         </div>

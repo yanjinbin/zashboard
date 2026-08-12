@@ -5,7 +5,7 @@
   >
     <template #title-right>
       <span
-        class="ml-2 rounded-full px-2 py-0.5 text-[0.65rem] font-medium"
+        class="ml-2 rounded-full px-2 py-0.5 text-[0.65rem]"
         :class="
           peer.online ? 'bg-success/15 text-success' : 'bg-base-content/10 text-base-content/60'
         "
@@ -17,7 +17,7 @@
     <div class="flex flex-col gap-4 text-sm">
       <!-- Addresses -->
       <section class="flex flex-col gap-1">
-        <div class="text-base-content/45 px-1 text-xs font-medium">{{ $t('addresses') }}</div>
+        <div class="text-base-content/45 px-1 text-xs">{{ $t('addresses') }}</div>
         <div class="divide-base-content/8 bg-base-200/40 divide-y overflow-hidden rounded-xl">
           <CopyLine
             v-if="magicDNS"
@@ -47,7 +47,7 @@
         class="flex flex-col gap-1"
       >
         <div class="flex items-center justify-between">
-          <span class="text-base-content/45 px-1 text-xs font-medium">{{ $t('ping') }}</span>
+          <span class="text-base-content/45 px-1 text-xs">{{ $t('ping') }}</span>
           <button
             class="btn btn-ghost btn-xs"
             @click="pingRunning ? stopPing() : startPing()"
@@ -104,7 +104,7 @@
 
       <!-- Details -->
       <section class="flex flex-col gap-1">
-        <div class="text-base-content/45 px-1 text-xs font-medium">{{ $t('detailsLabel') }}</div>
+        <div class="text-base-content/45 px-1 text-xs">{{ $t('detailsLabel') }}</div>
         <div class="divide-base-content/8 bg-base-200/40 divide-y overflow-hidden rounded-xl">
           <DataRow
             v-if="peer.os"
