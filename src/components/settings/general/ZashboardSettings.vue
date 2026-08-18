@@ -1,7 +1,10 @@
 <template>
   <div class="relative flex flex-col text-sm">
-    <div
-      class="border-base-300/40 bg-base-100 rounded-box mx-1 mb-3 flex items-center gap-3 border p-3"
+    <a
+      href="https://router-docs-sepia.vercel.app/"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="border-base-300/40 bg-base-100 hover:border-primary/50 rounded-box mx-1 mb-3 flex items-center gap-3 border p-3 transition-colors"
     >
       <img
         src="https://cdn.jsdelivr.net/gh/yanjinbin/dotfiles@latest/mihomo/rules/icons/router.svg"
@@ -11,7 +14,7 @@
       <div class="flex min-w-0 flex-col">
         <span class="text-base font-semibold"> ImmortalWrt-R5C-Gateway Nikki 控制面板 </span>
       </div>
-    </div>
+    </a>
     <div class="flex items-center gap-2 px-1">
       <div class="indicator">
         <span
