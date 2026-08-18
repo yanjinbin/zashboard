@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.22.0](https://github.com/yanjinbin/zashboard/compare/v3.21.3...v3.22.0) (2026-08-18)
+
+
+### Features
+
+* add doc link to panel title and dashboard settings ([1f83c8f](https://github.com/yanjinbin/zashboard/commit/1f83c8fb958b8e5c37dee62c52c8c5435961ef03))
+
 ## [3.20.0](https://github.com/yanjinbin/zashboard/compare/v3.19.3...v3.20.0) (2026-07-17)
 
 
