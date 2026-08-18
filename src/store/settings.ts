@@ -203,7 +203,7 @@ const defaultOverviewCardOrder: { card: OVERVIEW_CARD; visible: boolean }[] = [
   },
   {
     card: OVERVIEW_CARD.NetworkCard,
-    visible: true,
+    visible: false,
   },
   {
     card: OVERVIEW_CARD.EarthGlobeCard,
@@ -232,18 +232,20 @@ export const overviewCardOrder = useStorage<{ card: OVERVIEW_CARD; visible: bool
   defaultOverviewCardOrder,
 )
 
-// 3.20.4: 概览默认隐藏连接统计卡片；仅当用户从未自定义卡片顺序/可见性时应用新默认值
-const legacyDefaultOverviewCardOrder: { card: OVERVIEW_CARD; visible: boolean }[] = [
-  { card: OVERVIEW_CARD.ChartsCard, visible: true },
-  { card: OVERVIEW_CARD.NetworkCard, visible: true },
-  { card: OVERVIEW_CARD.TopologyCharts, visible: true },
-  { card: OVERVIEW_CARD.ProviderTrafficOverview, visible: true },
-  { card: OVERVIEW_CARD.ConnectionHistory, visible: true },
-  { card: OVERVIEW_CARD.RuleHitCountCard, visible: true },
-]
-
-if (JSON.stringify(overviewCardOrder.value) === JSON.stringify(legacyDefaultOverviewCardOrder)) {
-  overviewCardOrder.value = defaultOverviewCardOrder
+// 3.21.2: 概览默认隐藏全球连接、连接统计、网络信息与延迟
+const migratedHideOverviewCardsKey = 'config/migrated-hide-overview-cards-3-21-2'
+if (typeof window !== 'undefined' && localStorage.getItem(migratedHideOverviewCardsKey) === null) {
+  overviewCardOrder.value = overviewCardOrder.value.map((item) => {
+    if (
+      item.card === OVERVIEW_CARD.NetworkCard ||
+      item.card === OVERVIEW_CARD.EarthGlobeCard ||
+      item.card === OVERVIEW_CARD.ConnectionHistory
+    ) {
+      return { ...item, visible: false }
+    }
+    return item
+  })
+  localStorage.setItem(migratedHideOverviewCardsKey, 'true')
 }
 
 // 确保所有卡片都在配置中。存量配置首次补入全球连接时放在连接拓扑前；
