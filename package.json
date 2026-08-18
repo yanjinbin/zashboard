@@ -1,6 +1,6 @@
 {
   "name": "zashboard",
-  "version": "3.21.2",
+  "version": "3.21.3",
   "description": "A Dashboard Using Clash API",
   "license": "MIT",
   "type": "module",

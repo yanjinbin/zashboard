@@ -155,9 +155,15 @@ const handlerClickUpgradeUI = async () => {
     await upgradeUIAPI()
     isUIUpgrading.value = false
     handlerUpgradeSuccess()
-    setTimeout(() => {
+    setTimeout(async () => {
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations()
+        for (const registration of registrations) {
+          await registration.unregister()
+        }
+      }
       window.location.reload()
-    }, 1000)
+    }, 2000)
   } catch {
     isUIUpgrading.value = false
   }
