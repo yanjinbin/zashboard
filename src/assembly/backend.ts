@@ -113,8 +113,6 @@ const soft = computed(() => {
     updateGeoDatabase: mihomoOrForkCore,
     // /storage/zashboard 设置同步,mihomo 扩展
     syncSettings: mihomoOrForkCore,
-    // 全量刷新(代理 / 规则 Provider 重载),mihomo 扩展端点;sing-box 兼容核心需 displayAllFeatures 强制
-    fullRefresh: mihomoOrForkCore,
     independentLatency: mihomoOrForkCore,
     coreUpdateCheck: mihomo,
     // ports / tun / allow-lan 等 PATCH /configs 配置块。

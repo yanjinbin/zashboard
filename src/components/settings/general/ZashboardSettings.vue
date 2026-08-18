@@ -10,14 +10,6 @@
       />
       <div class="flex min-w-0 flex-col">
         <span class="text-base font-semibold"> ImmortalWrt-R5C-Gateway Nikki 控制面板 </span>
-        <a
-          href="https://router-docs-sepia.vercel.app/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="link link-primary truncate text-xs"
-        >
-          https://router-docs-sepia.vercel.app/
-        </a>
       </div>
     </div>
     <div class="flex items-center gap-2 px-1">
@@ -29,11 +21,7 @@
           <span class="bg-secondary absolute h-2 w-2 animate-ping rounded-full"></span>
           <span class="bg-secondary h-2 w-2 rounded-full"></span>
         </span>
-        <a
-          :href="getZashboardRepoUrl()"
-          target="_blank"
-          class="text-lg font-semibold"
-        >
+        <div class="text-lg font-semibold">
           zashboard
           <span class="text-sm font-normal opacity-50">
             {{ zashboardVersion }}
@@ -44,7 +32,7 @@
               {{ commitId }}
             </span>
           </span>
-        </a>
+        </div>
       </div>
     </div>
 
@@ -135,8 +123,8 @@
 </template>
 
 <script setup lang="ts">
-import { patchConfigsAPI } from '@/api/clash'
-import { getZashboardReleaseAssetUrl, getZashboardRepoUrl } from '@/assembly/dashboardRelease'
+import { updateConfigs } from '@/assembly/config'
+import { getZashboardReleaseAssetUrl } from '@/assembly/dashboardRelease'
 import { isUIUpdateAvailable, upgradeUIAPI, zashboardVersion } from '@/assembly/version'
 import DashboardSettings from '@/components/common/DashboardSettings.vue'
 import TextInput from '@/components/common/TextInput.vue'
@@ -161,7 +149,7 @@ const handlerClickUpgradeUI = async () => {
   if (isUIUpgrading.value) return
   isUIUpgrading.value = true
   try {
-    await patchConfigsAPI({
+    await updateConfigs({
       'external-ui-url': getZashboardReleaseAssetUrl(targetUIVersion.value),
     })
     await upgradeUIAPI()

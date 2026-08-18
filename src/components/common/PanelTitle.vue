@@ -1,10 +1,7 @@
 <template>
-  <a
+  <div
     v-if="showPanelTitleBanner"
-    href="https://router-docs-sepia.vercel.app/"
-    target="_blank"
-    rel="noopener noreferrer"
-    class="link link-hover text-base-content hover:text-primary hidden min-w-0 items-center justify-center gap-1.5 text-sm font-semibold whitespace-nowrap lg:flex"
+    class="text-base-content hidden min-w-0 items-center justify-center gap-1.5 text-sm font-semibold whitespace-nowrap lg:flex"
   >
     <img
       src="https://cdn.jsdelivr.net/gh/yanjinbin/dotfiles@latest/mihomo/rules/icons/router.svg"
@@ -12,7 +9,7 @@
       alt=""
     />
     <span class="truncate">ImmortalWrt-R5C-Gateway Nikki 控制面板</span>
-  </a>
+  </div>
 </template>
 <script lang="ts" setup>
 import { showPanelTitleBanner } from '@/store/settings'
