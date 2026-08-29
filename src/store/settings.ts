@@ -287,9 +287,21 @@ export const earthOriginSource = useStorage<'global' | 'china'>(
   'china',
 )
 export const earthVisualMode = useStorage<'flat' | 'space'>('config/earth-visual-mode', 'flat')
+
+// 3.21.6: 默认不将连接页筛选条件应用到连接拓扑；老用户也只关闭一次
+const migratedDisableTopologyConnectionFilterKey =
+  'config/migrated-disable-topology-connection-filter-by-default-3-21-6'
+if (
+  typeof window !== 'undefined' &&
+  localStorage.getItem(migratedDisableTopologyConnectionFilterKey) === null
+) {
+  localStorage.setItem('config/topology-apply-connection-filter', 'false')
+  localStorage.setItem(migratedDisableTopologyConnectionFilterKey, 'true')
+}
+
 export const topologyApplyConnectionFilter = useStorage(
   'config/topology-apply-connection-filter',
-  true,
+  false,
 )
 
 // proxies
