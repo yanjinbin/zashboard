@@ -185,6 +185,17 @@ export const autoDisconnectIdleUDPTime = useStorage('config/auto-disconnect-idle
 export const keyboardShortcuts = useStorage<Record<string, string>>('config/keyboard-shortcuts', {})
 
 // overview
+// 3.21.5: 默认分离概览页；老用户也只强制开启一次，之后仍可手动关闭
+const migratedEnableSplitOverviewPageKey =
+  'config/migrated-enable-split-overview-page-by-default-3-21-5'
+if (
+  typeof window !== 'undefined' &&
+  localStorage.getItem(migratedEnableSplitOverviewPageKey) === null
+) {
+  localStorage.setItem('config/split-overview-page', 'true')
+  localStorage.setItem(migratedEnableSplitOverviewPageKey, 'true')
+}
+
 export const splitOverviewPage = useStorage('config/split-overview-page', true)
 export const autoIPCheck = useStorage('config/auto-ip-check', true)
 export const autoConnectionCheck = useStorage('config/auto-connection-check', true)
