@@ -1,21 +1,45 @@
-import { disconnectAllAPI, disconnectByIdAPI } from '@/assembly/connections'
-import { useCtrlsBar } from '@/composables/useCtrlsBar'
-import { ROUTE_NAME, SETTINGS_MENU_KEY, SORT_DIRECTION, SORT_TYPE } from '@/constant'
-import { useTooltip } from '@/helper/tooltip'
+import { can } from '@/assembly/backend'
+import { disconnectAll, disconnectById, isPaused } from '@/assembly/connections'
+import { useCtrlsBar } from '@/composables/use-ctrls-bar'
+import { useTooltip } from '@/composables/use-tooltip'
 import {
+  CONNECTION_GROUPABLE_KEYS,
+  CONNECTION_TAB_TYPE,
+  naturalSortDirection,
+  ROUTE_NAME,
+  SETTINGS_MENU_KEY,
+  SORT_DIRECTION,
+  SORT_DIRECTION_LABEL_KEY,
+  SORT_TYPE,
+  SORT_TYPE_GROUPS,
+  SORT_TYPE_VALUE_KIND,
+  type ConnectionGroupableKey,
+} from '@/constant'
+import {
+  hasConnectionCardGroups,
+  hasExpandedConnectionCardGroups,
+  toggleAllConnectionCardGroups,
+} from '@/helper/connection-card-groups'
+import {
+  connectionCardGroupKey,
   connectionFilter,
   connections,
   connectionSortDirection,
   connectionSortType,
-  isPaused,
+  connectionTabShow,
   quickFilterEnabled,
   quickFilterRegex,
   renderConnections,
+  searchHiddenColumns,
+  sourceIPFilter,
 } from '@/store/connections'
 import { isConnectionCard } from '@/store/settings'
 import {
   BarsArrowDownIcon,
   BarsArrowUpIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  FunnelIcon,
   LinkIcon,
   LinkSlashIcon,
   PauseIcon,
@@ -30,6 +54,7 @@ import { useRouter } from 'vue-router'
 import CtrlsBar from '../common/CtrlsBar.vue'
 import DialogWrapper from '../common/DialogWrapper.vue'
 import PanelTitle from '../common/PanelTitle.vue'
+import SelectInput from '../common/SelectInput.vue'
 import TextInput from '../common/TextInput.vue'
 import ConnectionCardSettings from '../settings/connections/ConnectionCardSettings.vue'
 import TableSettings from '../settings/connections/TableSettings.vue'
@@ -38,12 +63,26 @@ import SourceIPFilter from './SourceIPFilter.vue'
 
 const handlerClickCloseAll = () => {
   if (renderConnections.value.length === connections.value.length) {
-    disconnectAllAPI()
-  } else {
-    renderConnections.value.forEach((conn) => {
-      disconnectByIdAPI(conn.id)
-    })
+    disconnectAll()
+    return
   }
+
+  const sourceIPs = sourceIPFilter.value
+
+  if (
+    can('connectionsFilterClose') &&
+    sourceIPs?.length === 1 &&
+    !connectionFilter.value &&
+    !quickFilterEnabled.value &&
+    connectionTabShow.value === CONNECTION_TAB_TYPE.ACTIVE
+  ) {
+    disconnectAll({ src: sourceIPs[0] })
+    return
+  }
+
+  renderConnections.value.forEach((conn) => {
+    disconnectById(conn.id)
+  })
 }
 
 export default defineComponent({
@@ -60,30 +99,45 @@ export default defineComponent({
     const { showTip, updateTip } = useTooltip()
     const { isLargeCtrlsBar } = useCtrlsBar(() => (isConnectionCard.value ? 860 : 720))
 
+    const sortDirectionLabel = () =>
+      t(
+        SORT_DIRECTION_LABEL_KEY[SORT_TYPE_VALUE_KIND[connectionSortType.value]][
+          connectionSortDirection.value
+        ],
+      )
+
     return () => {
       const sortForCards = (
         <div class={`join flex-1 ${isLargeCtrlsBar.value ? 'min-w-46' : ''}`}>
-          <select
+          <SelectInput
             class="join-item select select-sm flex-1"
-            v-model={connectionSortType.value}
-          >
-            {(Object.values(SORT_TYPE) as string[]).map((opt) => (
-              <option
-                key={opt}
-                value={opt}
-              >
-                {t(opt) || opt}
-              </option>
-            ))}
-          </select>
+            aria-label={t('sortBy')}
+            modelValue={connectionSortType.value}
+            onUpdate:modelValue={(value) => {
+              const sortType = value as SORT_TYPE
+
+              connectionSortType.value = sortType
+              connectionSortDirection.value = naturalSortDirection(sortType)
+            }}
+            options={SORT_TYPE_GROUPS.flatMap((sortGroup) =>
+              sortGroup.types.map((value) => ({
+                value: value as string,
+                label: t(value) || value,
+                group: t(sortGroup.labelKey),
+              })),
+            )}
+          />
           <button
             class="btn join-item btn-sm"
+            aria-label={sortDirectionLabel()}
             onClick={() => {
               connectionSortDirection.value =
                 connectionSortDirection.value === SORT_DIRECTION.ASC
                   ? SORT_DIRECTION.DESC
                   : SORT_DIRECTION.ASC
+              updateTip(sortDirectionLabel())
             }}
+            onMouseenter={(e) => showTip(e, sortDirectionLabel(), { appendTo: 'parent' })}
           >
             {connectionSortDirection.value === SORT_DIRECTION.ASC ? (
               <BarsArrowUpIcon class="h-4 w-4" />
@@ -93,6 +147,45 @@ export default defineComponent({
           </button>
         </div>
       )
+
+      const groupForCards = (
+        <SelectInput
+          class="select select-sm min-w-0 flex-1"
+          modelValue={connectionCardGroupKey.value}
+          onUpdate:modelValue={(value) =>
+            (connectionCardGroupKey.value = value as ConnectionGroupableKey | null)
+          }
+          options={[
+            { value: null, label: t('noGrouping') },
+            ...CONNECTION_GROUPABLE_KEYS.map((value) => ({
+              value,
+              label: t(value),
+            })),
+          ]}
+        />
+      )
+
+      const toggleGroupsLabel = () =>
+        hasExpandedConnectionCardGroups.value ? t('collapseAllGroups') : t('expandAllGroups')
+      const toggleGroupsButton =
+        isConnectionCard.value && connectionCardGroupKey.value !== null ? (
+          <button
+            class="btn btn-circle btn-sm"
+            disabled={!hasConnectionCardGroups.value}
+            aria-label={toggleGroupsLabel()}
+            onClick={() => {
+              toggleAllConnectionCardGroups()
+              updateTip(toggleGroupsLabel())
+            }}
+            onMouseenter={(e) => showTip(e, toggleGroupsLabel(), { appendTo: 'parent' })}
+          >
+            {hasExpandedConnectionCardGroups.value ? (
+              <ChevronUpIcon class="h-4 w-4" />
+            ) : (
+              <ChevronDownIcon class="h-4 w-4" />
+            )}
+          </button>
+        ) : null
 
       const settingsModal = (
         <>
@@ -108,6 +201,12 @@ export default defineComponent({
           >
             <div class="flex flex-col gap-3 text-sm">
               <div class="settings-grid">
+                {isConnectionCard.value && (
+                  <div class="setting-item">
+                    <div class="setting-item-label">{t('groupBy')}</div>
+                    {groupForCards}
+                  </div>
+                )}
                 <div class="setting-item">
                   <div class="setting-item-label shrink-0!">{t('hideConnectionRegex')}</div>
                   <TextInput
@@ -136,14 +235,13 @@ export default defineComponent({
                 </div>
                 {isConnectionCard.value ? <ConnectionCardSettings /> : <TableSettings />}
               </div>
-              <div class="divider m-0"></div>
               <button
                 class="btn btn-block"
                 onClick={() => {
                   settingsModel.value = false
                   router.push({
                     name: ROUTE_NAME.settings,
-                    query: { scrollTo: SETTINGS_MENU_KEY.connections },
+                    query: { section: SETTINGS_MENU_KEY.connections },
                   })
                 }}
               >
@@ -154,13 +252,33 @@ export default defineComponent({
         </>
       )
 
+      const searchScopeLabel = () =>
+        searchHiddenColumns.value ? t('searchHiddenColumns') : t('searchVisibleColumns')
       const searchInput = (
-        <TextInput
-          v-model={connectionFilter.value}
-          placeholder={`${t('search')} | Regex`}
-          clearable={true}
-          class={isLargeCtrlsBar.value ? 'w-32 max-w-80 flex-1' : 'join-item min-w-0 flex-1'}
-        />
+        <div class={['relative w-32 min-w-0 flex-1', isLargeCtrlsBar.value && 'max-w-80']}>
+          <button
+            class="btn btn-circle btn-ghost btn-xs absolute top-1/2 left-1 z-20 h-6 min-h-6 w-6 -translate-y-1/2 p-0"
+            aria-label={searchScopeLabel()}
+            aria-pressed={searchHiddenColumns.value}
+            onClick={() => {
+              searchHiddenColumns.value = !searchHiddenColumns.value
+              updateTip(searchScopeLabel())
+            }}
+            onMouseenter={(e) => showTip(e, searchScopeLabel())}
+          >
+            <FunnelIcon
+              class={`h-3.5 w-3.5 ${
+                searchHiddenColumns.value ? 'text-primary fill-primary/40' : 'opacity-50'
+              }`}
+            />
+          </button>
+          <TextInput
+            v-model={connectionFilter.value}
+            placeholder={`${t('search')} | Regex`}
+            clearable={true}
+            class={['w-full pl-7', !isLargeCtrlsBar.value && 'join-item']}
+          />
+        </div>
       )
 
       const buttons = (
@@ -191,12 +309,14 @@ export default defineComponent({
           >
             {isPaused.value ? <PlayIcon class="h-4 w-4" /> : <PauseIcon class="h-4 w-4" />}
           </button>
-          <button
-            class="btn btn-circle btn-sm"
-            onClick={handlerClickCloseAll}
-          >
-            <XMarkIcon class="h-4 w-4" />
-          </button>
+          {can('connectionsClose') && (
+            <button
+              class="btn btn-circle btn-sm"
+              onClick={handlerClickCloseAll}
+            >
+              <XMarkIcon class="h-4 w-4" />
+            </button>
+          )}
         </>
       )
 
@@ -214,6 +334,7 @@ export default defineComponent({
           {isConnectionCard.value && (
             <div class="flex w-full items-center gap-2">
               {sortForCards}
+              {toggleGroupsButton}
               {settingsModal}
               {buttons}
             </div>
@@ -229,9 +350,10 @@ export default defineComponent({
           {isConnectionCard.value && sortForCards}
           <SourceIPFilter class="w-40" />
           {searchInput}
-          <div class="flex flex-1 justify-center">
+          <div class="flex min-w-0 flex-1 justify-center">
             <PanelTitle />
           </div>
+          {toggleGroupsButton}
           {settingsModal}
           {buttons}
         </div>

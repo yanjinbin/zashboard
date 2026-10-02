@@ -1,5 +1,4 @@
 <template>
-  <!-- 两个表格的列定义和排序状态各自独立,必须给 key 强制重建,不能复用同一个实例 -->
   <VirtualTable
     v-if="rulesTabShow === RULE_TAB_TYPE.PROVIDER"
     key="rule-providers"
@@ -19,55 +18,56 @@
     :row-class="ruleRowClass"
     @row-click="handlerRuleClick"
   />
-  <!-- 表格行没法就地展开,选节点这件事挪到弹窗里,链路和卡片视图保持一致 -->
   <DialogWrapper
     v-model="groupDialogVisible"
     :title="groupDialogTitle"
+    :no-padding="true"
+    box-class="max-w-160"
   >
     <div
       v-if="selectedRule"
-      class="flex flex-col gap-2"
+      class="flex h-[70dvh] max-h-142 flex-col overflow-hidden"
     >
-      <ProxyChainPath
-        :proxy="selectedRule.proxy"
-        :selected="selectedGroup"
-        :show-now-node="displayNowNodeInRule"
-        :show-latency="displayLatencyInRule"
-        @update:selected="selectedGroup = $event"
-      />
-      <ProxyGroup
-        :name="selectedGroup"
-        :force-open="true"
-        class="transparent-collapse"
-      />
+      <div class="shrink-0 p-3 pb-0">
+        <ProxyChainPath
+          :proxy="selectedRule.proxy"
+          :selected="selectedGroup"
+          :show-now-node="displayNowNodeInRule"
+          :show-latency="displayLatencyInRule"
+          @update:selected="selectedGroup = $event"
+        />
+      </div>
+      <div
+        class="flex flex-1 flex-col overflow-y-auto"
+        :class="PROXIES_PARENT_CLASS"
+      >
+        <ProxyGroupPanel :name="selectedGroup" />
+      </div>
     </div>
   </DialogWrapper>
 </template>
 
 <script setup lang="ts">
+import { renderRules, renderRulesProvider, rulesFilter, rulesTabShow } from '@/store/rules'
 import DialogWrapper from '@/components/common/DialogWrapper.vue'
 import HighlightText from '@/components/common/HighlightText.vue'
 import ProxyChainPath from '@/components/common/ProxyChainPath.vue'
 import VirtualTable from '@/components/common/VirtualTable.vue'
-import ProxyGroup from '@/components/proxies/ProxyGroup.vue'
+import ProxyGroupPanel from '@/components/proxies/ProxyGroupPanel.vue'
 import { proxyGroupList } from '@/assembly/proxies'
+import { fetchRules, rules, updateRuleProvider } from '@/assembly/rules'
+import { useRuleHitTooltip } from '@/composables/use-rule-hit-tooltip'
 import {
-  fetchRules,
-  renderRules,
-  renderRulesProvider,
-  rules,
-  rulesFilter,
-  rulesTabShow,
-  updateRuleProviderAPI,
-} from '@/assembly/rules'
-import {
+  EMPTY_CELL,
+  formatRuleHitCount,
   getRuleSize,
   isRuleDisabled,
   isUpdateableRuleSet,
   toggleRuleDisabledWithSideEffects,
-} from '@/composables/rules'
+} from '@/helper/rules'
 import { RULE_TAB_TYPE } from '@/constant'
-import { fromNow } from '@/helper/utils'
+import { notifyRequestError } from '@/helper/request-error'
+import { fromNow, PROXIES_PARENT_CLASS } from '@/helper/utils'
 import { displayLatencyInRule, displayNowNodeInRule } from '@/store/settings'
 import type { Rule, RuleProvider } from '@/types'
 import { ArrowPathIcon } from '@heroicons/vue/24/outline'
@@ -77,8 +77,8 @@ import { computed, h, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
+const { showRuleHitTip } = useRuleHitTooltip()
 
-// 规则序号按配置顺序算一次,免得每行都去 rules 里 indexOf
 const ruleIndexMap = computed(() => {
   const map = new Map<Rule, number>()
 
@@ -87,17 +87,14 @@ const ruleIndexMap = computed(() => {
   return map
 })
 
-// 命中统计是部分内核才有的字段,没有就别占着两列空表头
 const hasRuleExtra = computed(() => rules.value.some((rule) => rule.extra))
 const ruleColumnVisibility = computed(() => ({
-  hitCount: hasRuleExtra.value,
-  missCount: hasRuleExtra.value,
+  hitMiss: hasRuleExtra.value,
 }))
 
 const updatingProviders = ref<string[]>([])
 const togglingRules = ref<string[]>([])
 
-// 点行选节点:规则指向策略组时才有得选,禁用的规则跟卡片视图一样不给点
 const isRuleSelectable = (rule: Rule) =>
   proxyGroupList.value.includes(rule.proxy) && !isRuleDisabled(rule)
 
@@ -129,8 +126,10 @@ const updateProviderHandler = async (name: string) => {
 
   updatingProviders.value.push(name)
   try {
-    await updateRuleProviderAPI(name)
+    await updateRuleProvider(name)
     await fetchRules()
+  } catch (e) {
+    notifyRequestError(e)
   } finally {
     updatingProviders.value = updatingProviders.value.filter((item) => item !== name)
   }
@@ -144,6 +143,8 @@ const toggleRuleHandler = async (rule: Rule) => {
   togglingRules.value.push(key)
   try {
     await toggleRuleDisabledWithSideEffects(rule)
+  } catch (e) {
+    notifyRequestError(e)
   } finally {
     togglingRules.value = togglingRules.value.filter((item) => item !== key)
   }
@@ -170,10 +171,10 @@ const ruleColumns: ColumnDef<Rule>[] = [
     cell: ({ row }) =>
       h(
         'span',
-        { class: 'text-base-content/50 tabular-nums' },
+        { class: 'tabular-nums opacity-50' },
         String(ruleIndexMap.value.get(row.original) ?? ''),
       ),
-    meta: { cellClass: 'w-12' },
+    meta: { cellClass: 'w-12 text-right', headerClass: 'text-right' },
   },
   {
     header: () => t('type'),
@@ -189,7 +190,7 @@ const ruleColumns: ColumnDef<Rule>[] = [
     cell: ({ row }) =>
       row.original.payload
         ? h(HighlightText, { text: row.original.payload, filter: rulesFilter.value })
-        : h('span', { class: 'text-base-content/40' }, '-'),
+        : h('span', { class: 'opacity-40' }, EMPTY_CELL),
   },
   {
     header: () => t('proxyGroup'),
@@ -213,32 +214,44 @@ const ruleColumns: ColumnDef<Rule>[] = [
 
       return typeof size === 'number' && size !== -1 ? size : ''
     },
-    cell: ({ getValue }) => h('span', { class: 'tabular-nums' }, String(getValue() ?? '')),
-    meta: { cellClass: 'w-24' },
+    cell: ({ getValue }) => {
+      const size = getValue<number | ''>()
+
+      return size === ''
+        ? h('span', { class: 'opacity-40' }, EMPTY_CELL)
+        : h('span', { class: 'tabular-nums' }, size.toLocaleString())
+    },
+    meta: { cellClass: 'w-24 text-right', headerClass: 'text-right' },
   },
   {
-    header: () => t('hitCount'),
-    id: 'hitCount',
+    header: () => t('hitMissCount'),
+    id: 'hitMiss',
     accessorFn: (rule) => rule.extra?.hitCount ?? 0,
-    cell: ({ row }) =>
-      h('span', { class: 'tabular-nums' }, [
-        String(row.original.extra?.hitCount ?? 0),
-        row.original.extra?.hitAt
-          ? h(
-              'span',
-              { class: 'text-base-content/40 ml-1 text-xs' },
-              dayjs(row.original.extra.hitAt).format('MM-DD HH:mm'),
-            )
-          : null,
-      ]),
-    meta: { cellClass: 'w-40' },
-  },
-  {
-    header: () => t('missCount'),
-    id: 'missCount',
-    accessorFn: (rule) => rule.extra?.missCount ?? 0,
-    cell: ({ getValue }) => h('span', { class: 'tabular-nums' }, String(getValue() ?? 0)),
-    meta: { cellClass: 'w-24' },
+    cell: ({ row }) => {
+      const extra = row.original.extra
+
+      return h(
+        'span',
+        {
+          class: 'grid grid-cols-[1fr_auto_1fr] items-baseline tabular-nums',
+          onMouseenter: (e: MouseEvent) => showRuleHitTip(e, row.original),
+        },
+        [
+          h(
+            'span',
+            { class: extra?.hitCount ? 'text-right' : 'text-right opacity-40' },
+            formatRuleHitCount(extra?.hitCount),
+          ),
+          h('span', { class: 'mx-1 opacity-30' }, '/'),
+          h(
+            'span',
+            { class: extra?.missCount ? 'text-left opacity-60' : 'text-left opacity-40' },
+            formatRuleHitCount(extra?.missCount),
+          ),
+        ],
+      )
+    },
+    meta: { cellClass: 'w-36', headerClass: 'text-center', noCellTitle: true },
   },
   {
     header: () => t('statusLabel'),
@@ -279,8 +292,8 @@ const providerColumns: ColumnDef<RuleProvider>[] = [
     id: 'index',
     accessorFn: (provider) => renderRulesProvider.value.indexOf(provider) + 1,
     cell: ({ getValue }) =>
-      h('span', { class: 'text-base-content/50 tabular-nums' }, String(getValue() ?? '')),
-    meta: { cellClass: 'w-12' },
+      h('span', { class: 'tabular-nums opacity-50' }, String(getValue() ?? '')),
+    meta: { cellClass: 'w-12 text-right', headerClass: 'text-right' },
   },
   {
     header: () => t('name'),
@@ -292,8 +305,9 @@ const providerColumns: ColumnDef<RuleProvider>[] = [
     header: () => t('ruleCount'),
     id: 'ruleCount',
     accessorFn: (provider) => provider.ruleCount,
-    cell: ({ getValue }) => h('span', { class: 'tabular-nums' }, String(getValue() ?? 0)),
-    meta: { cellClass: 'w-24' },
+    cell: ({ getValue }) =>
+      h('span', { class: 'tabular-nums' }, (getValue<number>() ?? 0).toLocaleString()),
+    meta: { cellClass: 'w-24 text-right', headerClass: 'text-right' },
   },
   {
     header: () => t('behavior'),

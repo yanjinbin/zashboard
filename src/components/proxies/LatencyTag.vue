@@ -1,11 +1,9 @@
 <template>
   <div
-    :class="
-      twMerge(
-        'latency-tag bg-base-100 h-5 w-10 rounded-xl text-xs select-none md:hover:shadow-sm',
-        color,
-      )
-    "
+    :class="[
+      'latency-tag bg-base-100 h-5 w-10 rounded-xl text-xs select-none md:hover:shadow-sm',
+      color,
+    ]"
     @mouseenter="handlerHistoryTip"
   >
     <Transition name="latency-state">
@@ -31,12 +29,11 @@
 <script setup lang="ts">
 import { NOT_CONNECTED } from '@/constant'
 import { getColorForLatency } from '@/helper'
-import { useTooltip } from '@/helper/tooltip'
+import { useTooltip } from '@/composables/use-tooltip'
 import { getHistoryByName, getLatencyByName } from '@/assembly/proxies'
 import { BoltIcon } from '@heroicons/vue/24/outline'
 import { CountUp } from 'countup.js'
 import dayjs from 'dayjs'
-import { twMerge } from 'tailwind-merge'
 import { computed, onUnmounted, ref, watch } from 'vue'
 
 const { showTip } = useTooltip()
@@ -77,39 +74,40 @@ const props = defineProps<{
 const latencyRef = ref<HTMLElement | null>(null)
 const latency = computed(() => getLatencyByName(props.name ?? '', props.groupName))
 let countUp: CountUp | null = null
-// 数字节点测速期间会被卸载,CountUp 实例跟着丢。记住上一次真正显示出来的数字,
-// 节点重新挂载时从它滚到新值,滚动效果才不会在每次测速后消失。
 let shownLatency = latency.value
 
-/*
- * 由节点自身的挂载来驱动重建:flush: 'post' 保证 DOM 已经补好,
- * 且在这一帧绘制前就把文本压回起始值,不会闪一下最终值。
- */
+const createCountUp = (el: HTMLElement) => {
+  countUp = new CountUp(el, shownLatency, {
+    duration: 1,
+    separator: '',
+    enableScrollSpy: false,
+    startVal: shownLatency,
+  })
+
+  return countUp
+}
+
 watch(
   latencyRef,
   (el) => {
-    if (!el) {
-      countUp = null
-      return
-    }
+    countUp = null
 
-    countUp = new CountUp(el, latency.value, {
-      duration: 1,
-      separator: '',
-      enableScrollSpy: false,
-      startVal: shownLatency,
-    })
-    countUp.update(latency.value)
+    if (!el || latency.value === shownLatency) return
+
+    createCountUp(el).update(latency.value)
     shownLatency = latency.value
   },
   { flush: 'post' },
 )
 
-// 节点还挂着的时候(比如自动测速刷新)直接滚过去,不用重建实例。
 watch(latency, (value) => {
-  if (!countUp) return
+  const el = latencyRef.value
 
-  countUp.update(value)
+  if (!el) return
+
+  const instance = countUp ?? createCountUp(el)
+
+  instance.update(value)
   shownLatency = value
 })
 
@@ -165,6 +163,20 @@ const state = computed<LatencyState>(() => {
   .latency-state-enter-active,
   .latency-state-leave-active {
     transition: none;
+  }
+}
+
+.custom-background .bg-primary\/85 .latency-tag {
+  background-color: color-mix(
+    in oklab,
+    var(--color-base-100) max(var(--app-surface-alpha), 90%),
+    transparent
+  );
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .loading-dots {
+    mask-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='4' cy='12' r='3'%3E%3Canimate attributeName='cy' values='12;6;12;12' keyTimes='0;0.286;0.571;1' dur='1.05s' repeatCount='indefinite' keySplines='.33,0,.66,.33;.33,.66,.66,1'/%3E%3C/circle%3E%3Ccircle cx='12' cy='12' r='3'%3E%3Canimate attributeName='cy' values='12;6;12;12' keyTimes='0;0.286;0.571;1' dur='1.05s' repeatCount='indefinite' keySplines='.33,0,.66,.33;.33,.66,.66,1' begin='0.1s'/%3E%3C/circle%3E%3Ccircle cx='20' cy='12' r='3'%3E%3Canimate attributeName='cy' values='12;6;12;12' keyTimes='0;0.286;0.571;1' dur='1.05s' repeatCount='indefinite' keySplines='.33,0,.66,.33;.33,.66,.66,1' begin='0.2s'/%3E%3C/circle%3E%3C/svg%3E");
   }
 }
 </style>

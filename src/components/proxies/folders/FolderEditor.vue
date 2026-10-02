@@ -35,29 +35,31 @@
           :key="idx"
           class="border-base-300 flex items-center gap-1.5 rounded-md border p-1.5"
         >
-          <select
+          <SelectInput
             class="select select-xs select-bordered shrink-0"
-            :value="rule.type"
-            @change="onRuleTypeChange(idx, ($event.target as HTMLSelectElement).value)"
-          >
-            <option value="auto">{{ $t('folder_rule_auto') }}</option>
-            <option value="regex">{{ $t('folder_rule_regex') }}</option>
-            <option value="excludeRegex">{{ $t('folder_rule_exclude_regex') }}</option>
-          </select>
-          <select
+            :model-value="rule.type"
+            :options="[
+              { value: 'auto', label: $t('folder_rule_auto') },
+              { value: 'regex', label: $t('folder_rule_regex') },
+              { value: 'excludeRegex', label: $t('folder_rule_exclude_regex') },
+            ]"
+            @update:model-value="onRuleTypeChange(idx, $event)"
+          />
+          <SelectInput
             v-if="rule.type === 'auto'"
             class="select select-xs select-bordered flex-1"
-            :value="(rule as Extract<FolderRule, { type: 'auto' }>).value"
-            @change="
+            :model-value="(rule as Extract<FolderRule, { type: 'auto' }>).value"
+            :options="[
+              { value: 'hasGroup', label: $t('folder_auto_hasGroup') },
+              { value: 'nodeOnly', label: $t('folder_auto_nodeOnly') },
+            ]"
+            @update:model-value="
               updateRule(idx, {
                 type: 'auto',
-                value: ($event.target as HTMLSelectElement).value as 'nodeOnly' | 'hasGroup',
+                value: $event as 'nodeOnly' | 'hasGroup',
               })
             "
-          >
-            <option value="hasGroup">{{ $t('folder_auto_hasGroup') }}</option>
-            <option value="nodeOnly">{{ $t('folder_auto_nodeOnly') }}</option>
-          </select>
+          />
           <input
             v-else
             class="input input-xs input-bordered flex-1"
@@ -150,6 +152,7 @@
 
 <script setup lang="ts">
 import { proxyGroupList } from '@/assembly/proxies'
+import SelectInput from '@/components/common/SelectInput.vue'
 import {
   addGroupToFolder,
   folders,
@@ -158,11 +161,11 @@ import {
   removeManualInclude,
   updateFolder,
   type FolderRule,
-} from '@/store/proxyFolders'
+} from '@/store/proxy-folders'
 import { ArrowLeftIcon, PlusIcon, TrashIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { displayFolderName } from './folderName'
+import { displayFolderName } from './folder-name'
 
 const props = defineProps<{ id: string }>()
 const emit = defineEmits<{ (e: 'close'): void }>()

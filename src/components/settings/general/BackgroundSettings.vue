@@ -1,11 +1,14 @@
 <template>
-  <SettingItem :setting-key="k.customBackgroundURL">
-    <div class="setting-item-label">
+  <SettingItem
+    :setting-key="k.customBackgroundURL"
+    class="max-sm:flex-wrap max-sm:py-3"
+  >
+    <div class="setting-item-label max-sm:w-full max-sm:flex-none">
       {{ $t('customBackgroundURL') }}
     </div>
-    <div class="join">
+    <div class="join w-48 max-sm:w-full">
       <TextInput
-        class="join-item w-38"
+        class="join-item min-w-0 flex-1"
         v-model="customBackgroundURL"
         :clearable="true"
         @update:modelValue="handlerBackgroundURLChange"
@@ -17,13 +20,6 @@
         <ArrowUpTrayIcon class="h-4 w-4" />
       </button>
     </div>
-    <button
-      class="btn btn-circle btn-sm"
-      v-if="customBackgroundURL"
-      @click="displayBgProperty = !displayBgProperty"
-    >
-      <AdjustmentsHorizontalIcon class="h-4 w-4" />
-    </button>
     <input
       ref="inputFileRef"
       type="file"
@@ -34,9 +30,10 @@
   </SettingItem>
   <SettingItem
     :setting-key="k.transparent"
-    :when="!!customBackgroundURL && displayBgProperty"
+    :when="!!customBackgroundURL"
+    class="settings-dependent-item"
   >
-    <div class="setting-item-label">
+    <div class="setting-item-label shrink-0">
       {{ $t('transparent') }}
     </div>
     <input
@@ -44,17 +41,15 @@
       min="0"
       max="100"
       v-model="dashboardTransparent"
-      class="range max-w-64"
-      @touchstart.passive.stop
-      @touchmove.passive.stop
-      @touchend.passive.stop
+      class="range w-48 max-w-full min-w-0"
     />
   </SettingItem>
   <SettingItem
     :setting-key="k.blurIntensity"
-    :when="!!customBackgroundURL && displayBgProperty"
+    :when="!!customBackgroundURL"
+    class="settings-dependent-item"
   >
-    <div class="setting-item-label">
+    <div class="setting-item-label shrink-0">
       {{ $t('blurIntensity') }}
     </div>
     <input
@@ -62,17 +57,14 @@
       min="0"
       max="40"
       v-model="blurIntensity"
-      class="range max-w-64"
-      @touchstart.stop
-      @touchmove.stop
-      @touchend.stop
+      class="range w-48 max-w-full min-w-0"
     />
   </SettingItem>
 </template>
 
 <script setup lang="ts">
 import SettingItem from '@/components/settings/SettingItem.vue'
-import { GENERAL_ITEM_KEYS } from '@/config/settingsItems'
+import { GENERAL_ITEM_KEYS } from '@/config/settings-items'
 import { deleteBase64FromIndexedDB, LOCAL_IMAGE, saveBase64ToIndexedDB } from '@/helper/indexeddb'
 import {
   autoTheme,
@@ -82,8 +74,8 @@ import {
   defaultTheme,
   theme,
 } from '@/store/settings'
-import { AdjustmentsHorizontalIcon, ArrowUpTrayIcon } from '@heroicons/vue/24/outline'
-import { ref, watch } from 'vue'
+import { ArrowUpTrayIcon } from '@heroicons/vue/24/outline'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import TextInput from '../../common/TextInput.vue'
 
@@ -93,14 +85,7 @@ const { t } = useI18n()
 
 const k = GENERAL_ITEM_KEYS
 
-const displayBgProperty = ref(false)
 const inputFileRef = ref<HTMLInputElement>()
-
-watch(customBackgroundURL, (value) => {
-  if (value) {
-    displayBgProperty.value = true
-  }
-})
 
 const handlerClickUpload = () => {
   inputFileRef.value?.click()
@@ -209,9 +194,7 @@ const handlerFileChange = (e: Event) => {
 
     try {
       confirmApplyThemeByBackgroundTone(await detectBackgroundTone(imageURL))
-    } catch {
-      // Keep the current theme if tone detection fails.
-    }
+    } catch {}
 
     customBackgroundURL.value = LOCAL_IMAGE + '-' + Date.now()
     saveBase64ToIndexedDB(imageURL)

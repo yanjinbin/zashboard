@@ -62,8 +62,6 @@
         :animation="150"
         :handle="'.drag-handle'"
         :item-key="'uuid'"
-        @start="disableSwipe = true"
-        @end="disableSwipe = false"
       >
         <template #item="{ element: sourceIP }">
           <div class="border-base-content/10 rounded-box border p-2.5">
@@ -92,7 +90,6 @@
 
 <script setup lang="ts">
 import SettingItem from '@/components/settings/SettingItem.vue'
-import { disableSwipe } from '@/composables/swipe'
 import { sourceIPLabelList } from '@/store/settings'
 import type { SourceIPLabel } from '@/types'
 import {

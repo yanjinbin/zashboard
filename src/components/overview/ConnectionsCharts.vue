@@ -1,5 +1,6 @@
 <template>
   <TimeSeriesChart
+    :title="$t('connections')"
     :data="chartsData"
     :label-formatter="labelFormatter"
     :tooltip-formatter="tooltipFormatter"
@@ -9,10 +10,10 @@
 </template>
 
 <script setup lang="ts">
+import { connectionsHistory, timeSaved } from '@/assembly/overview'
 import TimeSeriesChart from '@/components/charts/TimeSeriesChart.vue'
-import { formatTimeSeriesTooltipParam } from '@/components/charts/chartTooltip'
-import type { ChartTooltipParam } from '@/components/charts/chartTypes'
-import { connectionsHistory, timeSaved } from '@/store/overview'
+import { formatTimeSeriesTooltipParam } from '@/components/charts/chart-tooltip'
+import type { ChartTooltipParam } from '@/components/charts/chart-types'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -26,9 +27,7 @@ const chartsData = computed(() => {
   ]
 })
 
-const labelFormatter = (value: number) => {
-  return `       ${value}`
-}
+const labelFormatter = (value: number) => String(value)
 const tooltipFormatter = (value: ChartTooltipParam[]) => {
   return value.map((item) => formatTimeSeriesTooltipParam(item, String)).join('\n')
 }

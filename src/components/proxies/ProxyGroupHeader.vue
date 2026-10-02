@@ -38,13 +38,15 @@
 </template>
 
 <script setup lang="ts">
-import { KEYBOARD_SHORTCUT_ACTION, useKeyboardShortcuts } from '@/composables/keyboard'
+import { hiddenGroupMap } from '@/store/proxies'
+import { useKeyboardShortcuts } from '@/composables/use-keyboard'
+import { KEYBOARD_SHORTCUT_ACTION } from '@/helper/keyboard'
+import { getDownloadSpeedByProxyGroup } from '@/helper/proxy-group-traffic'
 import { isHiddenGroup } from '@/helper'
-import { checkTruncation, useTooltip } from '@/helper/tooltip'
+import { checkTruncation } from '@/helper/tooltip'
+import { useTooltip } from '@/composables/use-tooltip'
 import { prettyBytesHelper } from '@/helper/utils'
-import { getConnectionChains } from '@/helper'
-import { activeConnections } from '@/store/connections'
-import { hiddenGroupMap, proxyMap } from '@/assembly/proxies'
+import { proxyMap } from '@/assembly/proxies'
 import { manageHiddenGroup, proxyGroupIconMargin, proxyGroupIconSize } from '@/store/settings'
 import { twMerge } from 'tailwind-merge'
 import { computed } from 'vue'
@@ -70,11 +72,7 @@ const { getShortcutKey } = useKeyboardShortcuts()
 const { showTip } = useTooltip()
 const proxyGroup = computed(() => proxyMap.value[props.name])
 
-const downloadTotal = computed(() => {
-  return activeConnections.value
-    .filter((conn) => getConnectionChains(conn).includes(props.name))
-    .reduce((total, conn) => total + conn.downloadSpeed, 0)
-})
+const downloadTotal = computed(() => getDownloadSpeedByProxyGroup(props.name))
 
 const hiddenGroup = computed({
   get: () => Boolean(isHiddenGroup(props.name)),

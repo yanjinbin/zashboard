@@ -1,64 +1,51 @@
+import { useStorage } from '@/composables/use-storage'
 import type { Backend } from '@/types'
-import { useStorage } from '@vueuse/core'
 import { isEqual, omit } from 'lodash'
 import { v4 as uuid } from 'uuid'
 import { computed, ref } from 'vue'
 import { sourceIPLabelList } from './settings'
 
-// 旧版本的后端结构:没有 `type` 字段,且 sing-box 以附属通道 `singboxChannel` 存在。
-type LegacySingboxChannel = {
-  protocol?: string
-  host?: string
-  port?: string
-  secret?: string
-}
-type LegacyBackend = Partial<Backend> & { singboxChannel?: LegacySingboxChannel }
+type LegacyBackend = Omit<Partial<Backend>, 'type'> & { type?: string; singboxChannel?: unknown }
 
-// 一次性迁移:补全 `type`;把旧的 singboxChannel 拆分为独立的 sing-box 后端。
-const migrateBackendList = (list: LegacyBackend[]): Backend[] => {
-  const migrated: Backend[] = []
+const isLegacyBackend = (item: LegacyBackend) =>
+  !item.type || 'singboxChannel' in item || item.type === 'singbox'
 
-  for (const item of list) {
-    const channel = item.singboxChannel
-    const base = omit(item, 'singboxChannel') as Backend
-
-    migrated.push({
-      ...base,
-      type: base.type ?? 'clash',
-    })
-
-    if (channel?.host) {
-      migrated.push({
-        type: 'singbox',
-        protocol: channel.protocol || 'http',
-        host: channel.host,
-        port: channel.port || '9090',
-        secondaryPath: '',
-        password: channel.secret || '',
-        uuid: uuid(),
-        label: base.label ? `${base.label} (sing-box)` : undefined,
-      })
-    }
-  }
-
-  return migrated
-}
+const migrateBackendList = (list: LegacyBackend[]): Backend[] =>
+  list
+    .filter((item) => item.type !== 'singbox')
+    .map((item) => ({ ...(omit(item, 'singboxChannel') as Backend), type: 'clash' }))
 
 export const backendList = useStorage<Backend[]>('setup/api-list', [])
 
-if (backendList.value.some((item) => !item.type || 'singboxChannel' in item)) {
+if ((backendList.value as LegacyBackend[]).some(isLegacyBackend)) {
   backendList.value = migrateBackendList(backendList.value as LegacyBackend[])
 }
 
-export const showBackendSettingsDialog = ref(false)
-
-export const toggleBackendSettingsDialog = () => {
-  showBackendSettingsDialog.value = !showBackendSettingsDialog.value
-}
 export const activeUuid = useStorage<string>('setup/active-uuid', '')
+
+if (activeUuid.value && !backendList.value.some((item) => item.uuid === activeUuid.value)) {
+  activeUuid.value = ''
+}
 export const activeBackend = computed(() =>
   backendList.value.find((backend) => backend.uuid === activeUuid.value),
 )
+
+export const setActiveBackend = (uuid: string) => {
+  activeUuid.value = uuid
+}
+
+export type BackendManagerView =
+  { mode: 'list' } | { mode: 'create' } | { mode: 'edit'; uuid: string }
+
+export const backendManagerView = ref<BackendManagerView | null>(null)
+
+export const openBackendManager = (view: BackendManagerView = { mode: 'list' }) => {
+  backendManagerView.value = view
+}
+
+export const closeBackendManager = () => {
+  backendManagerView.value = null
+}
 
 export const switchActiveBackend = (direction: 1 | -1) => {
   if (backendList.value.length < 2) {
@@ -75,7 +62,7 @@ export const switchActiveBackend = (direction: 1 | -1) => {
     return null
   }
 
-  activeUuid.value = nextBackend.uuid
+  setActiveBackend(nextBackend.uuid)
   return nextBackend
 }
 
@@ -85,8 +72,8 @@ export const addBackend = (backend: Omit<Backend, 'uuid'>) => {
   })
 
   if (currentEnd) {
-    activeUuid.value = currentEnd.uuid
-    return
+    setActiveBackend(currentEnd.uuid)
+    return currentEnd.uuid
   }
 
   const id = uuid()
@@ -95,7 +82,8 @@ export const addBackend = (backend: Omit<Backend, 'uuid'>) => {
     ...backend,
     uuid: id,
   })
-  activeUuid.value = id
+  setActiveBackend(id)
+  return id
 }
 
 export const updateBackend = (uuid: string, backend: Omit<Backend, 'uuid'>) => {
@@ -109,7 +97,14 @@ export const updateBackend = (uuid: string, backend: Omit<Backend, 'uuid'>) => {
 }
 
 export const removeBackend = (uuid: string) => {
+  const wasActive = activeUuid.value === uuid
+
   backendList.value = backendList.value.filter((end) => end.uuid !== uuid)
+
+  if (wasActive) {
+    setActiveBackend(backendList.value[0]?.uuid ?? '')
+  }
+
   sourceIPLabelList.value.forEach((label) => {
     if (label.scope && label.scope.includes(uuid)) {
       label.scope = label.scope.filter((scope) => scope !== uuid)

@@ -1,23 +1,19 @@
 <template>
-  <select
+  <SelectInput
     class="select select-sm"
     v-model="sourceIPFilter"
-  >
-    <option :value="null">{{ $t('all') }}</option>
-    <option
-      v-for="opt in sourceIPOpts"
-      :key="opt.value.join(',')"
-      :value="opt.value"
-    >
-      {{ opt.label }}
-    </option>
-  </select>
+    :options="[{ value: null, label: $t('all') }, ...sourceIPOpts]"
+  />
 </template>
 
 <script setup lang="ts">
-import { getIPLabelFromMap } from '@/helper/sourceip'
 import { getConnectionSourceIP } from '@/helper'
+import SelectInput from '@/components/common/SelectInput.vue'
+import { reverseDNSRevision } from '@/helper/reverse-dns'
+import { getIPLabelFromMap } from '@/helper/source-ip'
 import { connections, sourceIPFilter } from '@/store/connections'
+import { resolveClientHostname } from '@/store/settings'
+import { activeUuid } from '@/store/setup'
 import * as ipaddr from 'ipaddr.js'
 import { isEqual, uniq } from 'lodash'
 import { computed, ref, watch } from 'vue'
@@ -48,15 +44,14 @@ const sourceIPs = computed(() => {
   })
 })
 const sourceIPOpts = ref<{ label: string; value: string[] }[]>([])
+const sourceIPsKey = computed(() => sourceIPs.value.join('\u0000'))
 
-// do not use computed here for firefox
 watch(
-  sourceIPs,
-  (value, oldValue) => {
-    if (isEqual(value, oldValue)) return
+  [sourceIPsKey, reverseDNSRevision, resolveClientHostname, activeUuid],
+  () => {
     const options: { label: string; value: string[] }[] = []
 
-    value.forEach((ip) => {
+    sourceIPs.value.forEach((ip) => {
       const label = getIPLabelFromMap(ip)
       const index = options.findIndex((opt) => opt.label === label)
 

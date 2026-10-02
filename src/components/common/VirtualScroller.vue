@@ -17,11 +17,6 @@
           transform: `translateY(${virtualRows[0]?.start ?? 0}px)`,
         }"
       >
-        <!--
-          每条自成一张卡片、靠间距分隔。间距做在被测量的行容器的 padding 上，不能用
-          margin 或 flex gap——虚拟滚动按 getBoundingClientRect 累加行高，两者都不计入，
-          totalSize 会和实际布局对不上。
-        -->
         <div
           v-for="row in virtualRows"
           :key="row.key.toString()"
@@ -49,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { usePaddingForViews } from '@/composables/paddingViews'
+import { usePaddingForViews } from '@/composables/use-padding-for-views'
 import { useVirtualizer } from '@tanstack/vue-virtual'
 import { computed, nextTick, ref } from 'vue'
 
@@ -65,6 +60,7 @@ const props = withDefaults(
     size?: number
     overscan?: number
     contentClass?: string
+    getItemKey?: (item: unknown, index: number) => string | number
   }>(),
   {
     data: () => [],
@@ -79,6 +75,7 @@ const virutalOptions = computed(() => {
     count: props.data.length,
     getScrollElement: () => parentRef.value,
     estimateSize: () => props.size,
+    getItemKey: (index: number) => props.getItemKey?.(props.data[index], index) ?? index,
     overscan: props.overscan,
     paddingStart: paddingTop.value,
     paddingEnd: paddingBottom.value + 24,

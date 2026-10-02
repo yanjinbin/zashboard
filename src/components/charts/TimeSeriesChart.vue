@@ -1,44 +1,66 @@
 <template>
   <div
-    class="relative w-full overflow-hidden"
-    :class="xAxisMode === 'seconds' ? 'h-36' : 'h-28'"
+    class="flex flex-col overflow-hidden"
+    data-page-swipe-ignore
   >
+    <div class="flex min-w-0 items-center gap-2 px-3 pt-2 pb-0.5">
+      <span class="text-base-content/70 min-w-0 flex-1 truncate text-[11px] leading-4 font-medium">
+        {{ title }}
+      </span>
+      <span
+        v-if="legend.length"
+        class="text-base-content/70 flex min-w-0 items-center gap-2.5 text-[10px] leading-4"
+      >
+        <span
+          v-for="item in legend"
+          :key="item.name"
+          class="flex min-w-0 items-center gap-1 truncate"
+        >
+          <span
+            class="size-1.5 shrink-0 rounded-full"
+            :style="{ backgroundColor: item.color }"
+          />
+          {{ item.name }}
+        </span>
+      </span>
+      <button
+        v-if="showPauseButton"
+        class="sidebar-chart-pause text-base-content/45 flex size-4 flex-none items-center justify-center rounded transition-opacity duration-150 outline-none"
+        :aria-pressed="isPaused"
+        :aria-label="title"
+        @click="isPaused = !isPaused"
+      >
+        <component
+          :is="isPaused ? PlayCircleIcon : PauseCircleIcon"
+          class="size-3.5"
+        />
+      </button>
+    </div>
     <div
       ref="chartRef"
-      class="h-full w-full"
+      class="min-h-0 w-full flex-1"
     />
-    <button
-      v-if="showPauseButton"
-      class="btn btn-ghost btn-xs absolute right-1 bottom-0"
-      @click="isPaused = !isPaused"
-    >
-      <component
-        :is="isPaused ? PlayCircleIcon : PauseCircleIcon"
-        class="h-4 w-4"
-      />
-    </button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { echarts, useChartTheme, useEChart, type EChartOption } from '@/composables/useEChart'
+import { echarts, useChartTheme, useEChart, type EChartOption } from '@/composables/use-echart'
 import { PauseCircleIcon, PlayCircleIcon } from '@heroicons/vue/24/outline'
 import { computed, ref } from 'vue'
-import type { ChartSeries, ChartTooltipParam } from './chartTypes'
-import { getChartPointValue } from './chartTypes'
+import type { ChartSeries, ChartTooltipParam } from './chart-types'
+import { getChartPointValue } from './chart-types'
 
 const props = withDefaults(
   defineProps<{
+    title: string
     data: ChartSeries[]
     labelFormatter: (value: number) => string
     tooltipFormatter: (value: ChartTooltipParam[]) => string
     yAxisFloor?: number
-    xAxisMode?: 'time' | 'seconds'
     windowSeconds?: number
     showPauseButton?: boolean
   }>(),
   {
-    xAxisMode: 'time',
     windowSeconds: 20,
     showPauseButton: true,
   },
@@ -48,69 +70,52 @@ const chartRef = ref<HTMLElement>()
 const isPaused = ref(false)
 const { colors, fontFamily } = useChartTheme(chartRef)
 
+const colorOf = (index: number) =>
+  index === props.data.length - 1
+    ? { line: colors.seriesPrimary, area: colors.seriesPrimaryMuted }
+    : { line: colors.seriesSecondary, area: colors.seriesSecondaryMuted }
+
+const legend = computed(() =>
+  props.data.length > 1
+    ? props.data.map((item, index) => ({ name: item.name, color: colorOf(index).line }))
+    : [],
+)
+
 const options = computed<EChartOption>(() => {
-  const isSeconds = props.xAxisMode === 'seconds'
   const lastPoint = props.data[0]?.data.at(-1)
-  const latest = lastPoint ? getChartPointValue(lastPoint)[0] : isSeconds ? 0 : Date.now()
+  const latest = lastPoint ? getChartPointValue(lastPoint)[0] : Date.now()
 
   return {
     animationDurationUpdate: 1000,
     animationEasingUpdate: 'linear',
-    legend: {
-      bottom: 0,
-      data: props.data.map((item) => item.name),
-      textStyle: {
-        color: colors.baseContent,
-        fontFamily: fontFamily.value,
-        fontSize: 10,
-      },
-    },
-    grid: isSeconds
-      ? { left: 8, top: 15, right: 8, bottom: 40, containLabel: true }
-      : { left: 50, top: 15, right: 8, bottom: 25 },
+    grid: { left: 42, top: 12, right: 10, bottom: 8 },
     tooltip: {
       show: true,
       trigger: 'axis',
-      backgroundColor: colors.base70,
-      borderColor: colors.base70,
+      backgroundColor: colors.surface,
+      borderColor: colors.surface,
       borderRadius: 8,
       confine: true,
       padding: [0, 3],
       textStyle: {
-        color: colors.baseContent,
+        color: colors.text,
         fontFamily: fontFamily.value,
         fontSize: 11,
       },
       formatter: props.tooltipFormatter,
     },
-    xAxis: isSeconds
-      ? {
-          type: 'value',
-          min: latest - props.windowSeconds,
-          max: latest,
-          axisLine: { show: false },
-          axisTick: { show: false },
-          splitLine: { show: false },
-          axisLabel: {
-            show: true,
-            color: colors.baseContent,
-            fontFamily: fontFamily.value,
-            fontSize: 10,
-            formatter: (value: number) => (value < 0 ? '' : `${Math.round(value)} s`),
-          },
-        }
-      : {
-          type: 'time',
-          min: latest - (props.windowSeconds - 1) * 1000,
-          max: latest - 1000,
-          axisLine: { show: false },
-          axisTick: { show: false },
-          splitLine: { show: false },
-          axisLabel: { show: false },
-        },
+    xAxis: {
+      type: 'time',
+      min: latest - (props.windowSeconds - 1) * 1000,
+      max: latest - 1000,
+      axisLine: { show: false },
+      axisTick: { show: false },
+      splitLine: { show: false },
+      axisLabel: { show: false },
+    },
     yAxis: {
       type: 'value',
-      splitNumber: 4,
+      splitNumber: 3,
       min: 0,
       max:
         props.yAxisFloor === undefined
@@ -122,20 +127,21 @@ const options = computed<EChartOption>(() => {
         show: true,
         lineStyle: {
           type: 'dashed',
-          color: colors.baseContent10,
+          color: colors.grid,
         },
       },
       axisLabel: {
+        showMinLabel: false,
+        align: 'right',
+        margin: 8,
         formatter: props.labelFormatter,
-        color: colors.baseContent,
+        color: colors.textMuted,
         fontFamily: fontFamily.value,
-        fontSize: 10,
-        ...(isSeconds ? {} : { align: 'left', padding: [0, 0, 0, -35] }),
+        fontSize: 9,
       },
     },
     series: props.data.map((item, index) => {
-      const lineColor = index === props.data.length - 1 ? colors.primary60 : colors.info60
-      const areaColor = index === props.data.length - 1 ? colors.primary30 : colors.info30
+      const { line: lineColor, area: areaColor } = colorOf(index)
 
       return {
         name: item.name,
@@ -159,3 +165,24 @@ const options = computed<EChartOption>(() => {
 
 useEChart(chartRef, options, { paused: isPaused })
 </script>
+
+<style scoped>
+@media (hover: hover) {
+  .sidebar-chart-pause {
+    opacity: 0;
+  }
+
+  .sidebar-chart-row:hover .sidebar-chart-pause {
+    opacity: 1;
+  }
+
+  .sidebar-chart-pause:hover {
+    color: var(--color-base-content);
+  }
+}
+
+.sidebar-chart-pause:focus-visible,
+.sidebar-chart-pause[aria-pressed='true'] {
+  opacity: 1;
+}
+</style>

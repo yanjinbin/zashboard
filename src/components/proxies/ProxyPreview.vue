@@ -2,20 +2,20 @@
   <div
     ref="previewRef"
     class="flex flex-wrap"
-    :class="[showDots ? 'gap-1 pt-3' : 'gap-2 pt-4 pb-1']"
+    :class="[showDots ? 'gap-1 pt-3' : 'gap-2 pt-3.5 pb-0.5']"
   >
     <template v-if="showDots">
       <div
         v-for="node in nodesLatency"
         :key="node.name"
-        class="flex h-4 w-4 items-center justify-center rounded-full transition hover:scale-110"
+        class="flex size-3 items-center justify-center rounded-sm transition hover:scale-110"
         :class="getBgColor(node.latency)"
         ref="dotsRef"
         @mouseenter="(e) => makeTippy(e, node)"
         @click.stop="$emit('nodeclick', node.name)"
       >
         <div
-          class="h-2 w-2 rounded-full bg-white"
+          class="size-[5px] rounded-[2px] bg-white"
           v-if="now === node.name"
         ></div>
       </div>
@@ -27,25 +27,25 @@
       <div
         :class="getBgColor(lowLatency - 1)"
         :style="{
-          width: getPreviewWidth(goodsCounts), // cant use tw class, otherwise dynamic classname won't be generated
+          width: getPreviewWidth(latencyCounts.good),
         }"
       />
       <div
         :class="getBgColor(mediumLatency - 1)"
         :style="{
-          width: getPreviewWidth(mediumCounts),
+          width: getPreviewWidth(latencyCounts.medium),
         }"
       />
       <div
         :class="getBgColor(mediumLatency + 1)"
         :style="{
-          width: getPreviewWidth(badCounts),
+          width: getPreviewWidth(latencyCounts.bad),
         }"
       />
       <div
         :class="getBgColor(NOT_CONNECTED)"
         :style="{
-          width: getPreviewWidth(notConnectedCounts),
+          width: getPreviewWidth(latencyCounts.notConnected),
         }"
       />
     </div>
@@ -55,8 +55,8 @@
 <script setup lang="ts">
 import { NOT_CONNECTED, PROXY_PREVIEW_TYPE } from '@/constant'
 import { getColorForLatency } from '@/helper'
-import { useTooltip } from '@/helper/tooltip'
-import { getLatencyByName } from '@/assembly/proxies'
+import { useTooltip } from '@/composables/use-tooltip'
+import { latencyMapOf } from '@/assembly/proxies'
 import { lowLatency, mediumLatency, proxyPreviewType } from '@/store/settings'
 import { useElementSize } from '@vueuse/core'
 import { computed, ref } from 'vue'
@@ -72,7 +72,7 @@ const previewRef = ref<HTMLElement | null>(null)
 const { width } = useElementSize(previewRef)
 
 const widthEnough = computed(() => {
-  return width.value > 20 * props.nodes.length
+  return width.value > 16 * props.nodes.length
 })
 
 const makeTippy = (e: Event, node: { name: string; latency: number }) => {
@@ -109,14 +109,18 @@ const showDots = computed(() => {
   )
 })
 
-const nodesLatency = computed(() =>
-  props.nodes.map((name) => {
-    return {
-      latency: getLatencyByName(name, props.groupName),
-      name: name,
-    }
-  }),
+const latencyMap = latencyMapOf(() => props.groupName)
+const latencyList = computed(() =>
+  props.nodes.map((name) => latencyMap.value.get(name) ?? NOT_CONNECTED),
 )
+
+const nodesLatency = computed(() => {
+  if (!showDots.value) {
+    return []
+  }
+
+  return props.nodes.map((name, index) => ({ name, latency: latencyList.value[index] }))
+})
 const getBgColor = (latency: number) => {
   if (latency === NOT_CONNECTED) {
     return 'bg-base-content/60'
@@ -129,21 +133,22 @@ const getBgColor = (latency: number) => {
   }
 }
 
-const goodsCounts = computed(() => {
-  return nodesLatency.value.filter(
-    (node) => node.latency < lowLatency.value && node.latency > NOT_CONNECTED,
-  ).length
-})
-const mediumCounts = computed(() => {
-  return nodesLatency.value.filter(
-    (node) => node.latency >= lowLatency.value && node.latency < mediumLatency.value,
-  ).length
-})
-const badCounts = computed(() => {
-  return nodesLatency.value.filter((node) => node.latency >= mediumLatency.value).length
-})
-const notConnectedCounts = computed(() => {
-  return nodesLatency.value.filter((node) => node.latency === NOT_CONNECTED).length
+const latencyCounts = computed(() => {
+  const counts = { good: 0, medium: 0, bad: 0, notConnected: 0 }
+
+  for (const latency of latencyList.value) {
+    if (latency === NOT_CONNECTED) {
+      counts.notConnected++
+    } else if (latency < lowLatency.value) {
+      counts.good++
+    } else if (latency < mediumLatency.value) {
+      counts.medium++
+    } else {
+      counts.bad++
+    }
+  }
+
+  return counts
 })
 </script>
 

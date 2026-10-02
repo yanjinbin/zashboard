@@ -5,7 +5,10 @@
         {{ $t('latency') }}
       </div>
       <div class="settings-grid">
-        <SettingItem :setting-key="k.speedtestMode">
+        <SettingItem
+          :setting-key="k.speedtestMode"
+          :when="can('customTestUrl')"
+        >
           <div class="setting-item-label">
             {{ $t('speedtestMode') }}
             <QuestionMarkCircleIcon
@@ -13,29 +16,33 @@
               @mouseenter="speedtestModeTip"
             />
           </div>
-          <select
+          <SelectInput
             class="select select-sm min-w-24"
             v-model="speedtestMode"
-          >
-            <option :value="SPEEDTEST_MODE.DASHBOARD">
-              {{ $t('speedtestModeDashboard') }}
-            </option>
-            <option :value="SPEEDTEST_MODE.CORE">
-              {{ $t('speedtestModeCore') }}
-            </option>
-          </select>
+            :options="[
+              { value: SPEEDTEST_MODE.DASHBOARD, label: $t('speedtestModeDashboard') },
+              { value: SPEEDTEST_MODE.CORE, label: $t('speedtestModeCore') },
+            ]"
+          />
         </SettingItem>
-        <SettingItem :setting-key="k.speedtestUrl">
+        <SettingItem
+          :setting-key="k.speedtestUrl"
+          :when="can('customTestUrl')"
+          class="max-sm:flex-col max-sm:items-start! max-sm:py-3"
+        >
           <div class="setting-item-label">
             {{ $t('speedtestUrl') }}
           </div>
           <TextInput
-            class="flex-2"
+            class="w-full flex-2"
             v-model="speedtestUrl"
             :clearable="true"
           />
         </SettingItem>
-        <SettingItem :setting-key="k.speedtestTimeout">
+        <SettingItem
+          :setting-key="k.speedtestTimeout"
+          :when="can('customTestUrl')"
+        >
           <div class="setting-item-label">
             {{ $t('speedtestTimeout') }}
           </div>
@@ -97,27 +104,22 @@
     </template>
     <template v-if="hasVisibleProxyStyleItems">
       <div class="settings-section-label">
-        {{ $t('appearance') }}
+        {{ $t('settingsSectionProxyDisplay') }}
       </div>
       <div class="settings-grid">
         <SettingItem :setting-key="k.proxyFolderMode">
           <div class="setting-item-label">
             {{ $t('proxyFolderMode') }}
           </div>
-          <select
+          <SelectInput
             class="select select-sm min-w-24"
             v-model="proxyFolderMode"
-          >
-            <option :value="FOLDER_MODE.AUTO">
-              {{ $t('folderModeAuto') }}
-            </option>
-            <option :value="FOLDER_MODE.ON">
-              {{ $t('folderModeOn') }}
-            </option>
-            <option :value="FOLDER_MODE.OFF">
-              {{ $t('folderModeOff') }}
-            </option>
-          </select>
+            :options="[
+              { value: FOLDER_MODE.AUTO, label: $t('folderModeAuto') },
+              { value: FOLDER_MODE.ON, label: $t('folderModeOn') },
+              { value: FOLDER_MODE.OFF, label: $t('folderModeOff') },
+            ]"
+          />
         </SettingItem>
         <SettingItem :setting-key="k.twoColumnProxyGroup">
           <div class="setting-item-label">
@@ -149,61 +151,39 @@
             v-model="displayGlobalByMode"
           />
         </SettingItem>
-        <SettingItem
-          :setting-key="k.customGlobalNode"
-          :when="displayGlobalByMode && can('customGlobalNode')"
-        >
-          <div class="setting-item-label">
-            {{ $t('customGlobalNode') }}
-          </div>
-          <select
-            class="select select-sm w-32"
-            v-model="customGlobalNode"
-          >
-            <option
-              v-for="opt in Object.keys(proxyMap)"
-              :key="opt"
-              :value="opt"
-            >
-              {{ opt }}
-            </option>
-          </select>
-        </SettingItem>
         <SettingItem :setting-key="k.proxyPreviewType">
           <div class="setting-item-label">
             {{ $t('proxyPreviewType') }}
           </div>
-          <select
+          <SelectInput
             class="select select-sm min-w-24"
             v-model="proxyPreviewType"
-          >
-            <option
-              v-for="opt in Object.values(PROXY_PREVIEW_TYPE)"
-              :key="opt"
-              :value="opt"
-            >
-              {{ $t(opt) }}
-            </option>
-          </select>
+            :options="
+              Object.values(PROXY_PREVIEW_TYPE).map((value) => ({
+                value,
+                label: $t(value),
+              }))
+            "
+          />
         </SettingItem>
         <SettingItem :setting-key="k.proxyCardSize">
           <div class="setting-item-label">
             {{ $t('proxyCardSize') }}
           </div>
-          <select
+          <SelectInput
             class="select select-sm min-w-24"
             v-model="proxyCardSize"
             @change="handlerProxyCardSizeChange"
-          >
-            <option
-              v-for="opt in Object.values(PROXY_CARD_SIZE)"
-              :key="opt"
-              :value="opt"
-            >
-              {{ $t(opt) }}
-            </option>
-          </select>
+            :options="Object.values(PROXY_CARD_SIZE).map((value) => ({ value, label: $t(value) }))"
+          />
         </SettingItem>
+      </div>
+    </template>
+    <template v-if="hasVisibleProxyAdvancedItems">
+      <div class="settings-section-label">
+        {{ $t('settingsSectionProxyAdvanced') }}
+      </div>
+      <div class="settings-grid">
         <SettingItem :setting-key="k.proxyGroupIconSize">
           <div class="setting-item-label">
             {{ $t('proxyGroupIconSize') }}
@@ -232,15 +212,14 @@
 
 <script setup lang="ts">
 import { can } from '@/assembly/backend'
+import SelectInput from '@/components/common/SelectInput.vue'
 import SettingItem from '@/components/settings/SettingItem.vue'
-import { useIsSettingVisible } from '@/composables/settings'
-import { PROXIES_ITEM_KEYS } from '@/config/settingsItems'
+import { useIsSettingVisible } from '@/composables/use-setting-visibility'
+import { PROXIES_ITEM_KEYS } from '@/config/settings-items'
 import { FOLDER_MODE, PROXY_CARD_SIZE, PROXY_PREVIEW_TYPE, SPEEDTEST_MODE } from '@/constant'
-import { useTooltip } from '@/helper/tooltip'
+import { useTooltip } from '@/composables/use-tooltip'
 import { getMinCardWidth } from '@/helper/utils'
-import { proxyMap } from '@/assembly/proxies'
 import {
-  customGlobalNode,
   displayGlobalByMode,
   independentLatencyTest,
   IPv6test,
@@ -278,7 +257,6 @@ const isVisibleTwoColumnProxyGroup = useIsSettingVisible(k.twoColumnProxyGroup)
 const isVisibleProxyFolderMode = useIsSettingVisible(k.proxyFolderMode)
 const isVisibleTruncateProxyName = useIsSettingVisible(k.truncateProxyName)
 const isVisibleDisplayGlobalByMode = useIsSettingVisible(k.displayGlobalByMode)
-const isVisibleCustomGlobalNode = useIsSettingVisible(k.customGlobalNode)
 const isVisibleProxyPreviewType = useIsSettingVisible(k.proxyPreviewType)
 const isVisibleProxyCardSize = useIsSettingVisible(k.proxyCardSize)
 const isVisibleProxyGroupIconSize = useIsSettingVisible(k.proxyGroupIconSize)
@@ -317,12 +295,15 @@ const hasVisibleProxyStyleItems = computed(() => {
     isVisibleProxyFolderMode.value ||
     isVisibleTruncateProxyName.value ||
     isVisibleDisplayGlobalByMode.value ||
-    (displayGlobalByMode.value && can('customGlobalNode') && isVisibleCustomGlobalNode.value) ||
     isVisibleProxyPreviewType.value ||
-    isVisibleProxyCardSize.value ||
-    isVisibleProxyGroupIconSize.value ||
-    isVisibleProxyGroupIconMargin.value ||
-    isVisibleIconSettings.value
+    isVisibleProxyCardSize.value
   )
 })
+
+const hasVisibleProxyAdvancedItems = computed(
+  () =>
+    isVisibleProxyGroupIconSize.value ||
+    isVisibleProxyGroupIconMargin.value ||
+    isVisibleIconSettings.value,
+)
 </script>

@@ -12,7 +12,7 @@
         alt=""
       />
       <div class="flex min-w-0 flex-col">
-        <span class="text-base font-semibold"> ImmortalWrt-R5C-Gateway Nikki 控制面板 </span>
+        <span class="text-base font-semibold"> ImmortalWrt-R5C/E20C-Gateway Nikki 控制面板 </span>
       </div>
     </a>
     <div class="flex items-center gap-2 px-1">
@@ -24,7 +24,11 @@
           <span class="bg-secondary absolute h-2 w-2 animate-ping rounded-full"></span>
           <span class="bg-secondary h-2 w-2 rounded-full"></span>
         </span>
-        <div class="text-lg font-semibold">
+        <a
+          :href="getZashboardRepoUrl()"
+          target="_blank"
+          class="text-lg font-semibold"
+        >
           zashboard
           <span class="text-sm font-normal opacity-50">
             {{ zashboardVersion }}
@@ -35,88 +39,7 @@
               {{ commitId }}
             </span>
           </span>
-        </div>
-      </div>
-    </div>
-
-    <div
-      v-if="isVisibleActions"
-      class="settings-grid my-3 gap-2 p-3 md:grid-cols-2!"
-    >
-      <div class="flex items-center gap-2">
-        <button
-          :class="twMerge('btn btn-neutral btn-sm flex-1', isUIUpgrading ? 'animate-pulse' : '')"
-          @click="handlerClickUpgradeUI"
-        >
-          {{ $t('upgradeDashboard') }}
-        </button>
-        <TextInput
-          v-model="targetUIVersion"
-          class="w-24 shrink-0"
-          :placeholder="zashboardVersion"
-          clearable
-        />
-      </div>
-      <DashboardSettings />
-    </div>
-
-    <div class="settings-grid my-3 gap-2 p-3 md:grid-cols-2!">
-      <div class="border-base-300/40 bg-base-100 rounded-box col-span-full border p-3">
-        <div class="flex items-center justify-between">
-          <span class="text-sm font-medium">AI 网站连通性测试</span>
-          <button
-            class="btn btn-sm"
-            :disabled="isTestingAI"
-            @click="testAIWebsites"
-          >
-            <span
-              v-if="isTestingAI"
-              class="loading loading-spinner loading-xs"
-            ></span>
-            一键测试
-          </button>
-        </div>
-        <div
-          v-if="testResults.length > 0"
-          class="mt-3 grid grid-cols-1 gap-2 md:grid-cols-3"
-        >
-          <div
-            v-for="res in testResults"
-            :key="res.name"
-            class="border-base-300 bg-base-200/50 flex flex-col gap-1 rounded-lg border p-2"
-          >
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <img
-                  :src="res.icon"
-                  class="h-4 w-4 object-contain"
-                  alt=""
-                />
-                <span class="text-sm font-semibold">{{ res.name }}</span>
-              </div>
-              <span
-                v-if="res.status === 'testing'"
-                class="loading loading-spinner loading-xs text-primary"
-              ></span>
-              <span
-                v-else-if="res.status === 'success'"
-                class="text-success text-xs font-bold"
-                >✅ 成功 {{ res.delay }}ms</span
-              >
-              <span
-                v-else-if="res.status === 'error'"
-                class="text-error text-xs font-bold"
-                >❌ 失败</span
-              >
-              <span
-                v-else
-                class="text-base-content/50 text-xs font-bold"
-                >待测试</span
-              >
-            </div>
-            <span class="text-base-content/50 truncate text-[10px]">{{ res.url }}</span>
-          </div>
-        </div>
+        </a>
       </div>
     </div>
 
@@ -126,145 +49,10 @@
 </template>
 
 <script setup lang="ts">
-import { updateConfigs } from '@/assembly/config'
-import { getZashboardReleaseAssetUrl } from '@/assembly/dashboardRelease'
-import { isUIUpdateAvailable, upgradeUIAPI, zashboardVersion } from '@/assembly/version'
-import DashboardSettings from '@/components/common/DashboardSettings.vue'
-import TextInput from '@/components/common/TextInput.vue'
-import { useIsSettingVisible } from '@/composables/settings'
-import { GENERAL_ITEM_KEYS } from '@/config/settingsItems'
-import { handlerUpgradeSuccess } from '@/helper'
-import { twMerge } from 'tailwind-merge'
-import { ref } from 'vue'
-import claudeLogo from '@/assets/images/claude-logo.webp'
+import { getZashboardRepoUrl } from '@/assembly/dashboard-release'
+import { isUIUpdateAvailable, zashboardVersion } from '@/assembly/version'
 import GeneralSettings from './GeneralSettings.vue'
 import StyleSettings from './StyleSettings.vue'
 
-const k = GENERAL_ITEM_KEYS
-const isVisibleActions = useIsSettingVisible(k.actions)
-
 const commitId = __COMMIT_ID__
-
-const isUIUpgrading = ref(false)
-const targetUIVersion = ref('')
-
-const handlerClickUpgradeUI = async () => {
-  if (isUIUpgrading.value) return
-  isUIUpgrading.value = true
-  try {
-    await updateConfigs({
-      'external-ui-url': getZashboardReleaseAssetUrl(targetUIVersion.value),
-    })
-    await upgradeUIAPI()
-    isUIUpgrading.value = false
-    handlerUpgradeSuccess()
-    setTimeout(async () => {
-      if ('serviceWorker' in navigator) {
-        const registrations = await navigator.serviceWorker.getRegistrations()
-        for (const registration of registrations) {
-          await registration.unregister()
-        }
-      }
-      window.location.reload()
-    }, 2000)
-  } catch {
-    isUIUpgrading.value = false
-  }
-}
-
-const isTestingAI = ref(false)
-const testResults = ref<
-  {
-    name: string
-    url: string
-    testUrl?: string
-    method?: 'GET' | 'HEAD'
-    icon: string
-    status: 'idle' | 'testing' | 'success' | 'error'
-    delay: number
-  }[]
->([
-  {
-    name: 'Gemini',
-    url: 'https://gemini.google.com/app',
-    method: 'HEAD',
-    icon: 'https://raw.githubusercontent.com/yanjinbin/dotfiles/master/mihomo/rules/icons/antigravity-color.webp',
-    status: 'idle',
-    delay: 0,
-  },
-  {
-    name: 'ChatGPT',
-    url: 'https://chatgpt.com/',
-    testUrl: 'https://api.openai.com/v1/models',
-    icon: 'https://raw.githubusercontent.com/yanjinbin/dotfiles/master/mihomo/rules/icons/openai-text.webp',
-    status: 'idle',
-    delay: 0,
-  },
-  {
-    name: 'Claude',
-    url: 'https://claude.ai/login',
-    testUrl: 'https://api.anthropic.com/v1/models',
-    icon: claudeLogo,
-    status: 'idle',
-    delay: 0,
-  },
-])
-
-const testAIWebsites = async () => {
-  if (isTestingAI.value) return
-  isTestingAI.value = true
-
-  testResults.value = testResults.value.map((s) => ({ ...s, status: 'testing', delay: 0 }))
-
-  await Promise.allSettled(
-    testResults.value.map(async (site, idx) => {
-      const start = Date.now()
-      let timeoutId: ReturnType<typeof setTimeout> | undefined
-      try {
-        const controller = new AbortController()
-        timeoutId = setTimeout(() => controller.abort(), 10000)
-
-        // Generate a random query parameter to prevent caching
-        const cacheBuster = `?_t=${Date.now()}`
-        const targetUrl = site.testUrl || site.url
-
-        await new Promise<void>((resolve, reject) => {
-          const onAbort = () => reject(new Error('timeout'))
-          controller.signal.addEventListener('abort', onAbort)
-
-          if (
-            targetUrl.endsWith('.ico') ||
-            targetUrl.endsWith('.png') ||
-            targetUrl.endsWith('.webp') ||
-            targetUrl.endsWith('.svg') ||
-            targetUrl.endsWith('.jpg')
-          ) {
-            const img = new Image()
-            img.onload = () => resolve()
-            img.onerror = () => reject(new Error('network error'))
-            img.src = targetUrl + cacheBuster
-          } else {
-            fetch(targetUrl + cacheBuster, {
-              method: site.method || 'GET',
-              mode: 'no-cors',
-              signal: controller.signal,
-            })
-              .then(() => resolve())
-              .catch(reject)
-          }
-        })
-
-        const delay = Date.now() - start
-        testResults.value[idx].status = 'success'
-        testResults.value[idx].delay = delay
-      } catch {
-        testResults.value[idx].status = 'error'
-      } finally {
-        if (timeoutId) clearTimeout(timeoutId)
-      }
-    }),
-  )
-
-  isTestingAI.value = false
-}
 </script>

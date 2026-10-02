@@ -1,9 +1,10 @@
-import { can } from '@/assembly/backend'
 import { connectionAccessor } from '@/assembly/connections'
-import { hiddenGroupMap, proxyMap } from '@/assembly/proxies'
+import { proxyMap } from '@/assembly/proxies'
 import { NOT_CONNECTED, PROXY_CHAIN_DIRECTION, PROXY_TYPE, ROUTE_NAME } from '@/constant'
 import { showNotification } from '@/helper/notification'
+import { hiddenGroupMap } from '@/store/proxies'
 import {
+  customCSS,
   customThemes,
   lowLatency,
   mediumLatency,
@@ -11,8 +12,9 @@ import {
   splitOverviewPage,
 } from '@/store/settings'
 import type { Connection } from '@/types'
-import * as ipaddr from 'ipaddr.js'
 import { computed } from 'vue'
+
+const PROXY_GROUP_TYPES = new Set<string>(Object.values(PROXY_TYPE))
 
 export const isProxyGroup = (name: string) => {
   const proxyNode = proxyMap.value[name]
@@ -25,23 +27,9 @@ export const isProxyGroup = (name: string) => {
     return true
   }
 
-  return [
-    PROXY_TYPE.Dns,
-    PROXY_TYPE.Compatible,
-    PROXY_TYPE.Direct,
-    PROXY_TYPE.Reject,
-    PROXY_TYPE.RejectDrop,
-    PROXY_TYPE.Pass,
-    PROXY_TYPE.Fallback,
-    PROXY_TYPE.URLTest,
-    PROXY_TYPE.LoadBalance,
-    PROXY_TYPE.Selector,
-    PROXY_TYPE.Smart,
-  ].includes(proxyNode.type.toLowerCase() as PROXY_TYPE)
+  return PROXY_GROUP_TYPES.has(proxyNode.type.toLowerCase())
 }
 
-// 以下 getConnectionXxx 均委托给 assembly 层「按当前后端动态选用」的访问器,
-// view / store 直接读取这些 view 友好的派生值,无需感知后端差异。
 export const getConnectionChains = (connection: Connection) =>
   connectionAccessor().chains(connection)
 
@@ -60,12 +48,6 @@ export const getConnectionRulePayload = (connection: Connection) =>
 
 export const getConnectionSourceIP = (connection: Connection) =>
   connectionAccessor().sourceIP(connection)
-
-export const getConnectionSourcePort = (connection: Connection) =>
-  connectionAccessor().sourcePort(connection)
-
-export const getConnectionNetwork = (connection: Connection) =>
-  connectionAccessor().network(connection)
 
 export const getConnectionSmartBlock = (connection: Connection) =>
   connectionAccessor().smartBlock(connection)
@@ -87,18 +69,6 @@ export const getNetworkTypeFromConnection = (connection: Connection) =>
 
 export const getInboundUserFromConnection = (connection: Connection) =>
   connectionAccessor().inboundUser(connection)
-
-export const getDestinationTypeFromConnection = (connection: Connection) => {
-  const destination = getDestinationFromConnection(connection)
-
-  if (ipaddr.IPv4.isIPv4(destination)) {
-    return 'IPv4'
-  } else if (ipaddr.IPv6.isIPv6(destination)) {
-    return 'IPv6'
-  } else {
-    return 'FQDN'
-  }
-}
 
 export const getChainsStringFromConnection = (connection: Connection) => {
   const chains = [...getConnectionChains(connection)]
@@ -122,19 +92,13 @@ export const getColorForLatency = (latency: number) => {
   }
 }
 
-export const renderRoutes = computed(() => {
-  // capability gate per route; routes not listed here are always shown
-  const routeCapable: Partial<Record<ROUTE_NAME, boolean>> = {
-    [ROUTE_NAME.rules]: can('rules'),
-    [ROUTE_NAME.tools]: can('tools'),
-  }
-  return Object.values(ROUTE_NAME).filter((r) => {
+export const renderRoutes = computed(() =>
+  Object.values(ROUTE_NAME).filter((r) => {
     if (r === ROUTE_NAME.setup) return false
     if (!splitOverviewPage.value && r === ROUTE_NAME.overview) return false
-    if (r in routeCapable && routeCapable[r] === false) return false
     return true
-  })
-})
+  }),
+)
 
 export const applyCustomThemes = () => {
   document.querySelectorAll('.custom-theme').forEach((style) => {
@@ -156,6 +120,25 @@ export const applyCustomThemes = () => {
   })
 }
 
+export const applyCustomCSS = () => {
+  const styleId = 'custom-css'
+  const css = customCSS.value.trim()
+  let style = document.getElementById(styleId)
+
+  if (!css) {
+    style?.remove()
+    return
+  }
+
+  if (!style) {
+    style = document.createElement('style')
+    style.id = styleId
+    document.head.appendChild(style)
+  }
+
+  style.textContent = css
+}
+
 export const applyKsuTheme = () => {
   if (window.ksu) {
     const link = document.createElement('link')
@@ -173,8 +156,9 @@ export const isHiddenGroup = (group: string) => {
   return proxyMap.value[group]?.hidden
 }
 
-export const handlerUpgradeSuccess = () => {
+export const handlerUpgradeSuccess = (key?: string) => {
   showNotification({
+    key,
     content: 'upgradeSuccess',
     type: 'alert-success',
   })

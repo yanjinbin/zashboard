@@ -2,27 +2,19 @@
   <div
     class="group relative h-22 cursor-pointer"
     :data-group-name="proxyGroup.name"
+    :data-page-swipe-ignore="modalMode || undefined"
     ref="cardWrapperRef"
     @click="handlerGroupClick"
   >
-    <!--
-      压暗强度与 .modal 的遮罩一致（daisyUI 默认 40%），淡入淡出刻意和下面卡片
-      生长动画同时长同曲线（200ms ease-out），让两者读起来是一个动作而非两个。
-    -->
-    <Transition
-      enter-active-class="transition-opacity duration-200 ease-out"
-      enter-from-class="opacity-0"
-      leave-active-class="transition-opacity duration-200 ease-out"
-      leave-to-class="opacity-0"
-    >
+    <Transition name="proxy-group-backdrop">
       <div
         v-if="modalMode"
         class="fixed inset-0 z-40 overflow-hidden bg-black/40"
       />
     </Transition>
     <div
-      class="base-container absolute flex flex-col gap-2 overflow-hidden p-2 transition-[width,transform,max-height] duration-200 ease-out will-change-transform"
-      :class="modalMode && blurIntensity < 5 && 'backdrop-blur-sm!'"
+      class="base-container proxy-group-card absolute flex flex-col gap-2 overflow-hidden p-2 will-change-transform"
+      :class="modalMode && 'overlay-glass'"
       :style="cardStyle"
       @contextmenu.prevent.stop="handlerLatencyTest"
       @transitionend="handlerTransitionEnd"
@@ -38,7 +30,7 @@
 
       <div
         v-if="displayContent"
-        class="will-change-opacity max-h-108 overflow-y-auto overscroll-contain transition-opacity duration-200 ease-out"
+        class="proxy-group-card-content will-change-opacity max-h-108 overflow-y-auto overscroll-contain"
         :class="[PROXIES_PARENT_CLASS]"
         :style="{
           width: 'calc(100vw - 2.5rem)',
@@ -58,13 +50,14 @@
 </template>
 
 <script setup lang="ts">
-import { useBounceOnVisible } from '@/composables/bouncein'
-import { disableProxiesPageScroll } from '@/composables/proxies'
-import { useRenderProxyList } from '@/composables/renderProxies'
+import { useBounceOnVisible } from '@/composables/use-bounce-on-visible'
+import { useOverlayDimState } from '@/composables/use-dialog-state'
+import { disableProxiesPageScroll } from '@/helper/proxies'
+import { useRenderProxyList } from '@/composables/use-render-proxy-list'
 import { PROXIES_PARENT_CLASS } from '@/helper/utils'
 import { proxyGroupLatencyTest } from '@/assembly/proxies'
 import { proxyMap } from '@/assembly/proxies'
-import { blurIntensity, groupProxiesByProvider } from '@/store/settings'
+import { groupProxiesByProvider } from '@/store/settings'
 import { computed, nextTick, onUnmounted, ref } from 'vue'
 import ProxiesByProvider from './ProxiesByProvider.vue'
 import ProxiesContent from './ProxiesContent.vue'
@@ -82,6 +75,8 @@ const modalMode = ref(false)
 const displayContent = ref(false)
 const showAllContent = ref(modalMode.value)
 const contentOpacity = ref(0)
+
+useOverlayDimState(modalMode)
 
 const cardWrapperRef = ref()
 const cardRef = ref()
@@ -216,3 +211,27 @@ onUnmounted(() => {
 
 useBounceOnVisible(cardRef)
 </script>
+
+<style scoped>
+.proxy-group-backdrop-enter-active,
+.proxy-group-backdrop-leave-active {
+  transition: opacity 0.25s ease-out;
+}
+
+.proxy-group-backdrop-enter-from,
+.proxy-group-backdrop-leave-to {
+  opacity: 0;
+}
+
+.proxy-group-card {
+  --proxy-group-card-motion: 0.2s cubic-bezier(0, 0, 0.2, 1);
+  transition:
+    width var(--proxy-group-card-motion),
+    transform var(--proxy-group-card-motion),
+    max-height var(--proxy-group-card-motion);
+}
+
+.proxy-group-card-content {
+  transition: opacity var(--proxy-group-card-motion);
+}
+</style>

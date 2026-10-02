@@ -1,11 +1,11 @@
 import {
   ArrowsRightLeftIcon,
+  ChartBarIcon,
   Cog6ToothIcon,
   CubeTransparentIcon,
   DocumentTextIcon,
   GlobeAltIcon,
   SwatchIcon,
-  WrenchScrewdriverIcon,
 } from '@heroicons/vue/24/outline'
 
 export const IS_APPLE_DEVICE = /Mac|iPod|iPhone|iPad/.test(navigator.platform)
@@ -18,6 +18,7 @@ export enum LANG {
   EN_US = 'en-US',
   ZH_CN = 'zh-CN',
   ZH_TW = 'zh-TW',
+  RU_RU = 'ru-RU',
 }
 
 export enum FONTS {
@@ -54,10 +55,33 @@ export enum CONNECTIONS_TABLE_ACCESSOR_KEY {
   GeoIP = 'geoip',
   RemoteAddress = 'remoteAddress',
   InboundUser = 'inboundUser',
-  Protocol = 'protocol',
-  OutboundType = 'outboundType',
-  FromOutbound = 'fromOutbound',
 }
+
+export const CONNECTION_SEARCHABLE_KEYS = Object.values(CONNECTIONS_TABLE_ACCESSOR_KEY).filter(
+  (key) => key !== CONNECTIONS_TABLE_ACCESSOR_KEY.Close,
+)
+
+export const CONNECTION_GROUPABLE_KEYS = [
+  CONNECTIONS_TABLE_ACCESSOR_KEY.Type,
+  CONNECTIONS_TABLE_ACCESSOR_KEY.Process,
+  CONNECTIONS_TABLE_ACCESSOR_KEY.Host,
+  CONNECTIONS_TABLE_ACCESSOR_KEY.SniffHost,
+  CONNECTIONS_TABLE_ACCESSOR_KEY.Rule,
+  CONNECTIONS_TABLE_ACCESSOR_KEY.Chains,
+  CONNECTIONS_TABLE_ACCESSOR_KEY.Outbound,
+  CONNECTIONS_TABLE_ACCESSOR_KEY.SourceIP,
+  CONNECTIONS_TABLE_ACCESSOR_KEY.SourcePort,
+  CONNECTIONS_TABLE_ACCESSOR_KEY.Destination,
+  CONNECTIONS_TABLE_ACCESSOR_KEY.DestinationType,
+  CONNECTIONS_TABLE_ACCESSOR_KEY.GeoIP,
+  CONNECTIONS_TABLE_ACCESSOR_KEY.RemoteAddress,
+  CONNECTIONS_TABLE_ACCESSOR_KEY.InboundUser,
+] as const
+
+export type ConnectionGroupableKey = (typeof CONNECTION_GROUPABLE_KEYS)[number]
+
+export const isConnectionGroupableKey = (value: unknown): value is ConnectionGroupableKey =>
+  CONNECTION_GROUPABLE_KEYS.includes(value as ConnectionGroupableKey)
 
 export enum TABLE_WIDTH_MODE {
   AUTO = 'auto',
@@ -102,7 +126,6 @@ export enum CONNECTION_DISPLAY_STYLE {
   TABLE = 'table',
 }
 
-// 日志/规则页的展示形态,没有 AUTO —— 由用户在各自的 Ctrl 设置里显式选。
 export enum LIST_DISPLAY_STYLE {
   CARD = 'card',
   TABLE = 'table',
@@ -111,6 +134,7 @@ export enum LIST_DISPLAY_STYLE {
 export enum RULE_TAB_TYPE {
   RULES = 'rules',
   PROVIDER = 'ruleProvider',
+  TRACE = 'daeRoutingTrace',
 }
 
 export enum PROXY_TAB_TYPE {
@@ -137,6 +161,65 @@ export enum SORT_DIRECTION {
   DESC = 'desc',
 }
 
+export enum SORT_VALUE_KIND {
+  TEXT = 'text',
+  NUMBER = 'number',
+  TIME = 'time',
+}
+
+export const SORT_TYPE_VALUE_KIND: Record<SORT_TYPE, SORT_VALUE_KIND> = {
+  [SORT_TYPE.HOST]: SORT_VALUE_KIND.TEXT,
+  [SORT_TYPE.CHAINS]: SORT_VALUE_KIND.TEXT,
+  [SORT_TYPE.RULE]: SORT_VALUE_KIND.TEXT,
+  [SORT_TYPE.TYPE]: SORT_VALUE_KIND.TEXT,
+  [SORT_TYPE.SOURCE_IP]: SORT_VALUE_KIND.TEXT,
+  [SORT_TYPE.INBOUND_USER]: SORT_VALUE_KIND.TEXT,
+  [SORT_TYPE.CONNECT_TIME]: SORT_VALUE_KIND.TIME,
+  [SORT_TYPE.DOWNLOAD]: SORT_VALUE_KIND.NUMBER,
+  [SORT_TYPE.DOWNLOAD_SPEED]: SORT_VALUE_KIND.NUMBER,
+  [SORT_TYPE.UPLOAD]: SORT_VALUE_KIND.NUMBER,
+  [SORT_TYPE.UPLOAD_SPEED]: SORT_VALUE_KIND.NUMBER,
+}
+
+export const naturalSortDirection = (sortType: SORT_TYPE) =>
+  SORT_TYPE_VALUE_KIND[sortType] === SORT_VALUE_KIND.TEXT ? SORT_DIRECTION.ASC : SORT_DIRECTION.DESC
+
+export const SORT_DIRECTION_LABEL_KEY: Record<SORT_VALUE_KIND, Record<SORT_DIRECTION, string>> = {
+  [SORT_VALUE_KIND.TEXT]: {
+    [SORT_DIRECTION.ASC]: 'sortAToZ',
+    [SORT_DIRECTION.DESC]: 'sortZToA',
+  },
+  [SORT_VALUE_KIND.NUMBER]: {
+    [SORT_DIRECTION.ASC]: 'sortSmallestFirst',
+    [SORT_DIRECTION.DESC]: 'sortLargestFirst',
+  },
+  [SORT_VALUE_KIND.TIME]: {
+    [SORT_DIRECTION.ASC]: 'sortOldestFirst',
+    [SORT_DIRECTION.DESC]: 'sortNewestFirst',
+  },
+}
+
+export const SORT_TYPE_GROUPS: { labelKey: string; types: readonly SORT_TYPE[] }[] = [
+  {
+    labelKey: 'basic',
+    types: [
+      SORT_TYPE.HOST,
+      SORT_TYPE.TYPE,
+      SORT_TYPE.RULE,
+      SORT_TYPE.CHAINS,
+      SORT_TYPE.CONNECT_TIME,
+    ],
+  },
+  {
+    labelKey: 'traffic',
+    types: [SORT_TYPE.DOWNLOAD_SPEED, SORT_TYPE.UPLOAD_SPEED, SORT_TYPE.DOWNLOAD, SORT_TYPE.UPLOAD],
+  },
+  {
+    labelKey: 'sourceAndDestination',
+    types: [SORT_TYPE.SOURCE_IP, SORT_TYPE.INBOUND_USER],
+  },
+]
+
 export enum CONNECTION_TAB_TYPE {
   ACTIVE = 'activeConnections',
   CLOSED = 'closedConnections',
@@ -154,24 +237,29 @@ export enum LOG_LEVEL {
   Silent = 'silent',
 }
 
+export enum TUN_STACK {
+  gVisor = 'gVisor',
+  System = 'System',
+  Mixed = 'Mixed',
+  Mips = 'Mips',
+}
+
 export enum ROUTE_NAME {
   overview = 'overview',
   proxies = 'proxies',
   connections = 'connections',
   logs = 'logs',
   rules = 'rules',
-  tools = 'tools',
   settings = 'settings',
   setup = 'setup',
 }
 
 export const ROUTE_ICON_MAP = {
-  [ROUTE_NAME.overview]: CubeTransparentIcon,
+  [ROUTE_NAME.overview]: ChartBarIcon,
   [ROUTE_NAME.proxies]: GlobeAltIcon,
   [ROUTE_NAME.connections]: ArrowsRightLeftIcon,
   [ROUTE_NAME.rules]: SwatchIcon,
   [ROUTE_NAME.logs]: DocumentTextIcon,
-  [ROUTE_NAME.tools]: WrenchScrewdriverIcon,
   [ROUTE_NAME.settings]: Cog6ToothIcon,
   [ROUTE_NAME.setup]: CubeTransparentIcon,
 }
@@ -245,11 +333,7 @@ export const ALL_THEME = [
   ...(window.ksu ? ['light-monet', 'dark-monet'] : []),
   'halloween',
   'forest',
-  'lofi',
-  'wireframe',
-  'black',
   'dracula',
-  'business',
   'night',
   'dim',
   'nord',
@@ -298,13 +382,12 @@ export const DEFAULT_THEME = {
 export type THEME = Record<string, string>
 
 export enum IP_INFO_API {
-  IPAPI = 'ipapi.is',
+  IPIP = 'ipip.net',
+  IPSB = 'ip.sb',
   IPWHOIS = 'ipwho.is',
+  IPAPI = 'ipapi.is',
 }
 
-// GeoLite2 databases (country + ASN), loaded once from the CDN and cached in the
-// browser. Served through jsdelivr so the browser gets the CORS headers a
-// cross-origin fetch needs.
 export const GEOIP_COUNTRY_DATABASE_URL =
   'https://testingcf.jsdelivr.net/gh/P3TERX/GeoLite.mmdb@download/GeoLite2-Country.mmdb'
 export const GEOIP_ASN_DATABASE_URL =
@@ -326,6 +409,7 @@ export enum OVERVIEW_CARD {
   EarthGlobeCard = 'EarthGlobeCard',
   ConnectionHistory = 'ConnectionHistory',
   RuleHitCountCard = 'RuleHitCountCard',
+  HonkStatsCard = 'HonkStatsCard',
 }
 
 export enum MIHOMO {

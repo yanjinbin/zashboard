@@ -1,15 +1,6 @@
-import { IP_INFO_API, LANG } from '@/constant'
-import { geoipASNDatabaseURL, geoipCountryDatabaseURL, IPInfoAPI, language } from '@/store/settings'
-import { watchDebounced } from '@vueuse/core'
-import { Buffer } from 'buffer'
+import { IP_INFO_API } from '@/constant'
+import { IPInfoAPI } from '@/store/settings'
 import * as ipaddr from 'ipaddr.js'
-import type { AsnResponse, CountryResponse, Reader } from 'mmdb-lib'
-import { reactive } from 'vue'
-
-// mmdb-lib relies on the global Buffer at module-eval time.
-if (!(globalThis as { Buffer?: unknown }).Buffer) {
-  ;(globalThis as { Buffer?: unknown }).Buffer = Buffer
-}
 
 export interface IPInfo {
   ip: string
@@ -18,40 +9,25 @@ export interface IPInfo {
   city: string
   asn: string
   organization: string
+  latitude: number | null
+  longitude: number | null
 }
 
-// global（地球仪起点 IP 查询使用；网络信息展示走 getIPInfo，默认 ipwho.is）
-export const getIPFromIpsbAPI = async (ip = '') => {
-  const response = await fetch('https://api.ip.sb/geoip' + (ip ? `/${ip}` : ''), {
-    cache: 'no-store',
-  })
+const coordinate = (value: unknown) =>
+  typeof value === 'number' && Number.isFinite(value) ? value : null
 
-  return (await response.json()) as {
-    organization: string
-    longitude: number
-    city: string
-    region: string
-    timezone: string
-    isp: string
-    offset: number
-    asn: number
-    asn_organization: string
-    country: string
-    ip: string
-    latitude: number
-    postal_code: string
-    continent_code: string
-    country_code: string
-    region_code: string
+const ensureResponseOK = (response: Response, service: string) => {
+  if (!response.ok) {
+    throw new Error(`${service} lookup failed: ${response.status}`)
   }
 }
 
-// china
 export const getIPFromIpipnetAPI = async () => {
-  // Cache-busting query parameters make ipip.net's uncached response omit its CORS header.
   const response = await fetch('https://myip.ipip.net/json', { cache: 'no-store' })
+  ensureResponseOK(response, IP_INFO_API.IPIP)
 
   return (await response.json()) as {
+    ret: string
     data: {
       ip: string
       location: string[]
@@ -59,70 +35,104 @@ export const getIPFromIpipnetAPI = async () => {
   }
 }
 
-export const getIPFromIPWhoisAPI = async (ip = '') => {
-  const response = await fetch('https://ipwho.is' + (ip ? `/${ip}` : ''), {
+export const getIPFromIpsbAPI = async (ip = '') => {
+  const response = await fetch('https://api.ip.sb/geoip' + (ip ? `/${ip}` : ''), {
     cache: 'no-store',
   })
+  ensureResponseOK(response, IP_INFO_API.IPSB)
 
   return (await response.json()) as {
     ip: string
-    success: boolean
-    type: string
-    continent: string
-    continent_code: string
-    country: string
-    country_code: string
-    region: string
-    region_code: string
-    city: string
-    latitude: number
-    longitude: number
-    is_eu: boolean
-    postal: string
-    calling_code: string
-    capital: string
-    borders: string
-    flag: {
-      img: string
-      emoji: string
-      emoji_unicode: string
-    }
-    connection: {
-      asn: number
-      org: string
-      isp: string
-      domain: string
-    }
-    timezone: {
-      id: string
-      abbr: string
-      is_dst: boolean
-      offset: number
-      utc: string
-      current_time: string
-    }
+    organization?: string
+    asn_organization?: string
+    asn?: number
+    country?: string
+    region?: string
+    city?: string
+    latitude?: number
+    longitude?: number
   }
+}
+
+const getIPFromIPWhoisAPI = async (ip = '') => {
+  const response = await fetch('https://ipwho.is' + (ip ? `/${ip}` : ''), {
+    cache: 'no-store',
+  })
+  ensureResponseOK(response, IP_INFO_API.IPWHOIS)
+
+  return (await response.json()) as
+    | {
+        ip: string
+        success: true
+        country?: string
+        region?: string
+        city?: string
+        latitude?: number
+        longitude?: number
+        connection?: {
+          asn?: number
+          org?: string
+        }
+      }
+    | {
+        ip?: string
+        success: false
+        message: string
+      }
 }
 
 const getIPFromIPapiisAPI = async (ip = '') => {
   const response = await fetch('https://api.ipapi.is' + (ip ? `/?q=${ip}` : ''), {
     cache: 'no-store',
   })
+  ensureResponseOK(response, IP_INFO_API.IPAPI)
 
-  // Anonymous requests use ipapi.is's minimal, flat response schema.
-  return (await response.json()) as {
-    ip: string
-    company_name: string | null
-    asn_num: number | null
-    asn_org: string | null
-    cc: string | null
-  }
+  return (await response.json()) as
+    | {
+        ip: string
+        company_name: string | null
+        asn_num: number | null
+        asn_org: string | null
+        cc: string | null
+        lat: number | null
+        lon: number | null
+      }
+    | {
+        error: string
+      }
 }
 
-export const getIPInfo = async (ip = ''): Promise<IPInfo> => {
-  switch (IPInfoAPI.value) {
+export const getIPInfo = async (ip = '', api: IP_INFO_API = IPInfoAPI.value): Promise<IPInfo> => {
+  switch (api) {
+    case IP_INFO_API.IPIP:
+      if (ip) {
+        throw new Error('IPIP.net only supports public IP detection')
+      }
+
+      const ipip = await getIPFromIpipnetAPI()
+
+      if (ipip.ret !== 'ok' || !ipaddr.isValid(ipip.data?.ip)) {
+        throw new Error('IPIP.net lookup failed')
+      }
+
+      const [country = '', region = '', city = '', ...organizationParts] = ipip.data.location ?? []
+
+      return {
+        ip: ipip.data.ip,
+        country,
+        region,
+        city,
+        asn: '',
+        organization: organizationParts.filter(Boolean).join(' '),
+        latitude: null,
+        longitude: null,
+      }
     case IP_INFO_API.IPAPI:
       const ipapi = await getIPFromIPapiisAPI(ip)
+
+      if ('error' in ipapi) {
+        throw new Error(`ipapi.is lookup failed: ${ipapi.error}`)
+      }
 
       return {
         ip: ipapi.ip,
@@ -131,262 +141,49 @@ export const getIPInfo = async (ip = ''): Promise<IPInfo> => {
         city: '',
         asn: ipapi.asn_num?.toString() ?? '',
         organization: ipapi.asn_org ?? ipapi.company_name ?? '',
+        latitude: coordinate(ipapi.lat),
+        longitude: coordinate(ipapi.lon),
       }
     case IP_INFO_API.IPWHOIS:
       const ipwhois = await getIPFromIPWhoisAPI(ip)
 
+      if (!ipwhois.success) {
+        throw new Error(`IPWhois lookup failed: ${ipwhois.message}`)
+      }
+
       return {
         ip: ipwhois.ip,
-        region: ipwhois.region,
-        country: ipwhois.country,
-        city: ipwhois.city,
-        asn: ipwhois.connection.asn?.toString(),
-        organization: ipwhois.connection.org,
+        region: ipwhois.region ?? '',
+        country: ipwhois.country ?? '',
+        city: ipwhois.city ?? '',
+        asn: ipwhois.connection?.asn?.toString() ?? '',
+        organization: ipwhois.connection?.org ?? '',
+        latitude: coordinate(ipwhois.latitude),
+        longitude: coordinate(ipwhois.longitude),
       }
+    case IP_INFO_API.IPSB:
     default:
-      const defaultIpwhois = await getIPFromIPWhoisAPI(ip)
+      const ipsb = await getIPFromIpsbAPI(ip)
 
       return {
-        ip: defaultIpwhois.ip,
-        country: defaultIpwhois.country,
-        region: defaultIpwhois.region,
-        city: defaultIpwhois.city,
-        asn: defaultIpwhois.connection.asn?.toString(),
-        organization: defaultIpwhois.connection.org,
+        ip: ipsb.ip,
+        country: ipsb.country ?? '',
+        region: ipsb.region ?? '',
+        city: ipsb.city ?? '',
+        asn: ipsb.asn?.toString() ?? '',
+        organization: ipsb.organization ?? ipsb.asn_organization ?? '',
+        latitude: coordinate(ipsb.latitude),
+        longitude: coordinate(ipsb.longitude),
       }
   }
 }
 
-/**
- * Local GeoIP lookup backed by GeoIP databases (Country for the country, ASN for
- * the autonomous system / organization).
- *
- * Each database is downloaded once from the CDN, cached in IndexedDB (which,
- * unlike the Cache API, also works over plain HTTP), and queried in the browser
- * so location lookups no longer hit a remote geolocation API.
- */
-const GEOIP_IDB_NAME = 'zashboard-geoip'
-const GEOIP_IDB_STORE = 'mmdb'
-const GEOIP_DATABASE_TTL = 30 * 24 * 60 * 60 * 1000
+export const getPublicIPInfo = async (api: IP_INFO_API): Promise<IPInfo> => {
+  const info = await getIPInfo('', api)
 
-interface CachedGeoIPDatabase {
-  buffer: ArrayBuffer
-  updatedAt: number
-}
-
-const openGeoIPDB = (): Promise<IDBDatabase> =>
-  new Promise((resolve, reject) => {
-    const request = indexedDB.open(GEOIP_IDB_NAME, 1)
-
-    request.onupgradeneeded = () => {
-      request.result.createObjectStore(GEOIP_IDB_STORE)
-    }
-    request.onsuccess = () => resolve(request.result)
-    request.onerror = () => reject(request.error)
-  })
-
-const readCachedDatabase = async (key: string): Promise<CachedGeoIPDatabase | undefined> => {
-  const db = await openGeoIPDB()
-
-  return new Promise((resolve, reject) => {
-    const request = db
-      .transaction(GEOIP_IDB_STORE, 'readonly')
-      .objectStore(GEOIP_IDB_STORE)
-      .get(key)
-
-    request.onsuccess = () => resolve(request.result as CachedGeoIPDatabase | undefined)
-    request.onerror = () => reject(request.error)
-  }).finally(() => db.close()) as Promise<CachedGeoIPDatabase | undefined>
-}
-
-const writeCachedDatabase = async (key: string, value: CachedGeoIPDatabase): Promise<void> => {
-  const db = await openGeoIPDB()
-
-  return new Promise<void>((resolve, reject) => {
-    const transaction = db.transaction(GEOIP_IDB_STORE, 'readwrite')
-
-    transaction.objectStore(GEOIP_IDB_STORE).put(value, key)
-    transaction.oncomplete = () => resolve()
-    transaction.onerror = () => reject(transaction.error)
-  }).finally(() => db.close())
-}
-
-type GeoIPResponse = CountryResponse | AsnResponse
-
-const loadReader = async (url: string): Promise<Reader<GeoIPResponse>> => {
-  let cached = await readCachedDatabase(url).catch(() => undefined)
-
-  if (!cached || Date.now() - cached.updatedAt > GEOIP_DATABASE_TTL) {
-    try {
-      const response = await fetch(url)
-
-      if (!response.ok) {
-        throw new Error(`Failed to download GeoIP database: ${response.status}`)
-      }
-
-      cached = { buffer: await response.arrayBuffer(), updatedAt: Date.now() }
-      await writeCachedDatabase(url, cached).catch(() => {})
-    } catch (error) {
-      // Fall back to a stale cache when refreshing fails; only rethrow when we
-      // have nothing usable at all.
-      if (!cached) {
-        throw error
-      }
-    }
+  if (!ipaddr.isValid(info.ip)) {
+    throw new Error(`${api} returned an invalid public IP`)
   }
 
-  const { Reader } = await import('mmdb-lib')
-
-  return new Reader<GeoIPResponse>(Buffer.from(cached.buffer))
+  return info
 }
-
-// Cap the in-memory reader cache. Normally only two databases (country + ASN)
-// are live at once; the headroom absorbs transient URL edits before the stale
-// entries are evicted (least-recently-used first).
-const GEOIP_READER_CACHE_MAX = 4
-const readerCache = new Map<string, Promise<Reader<GeoIPResponse>>>()
-
-const getReader = <T extends GeoIPResponse>(url: string): Promise<Reader<T>> => {
-  const cached = readerCache.get(url)
-
-  if (cached) {
-    // Mark as most-recently-used.
-    readerCache.delete(url)
-    readerCache.set(url, cached)
-
-    return cached as Promise<Reader<T>>
-  }
-
-  const reader = loadReader(url).catch((error) => {
-    // Drop the failed entry so a later lookup can retry the download.
-    readerCache.delete(url)
-    throw error
-  })
-
-  readerCache.set(url, reader)
-
-  // Evict the least-recently-used entries beyond the cap.
-  while (readerCache.size > GEOIP_READER_CACHE_MAX) {
-    const oldest = readerCache.keys().next().value
-
-    if (oldest === undefined) {
-      break
-    }
-
-    readerCache.delete(oldest)
-  }
-
-  return reader as Promise<Reader<T>>
-}
-
-const localizedName = (names?: { en: string; 'zh-CN'?: string }): string => {
-  if (!names) {
-    return ''
-  }
-
-  const preferChinese = language.value === LANG.ZH_CN || language.value === LANG.ZH_TW
-
-  return preferChinese ? (names['zh-CN'] ?? names.en) : names.en
-}
-
-// Look up a single IP. A failure to load the database propagates (so the caller
-// can retry later); only a lookup miss / decode error for this IP becomes null.
-const lookup = async <T extends GeoIPResponse>(url: string, ip: string): Promise<T | null> => {
-  const reader = await getReader<T>(url)
-
-  try {
-    return reader.get(ip)
-  } catch {
-    return null
-  }
-}
-
-const getGeoIPInfo = async (ip: string): Promise<IPInfo> => {
-  const [country, asn] = await Promise.all([
-    lookup<CountryResponse>(geoipCountryDatabaseURL.value, ip),
-    lookup<AsnResponse>(geoipASNDatabaseURL.value, ip),
-  ])
-
-  return {
-    ip,
-    // Real countries carry localized names; category ranges (e.g. GOOGLE) only
-    // have an iso_code, so fall back to that.
-    country: localizedName(country?.country?.names) || (country?.country?.iso_code ?? ''),
-    region: '',
-    city: '',
-    asn: asn?.autonomous_system_number?.toString() ?? '',
-    organization: asn?.autonomous_system_organization ?? '',
-  }
-}
-
-const EMPTY_GEOIP_INFO: IPInfo = {
-  ip: '',
-  country: '',
-  region: '',
-  city: '',
-  asn: '',
-  organization: '',
-}
-// Cap the resolved-info cache; a session may touch many distinct IPs, and each
-// entry is tiny, so this only guards against unbounded growth.
-const GEOIP_INFO_CACHE_MAX = 4096
-const geoInfoCache = reactive(new Map<string, IPInfo>())
-const geoInfoPending = new Set<string>()
-
-/**
- * Reactive, synchronous GeoIP lookup for render paths (e.g. table cells).
- *
- * Returns the cached info immediately, or empty values while the async lookup
- * runs in the background; once resolved the reactive cache updates and dependent
- * views re-render.
- */
-export const getGeoIPInfoSync = (ip: string): IPInfo => {
-  if (!ip || !ipaddr.isValid(ip)) {
-    return EMPTY_GEOIP_INFO
-  }
-
-  const cached = geoInfoCache.get(ip)
-
-  if (cached) {
-    return cached
-  }
-
-  if (!geoInfoPending.has(ip)) {
-    geoInfoPending.add(ip)
-    getGeoIPInfo(ip)
-      .then((info) => {
-        geoInfoCache.set(ip, info)
-
-        // Evict oldest entries beyond the cap (FIFO; safe here since this runs
-        // in a microtask, not during a render read of the reactive cache).
-        while (geoInfoCache.size > GEOIP_INFO_CACHE_MAX) {
-          const oldest = geoInfoCache.keys().next().value
-
-          if (oldest === undefined) {
-            break
-          }
-
-          geoInfoCache.delete(oldest)
-        }
-      })
-      .catch(() => {})
-      .finally(() => geoInfoPending.delete(ip))
-  }
-
-  return EMPTY_GEOIP_INFO
-}
-
-// When the database URLs change, drop the cached readers and resolved results so
-// the new databases are (re)downloaded and take effect. Clearing the reactive
-// result cache makes any visible GeoIP cells re-query immediately; if nothing is
-// shown, nothing is downloaded. Debounced so editing the URL character by
-// character does not trigger a download per keystroke.
-watchDebounced(
-  [geoipCountryDatabaseURL, geoipASNDatabaseURL],
-  () => {
-    readerCache.clear()
-    geoInfoCache.clear()
-    geoInfoPending.clear()
-  },
-  { debounce: 800 },
-)

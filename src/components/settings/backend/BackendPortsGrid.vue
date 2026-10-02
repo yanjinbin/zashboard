@@ -30,6 +30,7 @@
 
 <script setup lang="ts">
 import { configs, updateConfigs } from '@/assembly/config'
+import { notifyRequestError } from '@/helper/request-error'
 import { useElementSize } from '@vueuse/core'
 import { computed, ref } from 'vue'
 
@@ -107,8 +108,13 @@ const getPortTileLayoutClass = (index: number) => {
   ]
 }
 
-const handleChange = (key: PortKey, event: Event) => {
+const handleChange = async (key: PortKey, event: Event) => {
   const value = Number((event.target as HTMLInputElement).value)
-  updateConfigs({ [key]: Number.isNaN(value) ? 0 : value })
+
+  try {
+    await updateConfigs({ [key]: Number.isNaN(value) ? 0 : value })
+  } catch (e) {
+    notifyRequestError(e)
+  }
 }
 </script>

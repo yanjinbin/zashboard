@@ -57,7 +57,7 @@
           <InformationCircleIcon
             v-if="rule.extra"
             class="-mt-[2px] ml-1 inline-block h-4 w-4 opacity-60"
-            @mouseenter="showRuleHitInfoTip"
+            @mouseenter="showRuleHitTip($event, rule)"
             @click.stop
           />
         </div>
@@ -101,16 +101,19 @@
 </template>
 
 <script setup lang="ts">
-import { useBounceOnVisible } from '@/composables/bouncein'
+import { rulesFilter } from '@/store/rules'
+import { useBounceOnVisible } from '@/composables/use-bounce-on-visible'
+import { useRuleHitTooltip } from '@/composables/use-rule-hit-tooltip'
 import {
   getRuleSize,
   isRuleDisabled,
   isUpdateableRuleSet as checkUpdateableRuleSet,
   toggleRuleDisabledWithSideEffects,
-} from '@/composables/rules'
-import { useTooltip } from '@/helper/tooltip'
+} from '@/helper/rules'
+import { notifyRequestError } from '@/helper/request-error'
+import { useTooltip } from '@/composables/use-tooltip'
 import { proxyGroupList } from '@/assembly/proxies'
-import { fetchRules, rulesFilter, updateRuleProviderAPI } from '@/assembly/rules'
+import { fetchRules, updateRuleProvider } from '@/assembly/rules'
 import { displayLatencyInRule, displayNowNodeInRule } from '@/store/settings'
 import type { Rule } from '@/types'
 import {
@@ -118,10 +121,9 @@ import {
   InformationCircleIcon,
   QuestionMarkCircleIcon,
 } from '@heroicons/vue/24/outline'
-import dayjs from 'dayjs'
 import { twMerge } from 'tailwind-merge'
 import type { Ref } from 'vue'
-import { computed, createApp, defineComponent, h, inject, ref, watch } from 'vue'
+import { computed, inject, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import HighlightText from '../common/HighlightText.vue'
 import ProxyChainPath from '../common/ProxyChainPath.vue'
@@ -155,6 +157,7 @@ const handlerExpandTransitionEnd = () => {
 
 const { t } = useI18n()
 const { showTip } = useTooltip()
+const { showRuleHitTip } = useRuleHitTooltip()
 
 const size = computed(() => getRuleSize(props.rule))
 
@@ -168,9 +171,14 @@ const updateRuleProviderClickHandler = async () => {
   if (isUpdating.value) return
 
   isUpdating.value = true
-  await updateRuleProviderAPI(props.rule.payload)
-  await fetchRules()
-  isUpdating.value = false
+  try {
+    await updateRuleProvider(props.rule.payload)
+    await fetchRules()
+  } catch (e) {
+    notifyRequestError(e)
+  } finally {
+    isUpdating.value = false
+  }
 }
 
 const toggleRuleDisabledHandler = async () => {
@@ -179,6 +187,8 @@ const toggleRuleDisabledHandler = async () => {
   try {
     isTogglingDisabled.value = true
     await toggleRuleDisabledWithSideEffects(props.rule)
+  } catch (e) {
+    notifyRequestError(e)
   } finally {
     isTogglingDisabled.value = false
   }
@@ -186,44 +196,6 @@ const toggleRuleDisabledHandler = async () => {
 
 const showMMDBSizeTip = (e: Event) => {
   showTip(e, t('mmdbSizeTip'))
-}
-
-const ruleHitCount = computed(() => t('ruleHitCount', { count: props.rule.extra?.hitCount }))
-const ruleLastHit = computed(() =>
-  t('ruleLastHit', { time: dayjs(props.rule.extra?.hitAt).format('YYYY-MM-DD HH:mm:ss') }),
-)
-const ruleMissCount = computed(() => t('ruleMissCount', { count: props.rule.extra?.missCount }))
-const ruleLastMiss = computed(() =>
-  t('ruleLastMiss', { time: dayjs(props.rule.extra?.missAt).format('YYYY-MM-DD HH:mm:ss') }),
-)
-
-const showRuleHitInfoTip = (e: Event) => {
-  if (!props.rule.extra) return
-
-  const PopContent = defineComponent({
-    setup() {
-      return () =>
-        h('div', { class: 'flex flex-col gap-2 text-sm' }, [
-          h('div', { class: 'flex flex-col gap-1' }, [
-            h('div', ruleHitCount.value),
-            h('div', ruleLastHit.value),
-          ]),
-          h('div', { class: 'flex flex-col gap-1' }, [
-            h('div', ruleMissCount.value),
-            h('div', ruleLastMiss.value),
-          ]),
-        ])
-    },
-  })
-  const mountEl = document.createElement('div')
-  const app = createApp(PopContent)
-
-  app.mount(mountEl)
-
-  showTip(e, mountEl, {
-    delay: [500, 0],
-    trigger: 'mouseenter',
-  })
 }
 
 const clickHandler = () => {

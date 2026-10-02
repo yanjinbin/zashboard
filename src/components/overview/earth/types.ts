@@ -1,10 +1,6 @@
-// The unversioned CDN URL follows the latest published DB-IP City Lite package;
-// the worker refreshes its browser cache by TTL.
 export const DBIP_CITY_URL = 'https://cdn.jsdelivr.net/npm/dbip-city-lite/dbip-city-lite.mmdb.gz'
 export const DBIP_COMPRESSED_BYTES = 61_700_000
 export const DBIP_STORED_BYTES = 130_200_000
-
-export type EarthOriginSource = 'global' | 'china'
 
 export type EarthEndpointRole = 'origin' | 'destination'
 
@@ -12,6 +8,19 @@ export interface EarthLocation {
   ip: string
   latitude: number
   longitude: number
+  city: string
+  country: string
+}
+
+export interface EarthSample {
+  latitude: number
+  longitude: number
+  altitude: number
+}
+
+export interface EarthLocationHint {
+  latitude: number | null
+  longitude: number | null
   city: string
   country: string
 }
@@ -24,6 +33,7 @@ export interface EarthHostTraffic {
 export interface EarthRoute {
   key: string
   path: Array<EarthLocation & { role: EarthEndpointRole }>
+  direct: boolean
   connections: number
   upload: number
   download: number

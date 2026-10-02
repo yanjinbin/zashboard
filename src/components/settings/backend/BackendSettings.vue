@@ -1,193 +1,79 @@
 <template>
-  <!-- backend -->
   <div
     v-if="hasVisibleItems"
-    class="flex flex-col gap-3 text-sm"
+    class="text-sm"
   >
-    <div class="flex items-center gap-2 px-1">
-      <div class="indicator">
-        <span
-          v-if="isCoreUpdateAvailable"
-          class="indicator-item top-1 -right-1 flex"
+    <template v-if="isVisibleBackendSwitch">
+      <div class="settings-section-label">{{ $t('settingsSectionCurrentBackend') }}</div>
+      <div class="settings-grid">
+        <SettingItem
+          :setting-key="k.backend"
+          class="py-3"
         >
-          <span class="bg-secondary absolute h-2 w-2 animate-ping rounded-full"></span>
-          <span class="bg-secondary h-2 w-2 rounded-full"></span>
-        </span>
-        <div class="flex items-center gap-2 text-lg font-semibold">
-          {{ $t('backend') }}
-          <BackendVersion class="text-sm font-normal" />
-        </div>
+          <div class="flex w-full flex-col gap-3">
+            <div class="flex items-center gap-2 px-1">
+              <div class="indicator">
+                <span
+                  v-if="isCoreUpdateAvailable"
+                  class="indicator-item top-1 -right-1 flex"
+                >
+                  <span class="bg-secondary absolute h-2 w-2 animate-ping rounded-full"></span>
+                  <span class="bg-secondary h-2 w-2 rounded-full"></span>
+                </span>
+                <a
+                  class="flex cursor-pointer items-center gap-2 font-semibold"
+                  :href="coreBrand.url"
+                  target="_blank"
+                >
+                  {{ $t('backend') }}
+                  <BackendVersion class="text-sm font-normal" />
+                </a>
+              </div>
+            </div>
+            <BackendSwitch :show-actions="false" />
+          </div>
+        </SettingItem>
       </div>
-    </div>
+    </template>
 
-    <div
-      class="settings-grid"
-      v-if="hasVisibleActions || isVisibleBackendSwitch || showDnsQuery"
-    >
-      <SettingItem
-        :setting-key="k.backend"
-        class="p-4"
-      >
-        <BackendSwitch />
-      </SettingItem>
-
-      <template v-if="can('coreActions')">
+    <template v-if="hasVisibleActions">
+      <div class="settings-section-label">{{ $t('settingsSectionCoreOperations') }}</div>
+      <div class="settings-grid">
         <SettingItem
-          :setting-key="k.upgradeCore"
-          :when="can('coreUpgrade') && !activeBackend?.disableUpgradeCore"
+          v-for="action in backendActions"
+          :key="action.key"
+          :setting-key="action.key"
         >
-          <div class="setting-item-label">
-            {{ $t('upgradeCore') }}
-          </div>
+          <div class="setting-item-label">{{ $t(action.label) }}</div>
           <button
-            class="btn btn-neutral btn-sm"
-            @click="showUpgradeCoreModal = true"
-          >
-            <ArrowUpCircleIcon class="h-4 w-4" />
-          </button>
-        </SettingItem>
-        <SettingItem
-          :setting-key="k.restartCore"
-          :when="can('coreRestart')"
-        >
-          <div class="setting-item-label">
-            {{ $t('restartCore') }}
-          </div>
-          <button
-            class="btn btn-sm"
-            @click="handlerClickRestartCore"
+            :class="['btn btn-sm min-w-11', action.key === k.upgradeCore && 'btn-neutral']"
+            :disabled="action.running"
+            :aria-label="$t(action.label)"
+            @click="action.run()"
           >
             <span
-              v-if="isCoreRestarting"
+              v-if="action.running"
               class="loading loading-spinner h-4 w-4"
             ></span>
-            <ArrowPathRoundedSquareIcon
+            <component
+              :is="action.icon"
               v-else
               class="h-4 w-4"
             />
           </button>
         </SettingItem>
-        <SettingItem
-          :setting-key="k.reloadConfigs"
-          :when="can('reloadConfigs')"
-        >
-          <div class="setting-item-label">
-            {{ $t('reloadConfigs') }}
-          </div>
-          <button
-            class="btn btn-sm"
-            @click="handlerClickReloadConfigs"
-          >
-            <span
-              v-if="isConfigReloading"
-              class="loading loading-spinner h-4 w-4"
-            ></span>
-            <ArrowPathIcon
-              v-else
-              class="h-4 w-4"
-            />
-          </button>
-        </SettingItem>
-        <SettingItem
-          :setting-key="k.updateConfigs"
-          :when="can('updateConfigs')"
-        >
-          <div class="setting-item-label">
-            {{ $t('updateConfigs') }}
-          </div>
-          <button
-            class="btn btn-sm"
-            @click="showUpdateConfigModal = true"
-          >
-            <PencilSquareIcon class="h-4 w-4" />
-          </button>
-        </SettingItem>
-        <SettingItem
-          :setting-key="k.updateGeoDatabase"
-          :when="can('updateGeoDatabase')"
-        >
-          <div class="setting-item-label">
-            {{ $t('updateGeoDatabase') }}
-          </div>
-          <button
-            class="btn btn-sm"
-            @click="handlerClickUpdateGeo"
-          >
-            <span
-              v-if="isGeoUpdating"
-              class="loading loading-spinner h-4 w-4"
-            ></span>
-            <ArrowDownTrayIcon
-              v-else
-              class="h-4 w-4"
-            />
-          </button>
-        </SettingItem>
-        <SettingItem :setting-key="k.flushDNSCache">
-          <div class="setting-item-label">
-            {{ $t('flushDNSCache') }}
-          </div>
-          <button
-            class="btn btn-sm"
-            @click="handleFlushDNSCache"
-          >
-            <TrashIcon class="h-4 w-4" />
-          </button>
-        </SettingItem>
-        <SettingItem :setting-key="k.flushFakeIP">
-          <div class="setting-item-label">
-            {{ $t('flushFakeIP') }}
-          </div>
-          <button
-            class="btn btn-sm"
-            @click="handleFlushFakeIP"
-          >
-            <TrashIcon class="h-4 w-4" />
-          </button>
-        </SettingItem>
-        <SettingItem
-          :setting-key="k.flushSmartWeights"
-          :when="hasSmartGroup"
-        >
-          <div class="setting-item-label">
-            {{ $t('flushSmartWeights') }}
-          </div>
-          <button
-            class="btn btn-sm"
-            @click="handleFlushSmartWeights"
-          >
-            <TrashIcon class="h-4 w-4" />
-          </button>
-        </SettingItem>
-      </template>
-
-      <SettingItem
-        :setting-key="k.DNSQuery"
-        :when="can('dnsQuery')"
-        class="py-3"
-      >
-        <div class="flex w-full flex-col">
-          <div class="settings-section-label">
-            {{ $t('DNSQuery') }}
-          </div>
-          <DnsQuery />
-        </div>
-      </SettingItem>
-    </div>
-
-    <div
-      v-if="can('configPatch') && configs && hasVisibleSettings"
-      class="grid"
-    >
-      <div class="settings-section-label">
-        {{ $t('settings') }}
       </div>
+    </template>
+
+    <template v-if="hasVisibleNetworkSettings">
+      <div class="settings-section-label">{{ $t('settingsSectionNetworkListening') }}</div>
       <div class="settings-grid">
         <SettingItem
           :setting-key="k.ports"
           class="py-3"
         >
-          <div class="flex w-full flex-col">
+          <div class="flex w-full flex-col gap-3">
+            <div class="setting-item-label">{{ $t('ports') }}</div>
             <BackendPortsGrid />
           </div>
         </SettingItem>
@@ -195,216 +81,195 @@
           :setting-key="k.tunMode"
           :when="!!configs?.tun && !activeBackend?.disableTunMode"
         >
-          <div class="setting-item-label">
-            {{ $t('tunMode') }}
-          </div>
+          <div class="setting-item-label">{{ $t('tunMode') }}</div>
           <input
+            v-model="configs!.tun.enable"
             class="toggle"
             type="checkbox"
-            v-model="configs!.tun.enable"
             @change="hanlderTunModeChange"
+          />
+        </SettingItem>
+        <SettingItem
+          :setting-key="k.tunStack"
+          :when="canShowTunStack"
+          class="settings-dependent-item"
+        >
+          <div class="setting-item-label">{{ $t('tunStack') }}</div>
+          <SelectInput
+            v-model="tunStack"
+            class="select select-sm min-w-24"
+            :options="tunStackOptions"
           />
         </SettingItem>
         <SettingItem
           :setting-key="k.allowLan"
           :when="!!configs"
         >
-          <div class="setting-item-label">
-            {{ $t('allowLan') }}
-          </div>
+          <div class="setting-item-label">{{ $t('allowLan') }}</div>
           <input
+            v-model="configs!['allow-lan']"
             class="toggle"
             type="checkbox"
-            v-model="configs!['allow-lan']"
             @change="handlerAllowLanChange"
           />
         </SettingItem>
-        <template v-if="!activeBackend?.disableUpgradeCore">
-          <SettingItem :setting-key="k.checkCoreUpgrade">
-            <div class="setting-item-label">
-              {{ $t('checkCoreUpgrade') }}
-            </div>
-            <input
-              class="toggle"
-              type="checkbox"
-              v-model="checkUpgradeCore"
-              @change="handlerCheckUpgradeCoreChange"
-            />
-          </SettingItem>
-          <SettingItem
-            :setting-key="k.autoUpgradeCore"
-            :when="checkUpgradeCore"
-          >
-            <div class="setting-item-label">
-              {{ $t('autoUpgradeCore') }}
-            </div>
-            <input
-              class="toggle"
-              type="checkbox"
-              v-model="autoUpgradeCore"
-            />
-          </SettingItem>
-        </template>
       </div>
-    </div>
+    </template>
 
-    <UpgradeCoreModal v-model="showUpgradeCoreModal" />
-    <UpdateConfigModal v-model="showUpdateConfigModal" />
+    <template v-if="hasVisibleUpgradeSettings">
+      <div class="settings-section-label">{{ $t('settingsSectionCoreUpdates') }}</div>
+      <div class="settings-grid">
+        <SettingItem :setting-key="k.checkCoreUpgrade">
+          <div class="setting-item-label">{{ $t('checkCoreUpgrade') }}</div>
+          <input
+            v-model="checkUpgradeCore"
+            class="toggle"
+            type="checkbox"
+            @change="handlerCheckUpgradeCoreChange"
+          />
+        </SettingItem>
+        <SettingItem
+          :setting-key="k.autoUpgradeCore"
+          :when="checkUpgradeCore"
+          class="settings-dependent-item"
+        >
+          <div class="setting-item-label">{{ $t('autoUpgradeCore') }}</div>
+          <input
+            v-model="autoUpgradeCore"
+            class="toggle"
+            type="checkbox"
+          />
+        </SettingItem>
+      </div>
+    </template>
+
+    <template v-if="showDaeRuntime">
+      <div class="settings-section-label">{{ $t('daeRuntime') }}</div>
+      <div class="settings-grid">
+        <SettingItem
+          :setting-key="k.daeRuntime"
+          class="py-3"
+        >
+          <DaeRuntimePanel />
+        </SettingItem>
+      </div>
+    </template>
+
+    <template v-if="showDaeGeoData">
+      <div class="settings-section-label">{{ $t('daeGeoData') }}</div>
+      <div class="settings-grid">
+        <SettingItem
+          :setting-key="k.daeGeoData"
+          class="py-3"
+        >
+          <DaeGeoDataPanel />
+        </SettingItem>
+      </div>
+    </template>
+
+    <template v-if="showDnsDiagnostics">
+      <div class="settings-section-label">{{ $t('settingsSectionDiagnostics') }}</div>
+      <div class="settings-grid">
+        <SettingItem
+          :setting-key="k.DNSQuery"
+          class="py-3"
+        >
+          <DnsDiagnostics />
+        </SettingItem>
+      </div>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import {
-  flushDNSCacheAPI,
-  flushFakeIPAPI,
-  reloadConfigsAPI,
-  updateGeoDataAPI,
-} from '@/assembly/config'
-import { isCoreUpdateAvailable, restartCoreAPI } from '@/assembly/version'
+import { can } from '@/assembly/backend'
+import { daeCapabilities } from '@/assembly/capabilities'
+import { configs, updateConfigs } from '@/assembly/config'
+import { coreBrand, isCoreUpdateAvailable } from '@/assembly/version'
 import BackendVersion from '@/components/common/BackendVersion.vue'
+import SelectInput, { type SelectOption } from '@/components/common/SelectInput.vue'
 import BackendPortsGrid from '@/components/settings/backend/BackendPortsGrid.vue'
 import BackendSwitch from '@/components/settings/backend/BackendSwitch.vue'
-import DnsQuery from '@/components/settings/backend/DnsQuery.vue'
-import { can } from '@/assembly/backend'
+import DaeGeoDataPanel from '@/components/dae/DaeGeoDataPanel.vue'
+import DaeRuntimePanel from '@/components/dae/DaeRuntimePanel.vue'
+import DnsDiagnostics from '@/components/settings/backend/DnsDiagnostics.vue'
 import SettingItem from '@/components/settings/SettingItem.vue'
-import { isSettingVisible, useIsSettingVisible } from '@/composables/settings'
-import { BACKEND_ITEM_KEYS } from '@/config/settingsItems'
-import { showNotification } from '@/helper/notification'
-import { fetchProxies, flushSmartGroupWeightsAPI, hasSmartGroup } from '@/assembly/proxies'
-import { configs, fetchConfigs, updateConfigs } from '@/assembly/config'
-import { fetchRules } from '@/assembly/rules'
+import { backendActions } from '@/helper/backend-actions'
+import { useIsSettingVisible } from '@/composables/use-setting-visibility'
+import { isSettingVisible } from '@/helper/settings'
+import { BACKEND_ITEM_KEYS } from '@/config/settings-items'
+import { TUN_STACK } from '@/constant'
+import { notifyRequestError } from '@/helper/request-error'
 import { autoUpgradeCore, checkUpgradeCore } from '@/store/settings'
 import { activeBackend } from '@/store/setup'
-import {
-  ArrowDownTrayIcon,
-  ArrowPathIcon,
-  ArrowPathRoundedSquareIcon,
-  ArrowUpCircleIcon,
-  PencilSquareIcon,
-  TrashIcon,
-} from '@heroicons/vue/24/outline'
-import { computed, ref } from 'vue'
-import UpdateConfigModal from './UpdateConfigModal.vue'
-import UpgradeCoreModal from './UpgradeCoreModal.vue'
+import { computed } from 'vue'
 
 const k = BACKEND_ITEM_KEYS
+
 const isVisibleBackendSwitch = useIsSettingVisible(k.backend)
 const isVisiblePorts = useIsSettingVisible(k.ports)
 const isVisibleTunMode = useIsSettingVisible(k.tunMode)
+const isVisibleTunStack = useIsSettingVisible(k.tunStack)
 const isVisibleAllowLan = useIsSettingVisible(k.allowLan)
 const isVisibleCheckUpgrade = useIsSettingVisible(k.checkCoreUpgrade)
 const isVisibleAutoUpgrade = useIsSettingVisible(k.autoUpgradeCore)
 const isVisibleDnsQuery = useIsSettingVisible(k.DNSQuery)
+const isVisibleDaeRuntime = useIsSettingVisible(k.daeRuntime)
+const isVisibleDaeGeoData = useIsSettingVisible(k.daeGeoData)
 const canShowTunMode = computed(
   () => isVisibleTunMode.value && !activeBackend.value?.disableTunMode,
 )
+const canShowTunStack = computed(
+  () =>
+    !!configs.value?.tun?.stack && isVisibleTunStack.value && !activeBackend.value?.disableTunMode,
+)
 
-/** sing-box 内核下只保留 flush 类操作，除非用户开启了「显示全部功能」 */
-/** 当前后端/内核下实际可渲染的操作项 */
-const renderableActionKeys = computed(() => {
-  if (!can('coreActions')) return []
-
-  const keys: string[] = []
-
-  if (can('coreUpgrade') && !activeBackend.value?.disableUpgradeCore) keys.push(k.upgradeCore)
-  if (can('coreRestart')) keys.push(k.restartCore)
-  if (can('reloadConfigs')) keys.push(k.reloadConfigs)
-  if (can('updateConfigs')) keys.push(k.updateConfigs)
-  if (can('updateGeoDatabase')) keys.push(k.updateGeoDatabase)
-  if (can('dnsFlush')) keys.push(k.flushDNSCache)
-  if (can('fakeIPFlush')) keys.push(k.flushFakeIP)
-  if (hasSmartGroup.value) keys.push(k.flushSmartWeights)
-
-  return keys
-})
-
-const hasVisibleActions = computed(() => renderableActionKeys.value.some(isSettingVisible))
-
-// 派生的「有没有东西可显示」必须和条目自身的门控一致,否则会渲染出空容器。
-const showDnsQuery = computed(() => isVisibleDnsQuery.value && can('dnsQuery'))
-
-const hasVisibleItems = computed(() => {
-  return (
-    isVisibleBackendSwitch.value ||
-    hasVisibleSettings.value ||
-    hasVisibleActions.value ||
-    showDnsQuery.value
-  )
-})
-
-const hasVisibleSettings = computed(() => {
-  return (
+const hasVisibleActions = computed(() =>
+  backendActions.value.some((action) => isSettingVisible(action.key)),
+)
+const showDaeRuntime = computed(
+  () =>
+    isVisibleDaeRuntime.value &&
+    activeBackend.value?.type === 'dae' &&
+    (can('runtimeSettings') || can('lifecycleControl') || can('datapath')),
+)
+const showDaeGeoData = computed(
+  () =>
+    isVisibleDaeGeoData.value &&
+    activeBackend.value?.type === 'dae' &&
+    daeCapabilities.value?.resources.geodata?.available === true,
+)
+const showDnsDiagnostics = computed(
+  () =>
+    isVisibleDnsQuery.value &&
+    (can('dnsQuery') || can('dnsCache') || can('dnsLog') || can('dnsRules')),
+)
+const hasVisibleNetworkSettings = computed(
+  () =>
     can('configPatch') &&
     !!configs.value &&
     (isVisiblePorts.value ||
-      (configs.value.tun && canShowTunMode.value) ||
-      isVisibleAllowLan.value ||
-      (!activeBackend.value?.disableUpgradeCore &&
-        (isVisibleCheckUpgrade.value || (checkUpgradeCore.value && isVisibleAutoUpgrade.value))))
-  )
-})
-
-const reloadAll = () => {
-  fetchConfigs()
-  fetchRules()
-  fetchProxies()
-}
-
-const showUpgradeCoreModal = ref(false)
-const showUpdateConfigModal = ref(false)
-
-const isCoreRestarting = ref(false)
-const handlerClickRestartCore = async () => {
-  if (isCoreRestarting.value) return
-  isCoreRestarting.value = true
-  try {
-    await restartCoreAPI()
-    setTimeout(() => {
-      reloadAll()
-    }, 500)
-    isCoreRestarting.value = false
-    showNotification({
-      content: 'restartCoreSuccess',
-      type: 'alert-success',
-    })
-  } catch {
-    isCoreRestarting.value = false
-  }
-}
-
-const isConfigReloading = ref(false)
-const handlerClickReloadConfigs = async () => {
-  if (isConfigReloading.value) return
-  isConfigReloading.value = true
-  try {
-    await reloadConfigsAPI()
-    reloadAll()
-    isConfigReloading.value = false
-    showNotification({
-      content: 'reloadConfigsSuccess',
-      type: 'alert-success',
-    })
-  } catch {
-    isConfigReloading.value = false
-  }
-}
-
-const isGeoUpdating = ref(false)
-const handlerClickUpdateGeo = async () => {
-  if (isGeoUpdating.value) return
-  isGeoUpdating.value = true
-  try {
-    await updateGeoDataAPI()
-    reloadAll()
-    isGeoUpdating.value = false
-    showNotification({
-      content: 'updateGeoSuccess',
-      type: 'alert-success',
-    })
-  } catch {
-    isGeoUpdating.value = false
-  }
-}
+      (!!configs.value.tun && canShowTunMode.value) ||
+      canShowTunStack.value ||
+      isVisibleAllowLan.value),
+)
+const hasVisibleUpgradeSettings = computed(
+  () =>
+    can('configPatch') &&
+    !!configs.value &&
+    !activeBackend.value?.disableUpgradeCore &&
+    (isVisibleCheckUpgrade.value || (checkUpgradeCore.value && isVisibleAutoUpgrade.value)),
+)
+const hasVisibleItems = computed(
+  () =>
+    isVisibleBackendSwitch.value ||
+    hasVisibleActions.value ||
+    hasVisibleNetworkSettings.value ||
+    hasVisibleUpgradeSettings.value ||
+    showDaeRuntime.value ||
+    showDaeGeoData.value ||
+    showDnsDiagnostics.value,
+)
 
 const handlerCheckUpgradeCoreChange = () => {
   if (!checkUpgradeCore.value) {
@@ -412,35 +277,46 @@ const handlerCheckUpgradeCoreChange = () => {
     isCoreUpdateAvailable.value = false
   }
 }
-
 const hanlderTunModeChange = async () => {
-  await updateConfigs({ tun: { enable: configs.value?.tun.enable } })
+  try {
+    await updateConfigs({ tun: { enable: configs.value?.tun.enable } })
+  } catch (error) {
+    notifyRequestError(error)
+  }
+}
+const tunStackOptions = computed<SelectOption<string>[]>(() => {
+  const options: SelectOption<string>[] = Object.values(TUN_STACK).map((value) => ({
+    value,
+    label: value,
+  }))
+  const current = configs.value?.tun?.stack
+
+  if (current && !options.some((option) => option.value === current)) {
+    options.unshift({ value: current, label: current })
+  }
+
+  return options
+})
+const tunStack = computed<string>({
+  get: () => configs.value?.tun?.stack ?? '',
+  set: (stack) => {
+    if (!configs.value?.tun) return
+    configs.value.tun.stack = stack
+    handlerTunStackChange(stack)
+  },
+})
+const handlerTunStackChange = async (stack: string) => {
+  try {
+    await updateConfigs({ tun: { enable: configs.value?.tun.enable, stack } })
+  } catch (error) {
+    notifyRequestError(error)
+  }
 }
 const handlerAllowLanChange = async () => {
-  await updateConfigs({ ['allow-lan']: configs.value?.['allow-lan'] })
-}
-
-const handleFlushDNSCache = async () => {
-  await flushDNSCacheAPI()
-  showNotification({
-    content: 'flushDNSCacheSuccess',
-    type: 'alert-success',
-  })
-}
-
-const handleFlushFakeIP = async () => {
-  await flushFakeIPAPI()
-  showNotification({
-    content: 'flushFakeIPSuccess',
-    type: 'alert-success',
-  })
-}
-
-const handleFlushSmartWeights = async () => {
-  await flushSmartGroupWeightsAPI()
-  showNotification({
-    content: 'flushSmartWeightsSuccess',
-    type: 'alert-success',
-  })
+  try {
+    await updateConfigs({ ['allow-lan']: configs.value?.['allow-lan'] })
+  } catch (error) {
+    notifyRequestError(error)
+  }
 }
 </script>

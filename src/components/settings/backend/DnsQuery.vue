@@ -1,31 +1,37 @@
 <template>
   <div class="flex w-full flex-col gap-3">
-    <form
-      class="join w-96 max-w-full max-sm:w-full"
-      @submit.prevent="query"
-    >
-      <TextInput
-        v-model="form.name"
-        class="join-item min-w-0 flex-1"
-        placeholder="Domain Name"
-        :clearable="true"
-        :menus="dnsQueryNameHistory"
-        :menus-deleteable="true"
-        @update:menus="updateDnsQueryNameHistory"
-      />
-      <TextInput
-        v-model="form.type"
-        class="join-item w-28"
-        placeholder="Type"
-        :menus="['A', 'AAAA', 'HTTPS']"
-      />
-      <button
-        type="submit"
-        class="btn join-item btn-sm"
-      >
+    <div class="flex w-full flex-wrap items-center gap-3">
+      <div class="setting-item-label max-sm:w-full max-sm:flex-none">
         {{ $t('DNSQuery') }}
-      </button>
-    </form>
+      </div>
+      <form
+        class="join ml-auto w-96 max-w-full max-sm:w-full"
+        @submit.prevent="query"
+      >
+        <TextInput
+          v-model="form.name"
+          class="join-item min-w-0 flex-1"
+          placeholder="Domain Name"
+          :clearable="true"
+          :menus="dnsQueryNameHistory"
+          :menus-deleteable="true"
+          @update:menus="updateDnsQueryNameHistory"
+        />
+        <TextInput
+          v-model="form.type"
+          class="join-item w-20"
+          placeholder="Type"
+          :menus="['A', 'AAAA', 'HTTPS']"
+        />
+        <button
+          type="submit"
+          class="btn join-item btn-sm"
+          :aria-label="$t('DNSQuery')"
+        >
+          <MagnifyingGlassIcon class="h-4 w-4" />
+        </button>
+      </form>
+    </div>
     <div
       v-if="resultList?.length"
       class="bg-base-200/30 max-h-96 overflow-y-auto rounded-sm"
@@ -77,11 +83,12 @@
 </template>
 
 <script lang="ts" setup>
-import { queryDNSAPI } from '@/assembly/config'
+import { queryDNS } from '@/assembly/config'
 import { getIPInfo, type IPInfo } from '@/api/geoip'
+import { notifyRequestError } from '@/helper/request-error'
+import { useStorage } from '@/composables/use-storage'
 import type { DNSQuery } from '@/types'
-import { MapPinIcon, ServerIcon } from '@heroicons/vue/24/outline'
-import { useStorage } from '@vueuse/core'
+import { MagnifyingGlassIcon, MapPinIcon, ServerIcon } from '@heroicons/vue/24/outline'
 import { reactive, ref } from 'vue'
 import TextInput from '../../common/TextInput.vue'
 
@@ -120,16 +127,16 @@ const saveQueryName = (name: string) => {
 const query = async () => {
   saveQueryName(form.name)
 
-  const { data } = await queryDNSAPI(form)
+  try {
+    const data = await queryDNS(form)
 
-  resultList.value = data.Answer
+    resultList.value = data.Answer
 
-  const ipAnswer = resultList.value?.find(({ type }) => type === 1 || type === 28)
+    const ipAnswer = resultList.value?.find(({ type }) => type === 1 || type === 28)
 
-  if (ipAnswer) {
-    details.value = await getIPInfo(ipAnswer.data)
-  } else {
-    details.value = null
+    details.value = ipAnswer ? await getIPInfo(ipAnswer.data) : null
+  } catch (e) {
+    notifyRequestError(e)
   }
 }
 </script>

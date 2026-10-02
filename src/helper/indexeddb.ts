@@ -1,3 +1,4 @@
+import { useStorage } from '@/composables/use-storage'
 import { customBackgroundURL } from '@/store/settings'
 import dayjs from 'dayjs'
 import { computed, ref, watch } from 'vue'
@@ -124,15 +125,75 @@ watch(
   },
 )
 
-export const backgroundImage = computed(() => {
+const backgroundImageSource = computed(() => {
   if (!customBackgroundURL.value) {
     return ''
   }
 
   if (customBackgroundURL.value.includes(LOCAL_IMAGE)) {
-    return `background-image: url('${backgroundInDB.value}');`
+    return backgroundInDB.value
   }
-  return `background-image: url('${customBackgroundURL.value}?v=${date}');`
+
+  const querySeparator = customBackgroundURL.value.includes('?') ? '&' : '?'
+  return `${customBackgroundURL.value}${querySeparator}v=${date}`
+})
+
+export const backgroundImageLoaded = ref(false)
+type BackgroundLoadCache = Record<string, { date: string }>
+const backgroundLoadCache = useStorage<BackgroundLoadCache>(
+  'cache/custom-background-image-load-status',
+  {},
+)
+
+const getCachedBackgroundLoadStatus = (url: string) => {
+  const entry = backgroundLoadCache.value[url]
+  return entry?.date === date ? true : undefined
+}
+
+const cacheBackgroundLoadStatus = (url: string) => {
+  backgroundLoadCache.value[url] = { date }
+}
+
+let backgroundLoadRequest = 0
+
+watch(
+  backgroundImageSource,
+  (source) => {
+    const request = ++backgroundLoadRequest
+    backgroundImageLoaded.value = false
+
+    if (!source) return
+
+    const url = customBackgroundURL.value
+    const cachedStatus = getCachedBackgroundLoadStatus(url)
+    if (cachedStatus !== undefined) {
+      backgroundImageLoaded.value = cachedStatus
+      return
+    }
+
+    const image = new Image()
+    image.onload = () => {
+      if (request === backgroundLoadRequest) {
+        backgroundImageLoaded.value = true
+        cacheBackgroundLoadStatus(url)
+      }
+    }
+    image.onerror = () => {
+      if (request === backgroundLoadRequest) {
+        backgroundImageLoaded.value = false
+      }
+    }
+    image.src = source
+  },
+  { immediate: true },
+)
+
+export const backgroundImage = computed(() => {
+  if (!backgroundImageLoaded.value) {
+    return ''
+  }
+
+  return `background-image: url('${backgroundImageSource.value}');`
 })
 
 export interface ConnectionHistoryData {

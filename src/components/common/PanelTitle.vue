@@ -11,7 +11,7 @@
       class="h-5 w-5 shrink-0"
       alt=""
     />
-    <span class="truncate">ImmortalWrt-R5C-Gateway Nikki 控制面板</span>
+    <span class="truncate">ImmortalWrt-R5C/E20C-Gateway Nikki 控制面板</span>
   </a>
 </template>
 <script lang="ts" setup>

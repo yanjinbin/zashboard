@@ -1,13 +1,3 @@
-/*
- * 全部动画与过渡：@keyframes、Vue <Transition> 的类、以及各处的运动曲线。
- * 静态外观不要写在这里。每个分节都要给出对应的 prefers-reduced-motion 降级。
- *
- * 已知例外：弹窗/底部抽屉的过渡（.modal-enter-* / .modal-leave-*）有意留在
- * components/common/DialogWrapper.vue 的 <style scoped> 里，不在本文件。
- */
-
-/* ---------- 入场 / 强调 ---------- */
-
 @keyframes bounceIn {
   0% {
     opacity: 0.5;
@@ -40,191 +30,32 @@
   }
 }
 
-@keyframes highlightFlash {
-  0% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-primary) 100%, transparent);
-  }
-  50% {
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 30%, transparent);
-  }
-  100% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-primary) 0%, transparent);
-  }
-}
-
-.highlight-flash {
-  animation: highlightFlash 0.6s ease-out 2;
-}
-
-/* ---------- 侧栏 / 分段控件的滑动指示器 ---------- */
-
-.sidebar-tab-indicator {
-  border-radius: var(--radius-field);
+.nav-indicator {
   transform-origin: center;
-  will-change: transform, width, height;
 }
 
-.sidebar-tab-indicator-ready {
+.nav-indicator-ready {
   transition:
-    transform 0.55s cubic-bezier(0.22, 1.5, 0.36, 1),
-    width 0.32s cubic-bezier(0.32, 0.72, 0, 1),
-    height 0.32s cubic-bezier(0.32, 0.72, 0, 1),
+    transform 0.24s cubic-bezier(0.32, 0.72, 0, 1),
+    width 0.24s cubic-bezier(0.32, 0.72, 0, 1),
+    height 0.24s cubic-bezier(0.32, 0.72, 0, 1),
     opacity 0.15s ease-out;
 }
 
-.sidebar-tab-active {
-  color: var(--color-neutral-content);
-  transition: color 0.18s ease-out;
-}
-
-.ios-segment-indicator {
-  will-change: transform, width;
-}
-
-.ios-segment-indicator-ready {
+.nav-item {
   transition:
-    transform 0.4s cubic-bezier(0.32, 0.72, 0, 1),
-    width 0.4s cubic-bezier(0.32, 0.72, 0, 1),
-    opacity 0.15s ease-out;
+    color 0.24s cubic-bezier(0.32, 0.72, 0, 1),
+    background-color 0.24s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sidebar-tab-indicator-ready,
-  .sidebar-tab-active,
-  .ios-segment-indicator-ready {
+  .nav-indicator-ready,
+  .nav-item {
     transition: none;
   }
 }
 
-/* ---------- 代理节点网格 ---------- */
-
-/* 重排 FLIP + 增删淡入淡出 */
-.proxy-node-move {
-  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
-}
-
-/* 无限滚动追加的批次淡入 */
-.proxy-node-enter-active {
-  transition:
-    opacity 0.2s ease-out,
-    scale 0.2s cubic-bezier(0.32, 0.72, 0, 1);
-}
-.proxy-node-enter-from {
-  opacity: 0;
-  scale: 0.92;
-}
-
-/*
- * 离场不脱离文档流:网格里用 absolute 会让所有离场卡片堆到左上角,
- * 搜索过滤时一次消失几十张会非常噪。就地淡出、结束后再重排。
- */
-.proxy-node-leave-active {
-  transition:
-    opacity 0.15s ease-in,
-    scale 0.15s ease-in;
-}
-.proxy-node-leave-to {
-  opacity: 0;
-  scale: 0.92;
-}
-
-/*
- * 测速后节点被重新排序时的定位提示。用 animation 而非 transition,
- * 才不会和 .proxy-node-move 的 FLIP 抢 transition-property。
- */
-.latency-highlight::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background-color: var(--color-info);
-  animation: latencyHighlightFade 1.5s ease-out forwards;
-}
-
-@keyframes latencyHighlightFade {
-  0% {
-    opacity: 0.2;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .proxy-node-move,
-  .proxy-node-enter-active,
-  .proxy-node-leave-active {
-    transition: none;
-  }
-  .latency-highlight::after {
-    animation: none;
-  }
-}
-
-/* ---------- 杂项 ---------- */
-
-@keyframes progressBar {
-  from {
-    width: 100%;
-  }
-  to {
-    width: 0%;
-  }
-}
-
-/* ---------- 路由切换 ---------- */
-
-/* iOS-style slide transitions */
-.slide-right-enter-active,
-.slide-right-leave-active,
-.slide-left-enter-active,
-.slide-left-leave-active {
-  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  will-change: transform;
-  backface-visibility: hidden;
-}
-
-/* slide-left: content moves left */
-.slide-left-enter-from {
-  transform: translateX(100%);
-}
-.slide-left-enter-to {
-  transform: translateX(0);
-}
-.slide-left-leave-from {
-  transform: translateX(0);
-}
-.slide-left-leave-to {
-  transform: translateX(-100%);
-}
-
-/* slide-right: content moves right */
-.slide-right-enter-from {
-  transform: translateX(-100%);
-}
-.slide-right-enter-to {
-  transform: translateX(0);
-}
-.slide-right-leave-from {
-  transform: translateX(0);
-}
-.slide-right-leave-to {
-  transform: translateX(100%);
-}
-
-/* PC route transition: subtle fade, used with mode="out-in" */
-.page-enter-active,
-.page-leave-active {
-  transition: opacity 0.2s ease-in-out;
-  will-change: opacity;
-}
-.page-enter-from,
-.page-leave-to {
-  opacity: 0;
+:root {
+  --page-transition-duration: 0.35s;
+  --page-transition-ease: cubic-bezier(0.32, 0.72, 0, 1);
 }

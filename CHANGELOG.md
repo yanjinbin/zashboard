@@ -1,178 +1,217 @@
 # Changelog
 
-## [3.20.0](https://github.com/yanjinbin/zashboard/compare/v3.19.3...v3.20.0) (2026-07-17)
+## 3.29.2 (2026-10-01)
+
+* Sync upstream through `9b867b7` and restore upstream pages and default settings.
+* Keep the source IP column, panel title option, and router documentation links.
+* Update the panel title to include R5C/E20C.
+* Keep release checks and dashboard downloads on this fork with the no-fonts build.
+
+# Changelog
+
+## [3.29.1](https://github.com/Zephyruso/zashboard/compare/v3.29.0...v3.29.1) (2026-09-23)
+
+
+### Bug Fixes
+
+* enhance sidebar stats card with background color and improve table-glass styles ([4a29037](https://github.com/Zephyruso/zashboard/commit/4a2903752b2d0b0c711dc51f260e490ce7de4dfb))
+* normalize IPv6 zone in source IP labels and allow link-local reverse DNS ([686234a](https://github.com/Zephyruso/zashboard/commit/686234ab252e3517a2ca5113477eedc8376203d7)), closes [#798](https://github.com/Zephyruso/zashboard/issues/798)
+* overlay glass effect with backdrop filters across components ([ffcef39](https://github.com/Zephyruso/zashboard/commit/ffcef39706c3d0836eed8f750020bdaf61037946))
+* remove base color overlay on home page with custom background ([9cc981c](https://github.com/Zephyruso/zashboard/commit/9cc981cafa0114ff4a813e3e9f87217aedee83fb))
+* sync iOS status bar tint with theme and overlay dimming ([0d68259](https://github.com/Zephyruso/zashboard/commit/0d682591d9056dc7a24b3610f83f29abe4969413))
+* use tldts to extract registrable domain in connection history ([ce87647](https://github.com/Zephyruso/zashboard/commit/ce87647f35a01bc66208c298d3e0c58b558dba34)), closes [#797](https://github.com/Zephyruso/zashboard/issues/797)
+
+## [3.29.0](https://github.com/Zephyruso/zashboard/compare/v3.28.0...v3.29.0) (2026-09-21)
 
 
 ### Features
 
-* improve dashboard release and AI probes ([0306207](https://github.com/yanjinbin/zashboard/commit/0306207e9a9d4b1b5dfb4a117f193429fb5622f3))
-
-## [3.19.3](https://github.com/yanjinbin/zashboard/compare/v3.19.2...v3.19.3) (2026-07-16)
+* support dae API ([b54e357](https://github.com/Zephyruso/zashboard/commit/b54e3575e2178aa2eee8a86704d476eeaae114d4))
 
 
 ### Bug Fixes
 
-* use api.anthropic.com/v1/models for claude connectivity test ([6d79c77](https://github.com/yanjinbin/zashboard/commit/6d79c77bca661368f05cf4e6ce081dff72e7c3ba))
+* add backdrop blur effect to floating menu and action panels ([9406d36](https://github.com/Zephyruso/zashboard/commit/9406d36154d2f2d2421640a00bebbd6718375d6f))
+* improve accent color contrast in light and dark themes ([3c05df9](https://github.com/Zephyruso/zashboard/commit/3c05df92d08293ac5c3d4d03493d1d9e24822ab3))
+* **nav:** improve active state feedback and transition timing for nav items ([208ffe9](https://github.com/Zephyruso/zashboard/commit/208ffe9e4adaf9bd815534724be677bf51852510))
+* prevent dialog swipe from getting stuck in settling state ([e21ba6a](https://github.com/Zephyruso/zashboard/commit/e21ba6a797528a4bbc285158fd56d79ddcc8e2dd))
+* update default number of charts in sidebar to 1 ([b38eeba](https://github.com/Zephyruso/zashboard/commit/b38eeba58ffa9a11b17260b3cde59bd700b77a2b))
+* update estimated row height calculation and adjust padding for last row ([d6f69f7](https://github.com/Zephyruso/zashboard/commit/d6f69f771b9c540e636015aa5234ad811cb9c8a5))
+* update medium latency color for better contrast and consistency across themes ([035858d](https://github.com/Zephyruso/zashboard/commit/035858d5380c0ace98742228ab8649f8fbcfd920))
+* update ProxyNodeCard styles to apply background for active state ([412e8de](https://github.com/Zephyruso/zashboard/commit/412e8dec06329ea58f86ac8a6df9f55650c04235))
 
-## [3.19.2](https://github.com/yanjinbin/zashboard/compare/v3.19.1...v3.19.2) (2026-07-16)
-
-
-### Bug Fixes
-
-* use Image ping for favicon testing to bypass stricter WAF rules ([08da6ce](https://github.com/yanjinbin/zashboard/commit/08da6ce02147940fc04876fe3c8055838e88d367))
-
-## [3.19.1](https://github.com/yanjinbin/zashboard/compare/v3.19.0...v3.19.1) (2026-07-16)
-
-
-### Bug Fixes
-
-* use favicon for claude connectivity test to bypass WAF ([ccdc17c](https://github.com/yanjinbin/zashboard/commit/ccdc17c19600b23f33f9520d6ed11a4cee5899a6))
-
-## [3.19.0](https://github.com/yanjinbin/zashboard/compare/v3.18.0...v3.19.0) (2026-07-16)
+## [3.28.0](https://github.com/Zephyruso/zashboard/compare/v3.27.0...v3.28.0) (2026-09-17)
 
 
 ### Features
 
-* default display AI test logos with new Claude logo ([c939921](https://github.com/yanjinbin/zashboard/commit/c939921b952e0674d079363a5a9d23785d8f4708))
+* add overscroll lock functionality for iOS to prevent page bounce ([50c873c](https://github.com/Zephyruso/zashboard/commit/50c873c8d75da33222391e265c311657be3c8091))
+* add tun stack configuration and localization support ([aadccc6](https://github.com/Zephyruso/zashboard/commit/aadccc64c85f6df8ab4807f2e400325b5696d029))
+* enhance sidebar and navigation components, improve performance and styling ([b541b9d](https://github.com/Zephyruso/zashboard/commit/b541b9d78fc1ac4a516ce94f909589842016b1e7))
 
-## [3.18.0](https://github.com/yanjinbin/zashboard/compare/v3.17.0...v3.18.0) (2026-07-16)
+
+### Bug Fixes
+
+* enhance rule hit tooltip with formatted last hit time ([8b53171](https://github.com/Zephyruso/zashboard/commit/8b5317106feb349c6f2c2a8dc3cda3deccb284c4))
+* update primary color for light theme and adjust card background hover effect ([b106fa6](https://github.com/Zephyruso/zashboard/commit/b106fa60a3f397e06e0aa8a40ee1810ac7a46791))
+
+## [3.27.0](https://github.com/Zephyruso/zashboard/compare/v3.26.0...v3.27.0) (2026-09-15)
 
 
 ### Features
 
-* update AI tests with icons, emojis, and login URL ([aae2481](https://github.com/yanjinbin/zashboard/commit/aae24814eefd678bbf50edd25a8b99e58500ef53))
+* add a toggle to search hidden columns on the connections page ([1e78ba4](https://github.com/Zephyruso/zashboard/commit/1e78ba4a8b36d841e73334ed6170571aebe13174))
+* add comment for touch detection initialization in tooltip ([7339256](https://github.com/Zephyruso/zashboard/commit/7339256198146aef4bbc0e199e655cb9abee043f))
+* enhance table components with customizable classes and tooltips ([40d6f30](https://github.com/Zephyruso/zashboard/commit/40d6f30df4baee26e5daef5c1ac38e062de21864))
+* implement theme color synchronization with overlay dimming for mobile proxies ([05ba9a4](https://github.com/Zephyruso/zashboard/commit/05ba9a438e132026120722b9e721dbf01652708a))
+* update icon components and add icon generation script ([f0f47e8](https://github.com/Zephyruso/zashboard/commit/f0f47e85ccf97a2b2529209f052ef55e361b36b0))
 
 
 ### Bug Fixes
 
-* force trigger release 3.17.1 ([bc63df9](https://github.com/yanjinbin/zashboard/commit/bc63df957f5d68769796d3ee1ecb14ddc2303a0c))
+* adjust z-index context for sticky header and refine hidden column search logic ([01b4b15](https://github.com/Zephyruso/zashboard/commit/01b4b1518524f8a016d953e201ed7464dbc2a5c9))
 
-## [3.17.0](https://github.com/yanjinbin/zashboard/compare/v3.16.1...v3.17.0) (2026-07-16)
+## [3.26.0](https://github.com/Zephyruso/zashboard/compare/v3.25.0...v3.26.0) (2026-09-07)
 
 
 ### Features
 
-* add one-click test for AI websites connectivity ([3442d63](https://github.com/yanjinbin/zashboard/commit/3442d633502e2611f835522630ced40716517ebf))
+* implement collapse motion for cards and optimize virtual row shifting ([ac86982](https://github.com/Zephyruso/zashboard/commit/ac869828b38405e675a41eed670bbd5b90290df6))
+* implement virtual scrolling for proxies list and optimize latency handling ([fd8fc51](https://github.com/Zephyruso/zashboard/commit/fd8fc51bf703913e9275a164c7c8c75c76a1d3d0))
+* scroll to the active node on expand and fix node scroll positioning ([cb15575](https://github.com/Zephyruso/zashboard/commit/cb15575a025255e9968009a96eb4368cc9169ed4))
 
 
 ### Bug Fixes
 
-* sidebar should be expanded by default ([95ffad8](https://github.com/yanjinbin/zashboard/commit/95ffad8eca32302cfa0b4be51b097571848faa7b))
+* adjust virtual table layout for proper sticky header and background alignment ([4a7e06e](https://github.com/Zephyruso/zashboard/commit/4a7e06e9024aed107751b8656875f0cade13fc63))
+* ensure full proxy chain is always displayed in connection details ([c88976d](https://github.com/Zephyruso/zashboard/commit/c88976d668a25a12e0696007da19292919b5155d))
+* improve layout of connection metrics by adjusting icon positioning and spacing ([2b59feb](https://github.com/Zephyruso/zashboard/commit/2b59febc3bd2751934ff76fe29322d59afbdfd81))
+* update modal open state handling to prevent overflow issues during transitions ([bd65a45](https://github.com/Zephyruso/zashboard/commit/bd65a459555d98e5b2f26afeaa85879ed71ae345))
 
-## [3.16.1](https://github.com/yanjinbin/zashboard/compare/v3.16.0...v3.16.1) (2026-07-16)
-
-
-### Bug Fixes
-
-* set manage hidden proxy group to false by default ([85d470a](https://github.com/yanjinbin/zashboard/commit/85d470a5f7582bc6457dda8fb8d8540e33bcea07))
-
-## [3.16.0](https://github.com/yanjinbin/zashboard/compare/v3.15.1...v3.16.0) (2026-07-16)
+## [3.25.0](https://github.com/Zephyruso/zashboard/compare/v3.24.0...v3.25.0) (2026-08-31)
 
 
 ### Features
 
-* Add target version input for core upgrade ([c339de5](https://github.com/yanjinbin/zashboard/commit/c339de5e6d5055650e46d413d8666beadb975bc9))
+* support custom CSS in panel settings ([1da5989](https://github.com/Zephyruso/zashboard/commit/1da5989dfdac6331f6b56ddd8c0aaef3854a37b4))
 
 
 ### Bug Fixes
 
-* change default language to zh-CN ([1c57271](https://github.com/yanjinbin/zashboard/commit/1c57271759e2e31d4ac09531c3a2da60d707141a))
-* ignore browser language, default to zh-CN ([8506ee1](https://github.com/yanjinbin/zashboard/commit/8506ee11b131eeaf9c7954f08a5fa21d233b7c68))
+* navigate to proxies before syncing settings on first login ([f6dd9c0](https://github.com/Zephyruso/zashboard/commit/f6dd9c07e843ab89632cc373522254a1bfe6bbe5))
 
-## [3.13.3](https://github.com/yanjinbin/zashboard/compare/v3.13.2...v3.13.3) (2026-07-04)
+## [3.24.0](https://github.com/Zephyruso/zashboard/compare/v3.23.0...v3.24.0) (2026-08-28)
 
-
-### Bug Fixes
-
-* **settings:** always show router banner in settings, 6-char commit hash ([4e6d6f8](https://github.com/yanjinbin/zashboard/commit/4e6d6f8086a433c06d6f9b3b70c2b5a0ab1527a3))
-
-
-### CI
-
-* mirror release dist zips to gh-pages for jsDelivr CDN ([5103583](https://github.com/yanjinbin/zashboard/commit/51035835527478619a4b24d611f84ab7f248e5a4))
-
-## [3.13.2](https://github.com/yanjinbin/zashboard/compare/v3.13.1...v3.13.2) (2026-07-04)
-
-
-### Bug Fixes
-
-* **settings:** default `manageHiddenGroup` to off and `emoji` to twemoji on all platforms ([ae37322](https://github.com/yanjinbin/zashboard/commit/ae37322a47f6f15967e254084fefc37720562e8a))
-
-## [3.12.7](https://github.com/yanjinbin/zashboard/compare/v3.12.6...v3.12.7) (2026-06-30)
-
-
-### Bug Fixes
-
-* **settings:** restore 3.10.0 upgrade dashboard logic and silence API errors ([5368ab9](https://github.com/yanjinbin/zashboard/commit/5368ab95ce69c92d01499b43f18eec0a91bd0128))
-* **settings:** trigger release 3.12.7 ([1982ce3](https://github.com/yanjinbin/zashboard/commit/1982ce37399ac8dee3f66c3b3c648a9b791e3b5a))
-
-## [3.12.6](https://github.com/yanjinbin/zashboard/compare/v3.12.5...v3.12.6) (2026-06-30)
-
-
-### Bug Fixes
-
-* **settings:** trigger release 3.12.6 ([61238ef](https://github.com/yanjinbin/zashboard/commit/61238efc64ffaa6954f82324d2043055fb3e0bda))
-
-## [3.12.3](https://github.com/yanjinbin/zashboard/compare/v3.12.2...v3.12.3) (2026-06-30)
-
-
-### Bug Fixes
-
-* **settings:** trigger release 3.12.3 ([4dbf6f5](https://github.com/yanjinbin/zashboard/commit/4dbf6f539fd064f762953aabfacde7a818bd739d))
-
-## [3.12.1](https://github.com/yanjinbin/zashboard/compare/v3.12.0...v3.12.1) (2026-06-30)
-
-
-### Bug Fixes
-
-* **settings:** trigger release 3.12.1 ([01846b9](https://github.com/yanjinbin/zashboard/commit/01846b9c9c063ce10297704d81e8f78d556d0dc9))
-
-## [3.11.5](https://github.com/yanjinbin/zashboard/compare/v3.11.4...v3.11.5) (2026-06-29)
-
-
-### Bug Fixes
-
-* **settings:** use vivid blue for full-refresh progress fill ([050f249](https://github.com/yanjinbin/zashboard/commit/050f249a40243e3e09bbfa7aa303e439e656a670))
-
-## [3.11.4](https://github.com/yanjinbin/zashboard/compare/v3.11.3...v3.11.4) (2026-06-30)
-
-### Bug Fixes
-
-* **settings:** add logos and card layout to IP check tools section
-* **settings:** add logos for ipapi.co and ping0.cc in IP check tools
-* **settings:** use vivid blue for full-refresh progress fill
-
-## [3.11.3](https://github.com/yanjinbin/zashboard/compare/v3.11.2...v3.11.3) (2026-06-29)
-
-### Bug Fixes
-
-* **settings:** reset full-refresh button to initial state after 3s
-
-## [3.11.2](https://github.com/yanjinbin/zashboard/compare/v3.11.1...v3.11.2) (2026-06-29)
-
-### Bug Fixes
-
-* **settings:** embed progress fill inside full-refresh button
-
-## [3.11.1](https://github.com/yanjinbin/zashboard/compare/v3.11.0...v3.11.1) (2026-06-29)
-
-### Bug Fixes
-
-* **settings:** resolve exit node chain for IP check tools
-
-## [3.11.0](https://github.com/yanjinbin/zashboard/compare/v3.10.0...v3.11.0) (2026-06-29)
 
 ### Features
 
-* **settings:** full-refresh progress bar + IP check links + drop Russian locale
+* add endpoint legend with color coding and update translations ([eee0252](https://github.com/Zephyruso/zashboard/commit/eee0252ae74827f576cb0038df511b8b86e0f29b))
+* add expand/collapse all button for grouped connection cards ([234b93f](https://github.com/Zephyruso/zashboard/commit/234b93ff5a68e1726e0f309064c5519206462a50))
+* add grouping functionality for connection cards and enhance internationalization support ([d210f59](https://github.com/Zephyruso/zashboard/commit/d210f59378c57e08b7462864457ddd566ed18319)), closes [#759](https://github.com/Zephyruso/zashboard/issues/759)
+* enhance map zoom behavior and camera positioning for 2D projection ([40e68c2](https://github.com/Zephyruso/zashboard/commit/40e68c2ccd42935d7ebaee726aa0bdf3106128cb))
+* enhance sorting functionality with natural order and internationalization support ([4822fa3](https://github.com/Zephyruso/zashboard/commit/4822fa31924fbf33215546bff17c11e82a564d24))
+* implement swipe gesture handling for modal dialog with transition effects ([710e08b](https://github.com/Zephyruso/zashboard/commit/710e08b64813302a1fd56098d630130302aadd4b))
 
-## [3.10.0](https://github.com/yanjinbin/zashboard/compare/v3.9.11...v3.10.0) (2026-06-29)
+## [3.23.0](https://github.com/Zephyruso/zashboard/compare/v3.22.0...v3.23.0) (2026-08-26)
+
 
 ### Features
 
-* **settings:** add full-refresh button with partial-failure warning
+* add Earth projection functionality and related utilities ([cc2e235](https://github.com/Zephyruso/zashboard/commit/cc2e235fab23c21de3738e8fdec8855119e5ae69)), closes [#769](https://github.com/Zephyruso/zashboard/issues/769)
+* add HonkStats integration and related UI components ([1f6ba40](https://github.com/Zephyruso/zashboard/commit/1f6ba40854fca8ee5c0442b860f41b57878a6d33))
+* enhance routing and endpoint handling with direct connection support ([5d3cc03](https://github.com/Zephyruso/zashboard/commit/5d3cc036b2598fc7d41d106b6f913a14402e91c1))
+* implement action pending notifications and enhance error handling ([da5cf23](https://github.com/Zephyruso/zashboard/commit/da5cf23fda8c969897224b2dcc21ff99fa0c5c97))
+* remove sing-box support and related code ([4adb487](https://github.com/Zephyruso/zashboard/commit/4adb4872d90c8ec1b8bfab4b43308cdb2da12c3e))
 
----
+
+### Bug Fixes
+
+* update viewport handling and dialog dimensions for better keyboard support ([615506f](https://github.com/Zephyruso/zashboard/commit/615506fc093832ab3e2572d03e610e72594abec7))
+
+## [3.22.0](https://github.com/Zephyruso/zashboard/compare/v3.21.0...v3.22.0) (2026-08-24)
+
+
+### Features
+
+* add deprecation notice for sing-box support ([0ff25c1](https://github.com/Zephyruso/zashboard/commit/0ff25c116c2382e8315e744d859722cd89a18cbf))
+* enhance settings page with new customization options and search functionality ([435043a](https://github.com/Zephyruso/zashboard/commit/435043a2c20c1e98e69c3943fc8da6e9c68a9114))
+* implement settings page transitions and enhance swipe navigation ([fd6e1ed](https://github.com/Zephyruso/zashboard/commit/fd6e1ed8a94b52e09292fc51c4f854830cb386d8))
+
+
+### Bug Fixes
+
+* add need-blur class to enhance backdrop blur effect in settings components ([d11d521](https://github.com/Zephyruso/zashboard/commit/d11d5216dee05a3091e7aafd428604714f72be6d))
+* adjust transition handling for custom backgrounds to preserve backdrop blur in wallpaper mode ([be22920](https://github.com/Zephyruso/zashboard/commit/be229207ed16e4992107a0fca2cdf25343018225))
+* enhance background image handling and caching for improved performance ([952c9e5](https://github.com/Zephyruso/zashboard/commit/952c9e5ed47344c3669c53451edc1a822b289695))
+* improve settings page layout and enhance mobile index handling ([a815ded](https://github.com/Zephyruso/zashboard/commit/a815ded18f3068636af6e6a46332be4e337ad9ff))
+* optimize isProxyGroup function by using a Set for proxy group types ([b8e4322](https://github.com/Zephyruso/zashboard/commit/b8e432261068a9a5a0a09e841a903f2fc55935c8))
+* remove full-screen-mobile prop from DialogWrapper instances in settings components ([4a7d194](https://github.com/Zephyruso/zashboard/commit/4a7d194a4b44f62e60435789532f2e0dacfebc3a))
+
+## [3.21.0](https://github.com/Zephyruso/zashboard/compare/v3.20.0...v3.21.0) (2026-08-19)
+
+
+### Features
+
+* improve IP lookup API selection ([4ab1879](https://github.com/Zephyruso/zashboard/commit/4ab187937f9200ed09fad9d59b325623c008e922)), closes [#757](https://github.com/Zephyruso/zashboard/issues/757)
+
+
+### Bug Fixes
+
+* add confirmation dialogs for core upgrade and config reload actions ([8cb98d6](https://github.com/Zephyruso/zashboard/commit/8cb98d666767813099d4aeb5849eb5c1bc9df4b4))
+* adjust grid styling for responsive layout in ProviderTrafficOverview component ([5362606](https://github.com/Zephyruso/zashboard/commit/536260633b4dd06f5e3d8d5fd9c72112c3dc5b26))
+* adjust z-index values for backend panel components ([43e2afd](https://github.com/Zephyruso/zashboard/commit/43e2afd91db909fc506526cfad93d10a219fc9e7))
+* bring backend actions back into the sidebar backend menu ([e8a5dd5](https://github.com/Zephyruso/zashboard/commit/e8a5dd5ed404132dc72652d39dfb22d0f9ffa003)), closes [#765](https://github.com/Zephyruso/zashboard/issues/765)
+* replace legacy theme names with new mappings in settings ([c6510fe](https://github.com/Zephyruso/zashboard/commit/c6510fe96200980299a91713f460aab494cd7c52))
+* update backend status color and remove confirmation for config reload ([fe8784b](https://github.com/Zephyruso/zashboard/commit/fe8784bc220002a31c8a762f1fe1ec649ec35c6b))
+
+## [3.20.0](https://github.com/Zephyruso/zashboard/compare/v3.19.0...v3.20.0) (2026-08-18)
+
+
+### Features
+
+* add resolveClientHostname setting and implement reverse DNS lookup functionality ([5abb091](https://github.com/Zephyruso/zashboard/commit/5abb09106319fd577d393db07d132fd3c161b107))
+* add Taildrop functionality for file sending and receiving ([cd194c3](https://github.com/Zephyruso/zashboard/commit/cd194c3058adf0db11f417bf9b7ce75eaa60444b))
+* enhance backend reachability and connection diagnostics ([43e471f](https://github.com/Zephyruso/zashboard/commit/43e471f751d2b826025c475123d9b1961bf677ea))
+* enhance BackendSwitch component with compact mode and status indicator ([19c86ef](https://github.com/Zephyruso/zashboard/commit/19c86ef04b13bf42acdecbdd8670076ba990028c))
+* enhance BackendSwitchToast with improved status display and retry functionality ([d87a204](https://github.com/Zephyruso/zashboard/commit/d87a20475f915e289a9bcdcf70b2daa6e3729825))
+* enhance protocol handling in query parameters and update UI components for consistency ([0d045d3](https://github.com/Zephyruso/zashboard/commit/0d045d30c9ed9744b0528d1158ffee7f9628cf29))
+* implement app toast notifications with animations and styles ([0287fb2](https://github.com/Zephyruso/zashboard/commit/0287fb232bf3e8f047e232679877e5fce81b98b2))
+* implement backend session management and connectivity notifications ([ba8bbf2](https://github.com/Zephyruso/zashboard/commit/ba8bbf2df148fefd81b3498c67762ecbfbdee681))
+* Refactor backend management and settings UI ([dd4b6c0](https://github.com/Zephyruso/zashboard/commit/dd4b6c03f26e9893c50f2e98bae22c51c90b0aa4))
+* replace native select elements with custom SelectInput component across various settings and components ([dc743ce](https://github.com/Zephyruso/zashboard/commit/dc743ce24cfbdfdf61bf7fad9ce9c7c40230950a))
+* replace tab navigation with SegmentedControl for improved user experience ([9eaa523](https://github.com/Zephyruso/zashboard/commit/9eaa523d78dd14ed3926ca5c7f4dca56480ed770))
+* replace useStorage imports from vueuse with custom implementation for better default handling ([3544c14](https://github.com/Zephyruso/zashboard/commit/3544c14759e4881d1582e2dbc52c28001fa14947))
+* update color scheme and improve chart themes for better visibility ([e23fd12](https://github.com/Zephyruso/zashboard/commit/e23fd124b5e05af134db0a9213d2901a9018ec5f))
+* update ProxyPreview component styles for improved visual consistency ([22da30d](https://github.com/Zephyruso/zashboard/commit/22da30db355e1ac4712de778b5c54fe56b480cc3))
+
+
+### Bug Fixes
+
+* enhance latency testing by adding group name support and improving history tracking ([57e3460](https://github.com/Zephyruso/zashboard/commit/57e3460f59c3aa6584a46938aba1ef731cc69b02))
+* filter out non-latency testable proxies in allProxiesLatencyTest ([2111ee1](https://github.com/Zephyruso/zashboard/commit/2111ee13f3875eef591de0168361e3c9580b1691))
+* process reader for sing-box API ([3eb8dac](https://github.com/Zephyruso/zashboard/commit/3eb8dac7ef603342844b98e7cf784a0f0ca838d2))
+* update ProxiesContent and ProxyProvider components to handle optional name prop and improve event handling ([677fd5c](https://github.com/Zephyruso/zashboard/commit/677fd5c692be5c91d213b0662abfc8f45834c176))
+
+## [3.19.0](https://github.com/Zephyruso/zashboard/compare/v3.18.0...v3.19.0) (2026-08-14)
+
+
+### Features
+
+* add city labels to earth globe ([df067b3](https://github.com/Zephyruso/zashboard/commit/df067b3fd3d8aa38b462e02cdcf00890dbc46264)), closes [#743](https://github.com/Zephyruso/zashboard/issues/743)
+* add connection filter functionality and enhance topology controls ([58eb346](https://github.com/Zephyruso/zashboard/commit/58eb346b2846d72edc376647d9935bd65556669e))
+* add data-page-swipe-ignore attribute to various components and remove redundant touch event handlers ([fca53bc](https://github.com/Zephyruso/zashboard/commit/fca53bce168bf658b25fd16ebf3fe4f84089cb9f))
+* enhance logs and rules display with table view support ([dac63ed](https://github.com/Zephyruso/zashboard/commit/dac63ed748fba89433e071894b7ef447602bb8d0))
+* improve Earth GeoIP database handling ([271452c](https://github.com/Zephyruso/zashboard/commit/271452caf40640bb6be834c87a80d4d58ba5bd57))
+* integrate theme color scheme into ANSI text parsing and rendering ([ea6ac94](https://github.com/Zephyruso/zashboard/commit/ea6ac9475b99e807f700f785e694bf25b1d12c4f))
+
+
+### Bug Fixes
+
+* ensure correct query parameter handling for background image URL ([2181891](https://github.com/Zephyruso/zashboard/commit/2181891bfc0d4863b9e2917d2f331cc6eceb2f0f))
+* **proxies:** exclude reject outbounds from latency tests ([703bd01](https://github.com/Zephyruso/zashboard/commit/703bd01c092c6c714badc97f8cda832cf9543a21)), closes [#742](https://github.com/Zephyruso/zashboard/issues/742)
+* restore silent log level for sing-box ([f82ae78](https://github.com/Zephyruso/zashboard/commit/f82ae782a499fa5dcde6448d0fc31ae7f6f75790))
+* support silent log level by core ([5e26cc2](https://github.com/Zephyruso/zashboard/commit/5e26cc28ea8f0fbd2b4084aea22978233844c22e)), closes [#744](https://github.com/Zephyruso/zashboard/issues/744)
+* update GeoIP API requests ([fd4a41a](https://github.com/Zephyruso/zashboard/commit/fd4a41a4d65e3aeb739af0f0cead8104c45e1872)), closes [#746](https://github.com/Zephyruso/zashboard/issues/746) [#747](https://github.com/Zephyruso/zashboard/issues/747)
 
 ## [3.18.0](https://github.com/Zephyruso/zashboard/compare/v3.17.0...v3.18.0) (2026-08-08)
 

@@ -1,28 +1,34 @@
-// api 层 · axios 实例的全局拦截器。
-// 这是 api 层唯一允许依赖 store/setup 的地方:请求需要从 activeBackend 取得
-// 当前连接目标(baseURL / 鉴权)。其余 api 文件不得依赖上层。
-import { ROUTE_NAME } from '@/constant'
 import { showNotification } from '@/helper/notification'
 import { getUrlFromBackend } from '@/helper/utils'
-import { activeBackend, activeUuid } from '@/store/setup'
+import { activeBackend, activeUuid, backendManagerView, openBackendManager } from '@/store/setup'
 import axios, { AxiosError } from 'axios'
 import { nextTick } from 'vue'
+import { daeBearer, dropDaeSession, ensureDaeSession, isDaePasswordMode } from './dae-auth'
 
-axios.interceptors.request.use((config) => {
-  if (activeBackend.value) {
-    config.baseURL = getUrlFromBackend(activeBackend.value)
-    config.headers['Authorization'] = 'Bearer ' + activeBackend.value.password
+declare module 'axios' {
+  interface AxiosRequestConfig {
+    daeReauth?: boolean
+  }
+}
+
+axios.interceptors.request.use(async (config) => {
+  const backend = activeBackend.value
+
+  if (backend) {
+    config.baseURL = getUrlFromBackend(backend)
+
+    const token = isDaePasswordMode(backend)
+      ? await ensureDaeSession(backend).catch(() => '')
+      : backend.password
+
+    if (token) {
+      config.headers['Authorization'] = 'Bearer ' + token
+    } else {
+      delete config.headers['Authorization']
+    }
   }
   return config
 })
-
-const ignoreNotificationUrls = [
-  '/delay',
-  '/healthcheck',
-  '/weights',
-  '/storage/zashboard',
-  '/upgrade/ui',
-]
 
 axios.interceptors.response.use(
   null,
@@ -31,28 +37,44 @@ axios.interceptors.response.use(
       message: string
     }>,
   ) => {
-    if (error.status === 401 && activeUuid.value) {
-      const { default: router } = await import('@/router')
-      const currentBackendUuid = activeUuid.value
-      activeUuid.value = null
-      router.push({
-        name: ROUTE_NAME.setup,
-        query: { editBackend: currentBackendUuid },
-      })
-      nextTick(() => {
-        showNotification({ content: 'unauthorizedTip' })
-      })
-    } else if (!ignoreNotificationUrls.some((url) => error.config?.url?.endsWith(url))) {
-      const errorMessage = error.response?.data?.message || error.message
+    const backend = activeBackend.value
+    const config = error.config
 
-      showNotification({
-        key: errorMessage,
-        content: `${decodeURIComponent(error.config?.url || '')} \n${errorMessage}`,
-        type: 'alert-error',
-      })
-      return Promise.reject(error)
+    if (
+      error.status === 401 &&
+      backend &&
+      isDaePasswordMode(backend) &&
+      config &&
+      !config.daeReauth
+    ) {
+      const current = daeBearer(backend)
+
+      if (!current || config.headers?.Authorization === `Bearer ${current}`) {
+        dropDaeSession(backend)
+      }
+
+      try {
+        await ensureDaeSession(backend)
+
+        return await axios.request({ ...config, daeReauth: true })
+      } catch (retryError) {
+        if (axios.isAxiosError(retryError)) throw retryError
+      }
     }
 
-    return error
+    if (error.status === 401 && activeUuid.value) {
+      const uuid = activeUuid.value
+      const alreadyEditing =
+        backendManagerView.value?.mode === 'edit' && backendManagerView.value.uuid === uuid
+
+      if (!alreadyEditing) {
+        openBackendManager({ mode: 'edit', uuid })
+        nextTick(() => {
+          showNotification({ content: 'unauthorizedTip' })
+        })
+      }
+    }
+
+    return Promise.reject(error)
   },
 )

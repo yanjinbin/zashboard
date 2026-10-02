@@ -1,20 +1,20 @@
-import type { Connection as SingboxConnectionRawMessage } from '@/gen/daemon/started_service_pb'
+export * from './dae'
+import type { DaeConnectionRawMessage } from './dae'
 
-export type BackendType = 'clash' | 'singbox'
+export type BackendType = 'clash' | 'dae'
 
 export type Backend = {
-  // 后端登录类型:'clash' 走 Clash REST/WS API,'singbox' 走 sing-box API(gRPC)。
-  // 旧记录缺省按 'clash' 迁移。
   type: BackendType
   protocol: string
   host: string
   port: string
-  secondaryPath: string // 仅 clash
-  password: string // 通用:Clash secret / sing-box gRPC Bearer token
+  secondaryPath: string
+  password: string
+  username?: string
   uuid: string
   label?: string
-  disableUpgradeCore?: boolean // 仅 clash
-  disableTunMode?: boolean // 仅 clash
+  disableUpgradeCore?: boolean
+  disableTunMode?: boolean
 }
 
 export type Config = {
@@ -32,6 +32,7 @@ export type Config = {
   ipv6: boolean
   tun: {
     enable: boolean
+    stack?: string
   }
 }
 
@@ -41,6 +42,7 @@ export type History = {
 }[]
 
 export type Proxy = {
+  id?: string
   name: string
   type: string
   history: History
@@ -73,6 +75,7 @@ export type SubscriptionInfo = {
 
 export type ProxyProvider = {
   subscriptionInfo?: SubscriptionInfo
+  id?: string
   name: string
   proxies: Proxy[]
   testUrl: string
@@ -86,9 +89,7 @@ export type Rule = {
   proxy: string
   size: number
   uuid: string
-  // sing-box-reFind
   disabled?: boolean
-  // mihomo
   index: number
   extra?: {
     disabled: false
@@ -146,7 +147,7 @@ export type ClashConnectionRawMessage = {
   }
 }
 
-export type ConnectionRawMessage = ClashConnectionRawMessage | SingboxConnectionRawMessage
+export type ConnectionRawMessage = ClashConnectionRawMessage | DaeConnectionRawMessage
 
 export type Connection = ConnectionRawMessage & {
   downloadSpeed: number
@@ -187,9 +188,19 @@ export type SourceIPLabel = {
   scope?: string[]
 }
 
-// smart core
 export interface NodeRank {
   Name: string
   Rank: string
   Weight: number
+}
+
+export type HonkStats = {
+  outbounds: {
+    name: string
+    totalConns: number
+    activeConns: number
+    upload: number
+    download: number
+    errors: number
+  }[]
 }

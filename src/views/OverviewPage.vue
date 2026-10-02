@@ -18,11 +18,12 @@
 import OverviewCtrl from '@/components/controls/OverviewCtrl.vue'
 import ChartsCard from '@/components/overview/ChartsCard.vue'
 import ConnectionHistory from '@/components/overview/ConnectionHistory.vue'
+import HonkStatsCard from '@/components/overview/HonkStatsCard.vue'
 import NetworkCard from '@/components/overview/NetworkCard.vue'
 import ProviderTrafficOverview from '@/components/overview/ProviderTrafficOverview.vue'
 import RuleHitCountCard from '@/components/overview/RuleHitCountCard.vue'
 import TopologyCharts from '@/components/overview/TopologyCharts.vue'
-import { usePaddingForViews } from '@/composables/paddingViews'
+import { usePaddingForViews } from '@/composables/use-padding-for-views'
 import { overviewCardOrder } from '@/store/settings'
 import type { Component } from 'vue'
 import { computed, defineAsyncComponent } from 'vue'
@@ -43,5 +44,6 @@ const cardComponents: Record<string, Component> = {
   EarthGlobeCard: defineAsyncComponent(() => import('@/components/overview/EarthGlobeCard.vue')),
   ConnectionHistory,
   RuleHitCountCard,
+  HonkStatsCard,
 }
 </script>

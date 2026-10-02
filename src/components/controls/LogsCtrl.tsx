@@ -1,18 +1,8 @@
-import { can } from '@/assembly/backend'
-import { useCtrlsBar } from '@/composables/useCtrlsBar'
+import { initLogs, isPaused, logLevel, logs, supportedLogLevels } from '@/assembly/logs'
+import { useCtrlsBar } from '@/composables/use-ctrls-bar'
+import { useTooltip } from '@/composables/use-tooltip'
 import { LIST_DISPLAY_STYLE, LOG_LEVEL } from '@/constant'
-import { useTooltip } from '@/helper/tooltip'
-import {
-  initLogs,
-  isPaused,
-  logFilter,
-  logFilterEnabled,
-  logFilterRegex,
-  logLevel,
-  logTypeFilter,
-  logs,
-  supportedLogLevels,
-} from '@/store/logs'
+import { logFilter, logFilterEnabled, logFilterRegex, logTypeFilter } from '@/store/logs'
 import { logDisplayStyle, logRetentionLimit, logSearchHistory } from '@/store/settings'
 import {
   ArrowDownTrayIcon,
@@ -30,7 +20,7 @@ import { computed, defineComponent, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CtrlsBar from '../common/CtrlsBar.vue'
 import DialogWrapper from '../common/DialogWrapper.vue'
-import PanelTitle from '../common/PanelTitle.vue'
+import SelectInput from '../common/SelectInput.vue'
 import TextInput from '../common/TextInput.vue'
 
 export default defineComponent({
@@ -58,39 +48,22 @@ export default defineComponent({
 
     watch(logFilter, insertLogSearchHistory)
 
-    // 可选级别由内核决定,收敛在组装层(见 assembly/logs)。
     const logLevels = supportedLogLevels
 
     const logFilterOptions = computed(() => {
       const types: string[] = []
       const levels: string[] = []
 
-      if (can('logTypeFilter')) {
-        for (const log of logs.value) {
-          const startIndex = log.payload.startsWith('[') ? log.payload.indexOf(']') + 2 : 0
-          const endIndex = log.payload.indexOf(':', startIndex)
-          const type = log.payload.slice(startIndex, endIndex + 1)
+      for (const log of logs.value) {
+        const index = log.payload.indexOf(' ')
+        const type = index === -1 ? log.payload : log.payload.slice(0, index)
 
-          if (!types.includes(type)) {
-            types.push(type)
-          }
-
-          if (!levels.includes(log.type)) {
-            levels.push(log.type)
-          }
+        if (!types.includes(type)) {
+          types.push(type)
         }
-      } else {
-        for (const log of logs.value) {
-          const index = log.payload.indexOf(' ')
-          const type = index === -1 ? log.payload : log.payload.slice(0, index)
 
-          if (!types.includes(type)) {
-            types.push(type)
-          }
-
-          if (!levels.includes(log.type)) {
-            levels.push(log.type)
-          }
+        if (!levels.includes(log.type)) {
+          levels.push(log.type)
         }
       }
 
@@ -132,20 +105,13 @@ export default defineComponent({
 
     return () => {
       const levelSelect = (
-        <select
+        <SelectInput
           class={['select select-sm min-w-30']}
-          v-model={logLevel.value}
+          modelValue={logLevel.value}
+          onUpdate:modelValue={(value) => (logLevel.value = value as string)}
           onChange={initLogs}
-        >
-          {logLevels.value.map((opt) => (
-            <option
-              key={opt}
-              value={opt}
-            >
-              {opt}
-            </option>
-          ))}
-        </select>
+          options={logLevels.value.map((value) => ({ value, label: value }))}
+        />
       )
       const searchInput = (
         <TextInput
@@ -160,35 +126,27 @@ export default defineComponent({
       )
 
       const logTypeSelect = (
-        <select
+        <SelectInput
           class={[
             'join-item select select-sm',
             isLargeCtrlsBar.value ? 'w-36' : 'w-24 max-w-40 flex-1',
           ]}
-          v-model={logTypeFilter.value}
-        >
-          <option value="">{t('all')}</option>
-          <optgroup label={t('logLevel')}>
-            {logFilterOptions.value.levels.map((opt) => (
-              <option
-                key={opt}
-                value={opt}
-              >
-                {opt}
-              </option>
-            ))}
-          </optgroup>
-          <optgroup label={t('logType')}>
-            {logFilterOptions.value.types.map((opt) => (
-              <option
-                key={opt}
-                value={opt}
-              >
-                {opt}
-              </option>
-            ))}
-          </optgroup>
-        </select>
+          modelValue={logTypeFilter.value}
+          onUpdate:modelValue={(value) => (logTypeFilter.value = value as string)}
+          options={[
+            { value: '', label: t('all') },
+            ...logFilterOptions.value.levels.map((value) => ({
+              value,
+              label: value,
+              group: t('logLevel'),
+            })),
+            ...logFilterOptions.value.types.map((value) => ({
+              value,
+              label: value,
+              group: t('logType'),
+            })),
+          ]}
+        />
       )
 
       const settingsModal = (
@@ -207,19 +165,17 @@ export default defineComponent({
               <div class="settings-grid">
                 <div class="setting-item">
                   <div class="setting-item-label">{t('logStyle')}</div>
-                  <select
+                  <SelectInput
                     class="select select-sm min-w-24"
-                    v-model={logDisplayStyle.value}
-                  >
-                    {Object.values(LIST_DISPLAY_STYLE).map((opt) => (
-                      <option
-                        key={opt}
-                        value={opt}
-                      >
-                        {t(opt)}
-                      </option>
-                    ))}
-                  </select>
+                    modelValue={logDisplayStyle.value}
+                    onUpdate:modelValue={(value) =>
+                      (logDisplayStyle.value = value as LIST_DISPLAY_STYLE)
+                    }
+                    options={Object.values(LIST_DISPLAY_STYLE).map((value) => ({
+                      value,
+                      label: t(value),
+                    }))}
+                  />
                 </div>
                 <div class="setting-item">
                   <div class="setting-item-label">{t('logRetentionLimit')}</div>
@@ -323,9 +279,6 @@ export default defineComponent({
               {logTypeSelect}
               {searchInput}
             </div>
-          </div>
-          <div class="flex flex-1 justify-center">
-            <PanelTitle />
           </div>
           {buttons}
         </div>

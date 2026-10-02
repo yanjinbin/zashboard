@@ -1,5 +1,6 @@
 <template>
   <DialogWrapper
+    v-if="isReady"
     v-model="modalValue"
     :title="$t('updateConfigs')"
   >
@@ -53,15 +54,22 @@
 </template>
 
 <script setup lang="ts">
-import { updateConfigsAPI } from '@/assembly/config'
-import { showNotification } from '@/helper/notification'
+import { loadConfigs } from '@/assembly/config'
+import { notifyActionPending, showNotification } from '@/helper/notification'
+import { notifyRequestError } from '@/helper/request-error'
 import { fetchConfigs } from '@/assembly/config'
 import { fetchProxies } from '@/assembly/proxies'
 import { fetchRules } from '@/assembly/rules'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import DialogWrapper from '../../common/DialogWrapper.vue'
 
 const modalValue = defineModel<boolean>()
+
+const isReady = ref(false)
+onMounted(() => {
+  isReady.value = true
+})
+
 const configPath = ref('')
 const configPayload = ref('')
 const forceUpdate = ref(false)
@@ -76,19 +84,18 @@ const reloadAll = () => {
 const handleUpdateConfigs = async () => {
   if (isUpdating.value) return
   isUpdating.value = true
+  const notifyKey = notifyActionPending('updateConfigs')
   try {
-    await updateConfigsAPI(
-      { path: configPath.value, payload: configPayload.value },
-      forceUpdate.value,
-    )
+    await loadConfigs({ path: configPath.value, payload: configPayload.value }, forceUpdate.value)
     reloadAll()
     modalValue.value = false
     showNotification({
+      key: notifyKey,
       content: 'updateConfigsSuccess',
       type: 'alert-success',
     })
-  } catch {
-    // error handled by axios interceptor
+  } catch (e) {
+    notifyRequestError(e, notifyKey)
   } finally {
     isUpdating.value = false
   }
