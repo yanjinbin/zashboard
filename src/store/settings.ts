@@ -240,11 +240,11 @@ const defaultOverviewCardOrder: { card: OVERVIEW_CARD; visible: boolean }[] = [
   },
   {
     card: OVERVIEW_CARD.NetworkCard,
-    visible: true,
+    visible: false,
   },
   {
     card: OVERVIEW_CARD.EarthGlobeCard,
-    visible: true,
+    visible: false,
   },
   {
     card: OVERVIEW_CARD.TopologyCharts,
@@ -252,11 +252,11 @@ const defaultOverviewCardOrder: { card: OVERVIEW_CARD; visible: boolean }[] = [
   },
   {
     card: OVERVIEW_CARD.ProviderTrafficOverview,
-    visible: true,
+    visible: false,
   },
   {
     card: OVERVIEW_CARD.ConnectionHistory,
-    visible: true,
+    visible: false,
   },
   {
     card: OVERVIEW_CARD.RuleHitCountCard,
@@ -307,7 +307,7 @@ export const proxyGroupFilterMap = useStorage<Record<string, string>>(
   'cache/proxy-group-filter-map',
   {},
 )
-export const displayFinalOutbound = useStorage('config/show-selected-for-now-node', false)
+export const displayFinalOutbound = useStorage('config/show-selected-for-now-node', true)
 export const twoColumnProxyGroup = useStorage('config/two-columns', true)
 export const proxyFolderMode = useStorage<FOLDER_MODE>(
   'config/proxy-folder-mode-setting',
@@ -400,7 +400,6 @@ export const connectionTableColumns = useStorage<CONNECTIONS_TABLE_ACCESSOR_KEY[
   [
     CONNECTIONS_TABLE_ACCESSOR_KEY.Close,
     CONNECTIONS_TABLE_ACCESSOR_KEY.Host,
-    CONNECTIONS_TABLE_ACCESSOR_KEY.Type,
     CONNECTIONS_TABLE_ACCESSOR_KEY.Rule,
     CONNECTIONS_TABLE_ACCESSOR_KEY.Chains,
     CONNECTIONS_TABLE_ACCESSOR_KEY.DlSpeed,
