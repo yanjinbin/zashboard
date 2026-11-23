@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="numberOfChartsInSidebar > 0"
     class="sidebar-chart-group base-container flex min-h-0 flex-2 flex-col"
     :data-rows="numberOfChartsInSidebar"
   >

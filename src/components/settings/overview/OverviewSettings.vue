@@ -59,7 +59,7 @@
           <SelectInput
             v-model="numberOfChartsInSidebar"
             class="select select-sm min-w-24"
-            :options="[1, 2, 3].map((value) => ({ value, label: String(value) }))"
+            :options="[0, 1, 2, 3].map((value) => ({ value, label: String(value) }))"
           />
         </SettingItem>
       </div>
