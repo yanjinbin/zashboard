@@ -2,6 +2,7 @@ import { ROUTE_NAME } from '@/constant'
 import { resolvePageTransition } from '@/helper/page-transition'
 import { getLabelFromBackend } from '@/helper/utils'
 import { i18n } from '@/i18n'
+import ShliiPage from '@/modules/shlii/ShliiPage.vue'
 import { language } from '@/store/settings'
 import { activeBackend } from '@/store/setup'
 import ConnectionsPage from '@/views/ConnectionsPage.vue'
@@ -41,6 +42,11 @@ const childrenRouter = [
     path: 'rules',
     name: ROUTE_NAME.rules,
     component: RulesPage,
+  },
+  {
+    path: 'shlii',
+    name: ROUTE_NAME.shlii,
+    component: ShliiPage,
   },
   {
     path: 'settings',

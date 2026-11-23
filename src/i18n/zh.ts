@@ -637,6 +637,32 @@ const zh: LANG_MESSAGE = {
   daeGeneration: '配置代次',
   daeConfigRevision: '配置版本',
   daeMissingInputs: '缺失输入',
+
+  shliiAccount: 'Shlii 账号',
+  shliiBalance: '余额',
+  shliiInstances: '实例',
+  shliiRunningInstances: '运行中',
+  shliiTrafficUsed: '已用流量',
+  shliiTrafficUnlimited: '不限',
+  shliiUpdatedAt: '更新于 {time}',
+  shliiUsageHint:
+    '填入订阅服务发布的用量地址，例如 https://sub.example.com/subscribe/<token>/usage；密钥保存在服务端。',
+  shliiUsageUnauthorized: '用量地址无效或 token 未授权',
+  shliiUsageUnavailable: '用量数据暂时不可用',
+  shliiUsageNetwork: '无法连接用量地址',
+  shliiUsageUnknown: '读取用量失败',
+  shlii: 'Shlii',
+  shliiExpiresAt: '到期时间',
+  shliiNoInstances: '暂无实例',
+  shliiAutoRenew: '自动续费',
+  shliiRegions: '服务地区',
+  shliiPublicIpv4: '公网 IPv4',
+  shliiPublicIpv6: '公网 IPv6',
+  shliiPrivateIpv4: '内网 IPv4',
+  shliiSshPort: 'SSH 端口',
+  shliiNetworkMode: '网络模式',
+  shliiLongTerm: '长期有效',
+  shliiRefreshing: '后台刷新中',
 }
 
 export default zh

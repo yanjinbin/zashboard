@@ -655,6 +655,32 @@ const ru: LANG_MESSAGE = {
   daeGeneration: 'Поколение',
   daeConfigRevision: 'Ревизия конфигурации',
   daeMissingInputs: 'Не хватает данных',
+
+  shliiAccount: 'Аккаунт Shlii',
+  shliiBalance: 'Баланс',
+  shliiInstances: 'Инстансы',
+  shliiRunningInstances: 'работают',
+  shliiTrafficUsed: 'Использовано',
+  shliiTrafficUnlimited: 'Без лимита',
+  shliiUpdatedAt: 'Обновлено {time}',
+  shliiUsageHint:
+    'Вставьте адрес использования из сервиса подписок, например https://sub.example.com/subscribe/<token>/usage. Ключи остаются на сервере.',
+  shliiUsageUnauthorized: 'Адрес использования неверен или токен не авторизован',
+  shliiUsageUnavailable: 'Данные использования временно недоступны',
+  shliiUsageNetwork: 'Не удаётся подключиться к адресу использования',
+  shliiUsageUnknown: 'Не удалось прочитать данные использования',
+  shlii: 'Shlii',
+  shliiExpiresAt: 'Истекает',
+  shliiNoInstances: 'Нет активных инстансов',
+  shliiAutoRenew: 'Автопродление',
+  shliiRegions: 'Регионы',
+  shliiPublicIpv4: 'Публичный IPv4',
+  shliiPublicIpv6: 'Публичный IPv6',
+  shliiPrivateIpv4: 'Внутренний IPv4',
+  shliiSshPort: 'SSH-порт',
+  shliiNetworkMode: 'Режим сети',
+  shliiLongTerm: 'Без срока',
+  shliiRefreshing: 'обновление в фоне',
 }
 
 export default ru

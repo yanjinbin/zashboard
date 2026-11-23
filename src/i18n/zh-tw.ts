@@ -637,6 +637,32 @@ const zhTW: LANG_MESSAGE = {
   daeGeneration: '設定代次',
   daeConfigRevision: '設定版本',
   daeMissingInputs: '缺少輸入',
+
+  shliiAccount: 'Shlii 帳號',
+  shliiBalance: '餘額',
+  shliiInstances: '執行個體',
+  shliiRunningInstances: '執行中',
+  shliiTrafficUsed: '已用流量',
+  shliiTrafficUnlimited: '不限',
+  shliiUpdatedAt: '更新於 {time}',
+  shliiUsageHint:
+    '填入訂閱服務發布的用量位址，例如 https://sub.example.com/subscribe/<token>/usage；金鑰保存在伺服端。',
+  shliiUsageUnauthorized: '用量位址無效或 token 未授權',
+  shliiUsageUnavailable: '用量資料暫時無法使用',
+  shliiUsageNetwork: '無法連線用量位址',
+  shliiUsageUnknown: '讀取用量失敗',
+  shlii: 'Shlii',
+  shliiExpiresAt: '到期時間',
+  shliiNoInstances: '暫無執行個體',
+  shliiAutoRenew: '自動續費',
+  shliiRegions: '服務地區',
+  shliiPublicIpv4: '公網 IPv4',
+  shliiPublicIpv6: '公網 IPv6',
+  shliiPrivateIpv4: '內網 IPv4',
+  shliiSshPort: 'SSH 連接埠',
+  shliiNetworkMode: '網路模式',
+  shliiLongTerm: '長期有效',
+  shliiRefreshing: '背景重新整理中',
 }
 
 export default zhTW

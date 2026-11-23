@@ -652,6 +652,32 @@ const en = {
   daeGeneration: 'Generation',
   daeConfigRevision: 'Config revision',
   daeMissingInputs: 'Missing inputs',
+
+  shliiAccount: 'Shlii account',
+  shliiBalance: 'Balance',
+  shliiInstances: 'Instances',
+  shliiRunningInstances: 'running',
+  shliiTrafficUsed: 'Used traffic',
+  shliiTrafficUnlimited: 'Unlimited',
+  shliiUpdatedAt: 'Updated {time}',
+  shliiUsageHint:
+    'Paste the usage URL published by the subscription service, for example https://sub.example.com/subscribe/<token>/usage. Credentials stay on the server.',
+  shliiUsageUnauthorized: 'Usage URL is invalid or not authorized',
+  shliiUsageUnavailable: 'Usage is temporarily unavailable',
+  shliiUsageNetwork: 'Cannot reach the usage URL',
+  shliiUsageUnknown: 'Failed to read usage',
+  shlii: 'Shlii',
+  shliiExpiresAt: 'Expires',
+  shliiNoInstances: 'No active instances',
+  shliiAutoRenew: 'Auto renew',
+  shliiRegions: 'Regions',
+  shliiPublicIpv4: 'Public IPv4',
+  shliiPublicIpv6: 'Public IPv6',
+  shliiPrivateIpv4: 'Private IPv4',
+  shliiSshPort: 'SSH port',
+  shliiNetworkMode: 'Network mode',
+  shliiLongTerm: 'No expiry',
+  shliiRefreshing: 'refreshing in background',
 }
 
 export type LANG_MESSAGE = typeof en
