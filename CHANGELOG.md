@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [4.1.0](https://github.com/yanjinbin/zashboard/compare/v4.0.0...v4.1.0) (2026-11-23)
+
+
+### Features
+
+* **settings:** allow hiding the sidebar charts ([6ce3adb](https://github.com/yanjinbin/zashboard/commit/6ce3adb55693c097fe78af0965060ea0ae345b28))
+
 ## [4.0.0](https://github.com/yanjinbin/zashboard/compare/v3.30.0...v4.0.0) (2026-11-23)
 
 
