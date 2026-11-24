@@ -364,6 +364,7 @@ const ru: LANG_MESSAGE = {
   connectionTopology: 'Топология соединений',
   applyConnectionFilter: 'Применять фильтры соединений',
   topologyPause: 'Приостановить обновление топологии',
+  topologyPaused: 'Обновление приостановлено',
   topologyResume: 'Возобновить обновление топологии',
   topologyExpand: 'Развернуть топологию',
   topologyCollapse: 'Восстановить размер топологии',

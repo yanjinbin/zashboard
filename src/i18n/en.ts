@@ -361,6 +361,7 @@ const en = {
   connectionTopology: 'Connection topology',
   applyConnectionFilter: 'Apply connection filters',
   topologyPause: 'Pause topology updates',
+  topologyPaused: 'Paused',
   topologyResume: 'Resume topology updates',
   topologyExpand: 'Expand topology view',
   topologyCollapse: 'Restore topology view',

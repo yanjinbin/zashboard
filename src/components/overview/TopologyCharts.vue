@@ -15,25 +15,59 @@
         "
         :style="isFullScreen ? backgroundImage : undefined"
       >
-        <div class="flex items-center justify-between gap-2">
-          <div class="text-base-content/60 text-xs font-semibold tracking-wider uppercase">
-            {{ $t('connectionTopology') }}
-          </div>
-          <div class="flex items-center gap-1">
-            <label
-              class="text-base-content/60 flex cursor-pointer items-center gap-2 text-xs"
-              :title="t('applyConnectionFilter')"
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex min-w-0 items-center gap-2">
+            <div
+              class="text-base-content/60 truncate text-xs font-semibold tracking-wider uppercase"
             >
-              <span class="hidden sm:inline">{{ $t('applyConnectionFilter') }}</span>
-              <input
-                v-model="topologyApplyConnectionFilter"
-                type="checkbox"
-                class="toggle"
-                :aria-label="t('applyConnectionFilter')"
-              />
-            </label>
+              {{ $t('connectionTopology') }}
+            </div>
+            <Transition
+              enter-active-class="transition duration-150 ease-out"
+              enter-from-class="opacity-0 -translate-x-1"
+              leave-active-class="transition duration-100 ease-in"
+              leave-to-class="opacity-0"
+            >
+              <span
+                v-if="isManuallyPaused"
+                class="bg-warning/15 text-warning flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[10px] leading-none font-medium"
+              >
+                <span class="bg-warning h-1 w-1 rounded-full" />
+                {{ t('topologyPaused') }}
+              </span>
+            </Transition>
+          </div>
+          <div
+            class="bg-base-200/60 border-base-border flex shrink-0 items-center gap-0.5 rounded-full border p-0.5"
+          >
             <button
-              class="btn btn-ghost btn-sm btn-square"
+              type="button"
+              class="focus-visible:ring-primary/40 flex h-8 cursor-pointer items-center gap-1.5 rounded-full px-2.5 text-xs font-medium transition-colors outline-none focus-visible:ring-2"
+              :class="
+                topologyApplyConnectionFilter
+                  ? 'bg-primary text-primary-content shadow-xs'
+                  : 'text-base-content/55 hover:bg-base-content/10 hover:text-base-content'
+              "
+              :aria-label="t('applyConnectionFilter')"
+              :aria-pressed="topologyApplyConnectionFilter"
+              :title="t('applyConnectionFilter')"
+              @click="topologyApplyConnectionFilter = !topologyApplyConnectionFilter"
+            >
+              <FunnelIcon class="h-4 w-4 shrink-0" />
+              <span class="hidden sm:inline">{{ t('applyConnectionFilter') }}</span>
+            </button>
+            <span
+              class="bg-base-content/10 h-3.5 w-px shrink-0"
+              aria-hidden="true"
+            />
+            <button
+              type="button"
+              class="focus-visible:ring-primary/40 grid h-8 w-8 cursor-pointer place-items-center rounded-full transition-colors outline-none focus-visible:ring-2"
+              :class="
+                isManuallyPaused
+                  ? 'bg-warning/15 text-warning'
+                  : 'text-base-content/55 hover:bg-base-content/10 hover:text-base-content'
+              "
               :aria-label="t(isManuallyPaused ? 'topologyResume' : 'topologyPause')"
               :title="t(isManuallyPaused ? 'topologyResume' : 'topologyPause')"
               :aria-pressed="isManuallyPaused"
@@ -49,7 +83,8 @@
               />
             </button>
             <button
-              class="btn btn-ghost btn-sm btn-square"
+              type="button"
+              class="text-base-content/55 hover:bg-base-content/10 hover:text-base-content focus-visible:ring-primary/40 grid h-8 w-8 cursor-pointer place-items-center rounded-full transition-colors outline-none focus-visible:ring-2"
               :aria-label="t(isFullScreen ? 'topologyCollapse' : 'topologyExpand')"
               :title="t(isFullScreen ? 'topologyCollapse' : 'topologyExpand')"
               :aria-pressed="isFullScreen"
@@ -107,6 +142,7 @@ import { topologyApplyConnectionFilter } from '@/store/settings'
 import {
   ArrowsPointingInIcon,
   ArrowsPointingOutIcon,
+  FunnelIcon,
   PauseIcon,
   PlayIcon,
 } from '@heroicons/vue/24/outline'

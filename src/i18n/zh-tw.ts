@@ -350,6 +350,7 @@ const zhTW: LANG_MESSAGE = {
   connectionTopology: '連接拓撲',
   applyConnectionFilter: '套用連接篩選',
   topologyPause: '暫停拓撲更新',
+  topologyPaused: '已暫停',
   topologyResume: '繼續拓撲更新',
   topologyExpand: '展開拓撲畫面',
   topologyCollapse: '還原拓撲畫面',

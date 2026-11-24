@@ -350,6 +350,7 @@ const zh: LANG_MESSAGE = {
   connectionTopology: '连接拓扑',
   applyConnectionFilter: '应用连接筛选',
   topologyPause: '暂停拓扑更新',
+  topologyPaused: '已暂停',
   topologyResume: '继续拓扑更新',
   topologyExpand: '扩展拓扑画面',
   topologyCollapse: '还原拓扑画面',
