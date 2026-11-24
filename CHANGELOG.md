@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [4.2.0](https://github.com/yanjinbin/zashboard/compare/v4.1.0...v4.2.0) (2026-11-24)
+
+
+### Features
+
+* **overview:** restyle topology controls as a compact toolbar ([947fac2](https://github.com/yanjinbin/zashboard/commit/947fac270bf814d9e834d20469e91737aec77ea0))
+
 ## [4.1.0](https://github.com/yanjinbin/zashboard/compare/v4.0.0...v4.1.0) (2026-11-23)
 
 
