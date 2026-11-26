@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [4.3.0](https://github.com/yanjinbin/zashboard/compare/v4.2.0...v4.3.0) (2026-11-26)
+
+
+### Features
+
+* **vps-taxi:** add a read-only VPS.Taxi traffic page ([557b0e3](https://github.com/yanjinbin/zashboard/commit/557b0e3e4af70e0838ce57a60e4b81699a0bf0a2))
+
 ## [4.2.0](https://github.com/yanjinbin/zashboard/compare/v4.1.0...v4.2.0) (2026-11-24)
 
 
