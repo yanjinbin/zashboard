@@ -682,6 +682,32 @@ const ru: LANG_MESSAGE = {
   shliiNetworkMode: 'Режим сети',
   shliiLongTerm: 'Без срока',
   shliiRefreshing: 'обновление в фоне',
+
+  vpsTaxi: 'VPS.Taxi',
+  vpsTaxiHint:
+    'Запросы идут на тот же origin, /vps-taxi/api/v1, где обратный прокси добавляет bearer-токен. Без прокси укажите адрес и ключ напрямую.',
+  vpsTaxiApiBase: 'Адрес API',
+  vpsTaxiApiKey: 'Ключ API',
+  vpsTaxiApiKeyOptional: 'Пусто, если авторизует прокси',
+  vpsTaxiTrafficUsed: 'Трафик за период',
+  vpsTaxiIncoming: 'Входящий',
+  vpsTaxiOutgoing: 'Исходящий',
+  vpsTaxiPeriod: 'Расчётный период',
+  vpsTaxiUpdatedAt: 'Обновлено {time}',
+  vpsTaxiRenewsAt: 'Продление',
+  vpsTaxiIpv4: 'IPv4',
+  vpsTaxiIpv6: 'IPv6',
+  vpsTaxiDaily: 'Трафик по дням',
+  vpsTaxiNoDaily: 'Нет разбивки по дням',
+  vpsTaxiUnlimited: 'Без лимита',
+  vpsTaxiDaysLeft: 'Осталось дней: {days}',
+  vpsTaxiStatusActive: 'Активен',
+  vpsTaxiNoRenew: 'Без срока',
+  vpsTaxiUnauthorized: 'Ключ отклонён или нет доступа к API',
+  vpsTaxiRateLimited: 'Слишком много запросов, повторите позже',
+  vpsTaxiUnavailable: 'API временно недоступен',
+  vpsTaxiNetwork: 'Не удаётся подключиться к API',
+  vpsTaxiUnknown: 'Не удалось прочитать трафик',
 }
 
 export default ru

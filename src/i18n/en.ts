@@ -679,6 +679,32 @@ const en = {
   shliiNetworkMode: 'Network mode',
   shliiLongTerm: 'No expiry',
   shliiRefreshing: 'refreshing in background',
+
+  vpsTaxi: 'VPS.Taxi',
+  vpsTaxiHint:
+    'Requests go to the same-origin path /vps-taxi/api/v1, where the reverse proxy adds the bearer token. Without a proxy, set the endpoint and key directly.',
+  vpsTaxiApiBase: 'API endpoint',
+  vpsTaxiApiKey: 'API key',
+  vpsTaxiApiKeyOptional: 'Empty when the proxy authenticates',
+  vpsTaxiTrafficUsed: 'Traffic this period',
+  vpsTaxiIncoming: 'Inbound',
+  vpsTaxiOutgoing: 'Outbound',
+  vpsTaxiPeriod: 'Billing period',
+  vpsTaxiUpdatedAt: 'Updated {time}',
+  vpsTaxiRenewsAt: 'Renews',
+  vpsTaxiIpv4: 'IPv4',
+  vpsTaxiIpv6: 'IPv6',
+  vpsTaxiDaily: 'Daily traffic',
+  vpsTaxiNoDaily: 'No daily breakdown',
+  vpsTaxiUnlimited: 'Unlimited',
+  vpsTaxiDaysLeft: '{days} days left',
+  vpsTaxiStatusActive: 'Active',
+  vpsTaxiNoRenew: 'No expiry',
+  vpsTaxiUnauthorized: 'Key rejected or endpoint unauthorized',
+  vpsTaxiRateLimited: 'Too many requests, try again later',
+  vpsTaxiUnavailable: 'API is temporarily unavailable',
+  vpsTaxiNetwork: 'Cannot reach the API endpoint',
+  vpsTaxiUnknown: 'Failed to read traffic',
 }
 
 export type LANG_MESSAGE = typeof en

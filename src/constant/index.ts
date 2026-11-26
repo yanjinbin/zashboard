@@ -1,5 +1,6 @@
 import {
   ArrowsRightLeftIcon,
+  CloudIcon,
   Cog6ToothIcon,
   CubeTransparentIcon,
   DocumentTextIcon,
@@ -251,6 +252,7 @@ export enum ROUTE_NAME {
   logs = 'logs',
   rules = 'rules',
   shlii = 'shlii',
+  vpsTaxi = 'vpsTaxi',
   settings = 'settings',
   setup = 'setup',
 }
@@ -261,6 +263,7 @@ export const ROUTE_ICON_MAP = {
   [ROUTE_NAME.connections]: ArrowsRightLeftIcon,
   [ROUTE_NAME.rules]: SwatchIcon,
   [ROUTE_NAME.shlii]: ServerStackIcon,
+  [ROUTE_NAME.vpsTaxi]: CloudIcon,
   [ROUTE_NAME.logs]: DocumentTextIcon,
   [ROUTE_NAME.settings]: Cog6ToothIcon,
   [ROUTE_NAME.setup]: CubeTransparentIcon,

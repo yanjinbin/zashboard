@@ -88,4 +88,15 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  server: {
+    proxy: {
+      // The vps.taxi client API answers no CORS preflight, so the browser talks
+      // to the dev server instead and this proxy forwards the request upstream.
+      '/vps-taxi/api/v1': {
+        target: 'https://my.vps.taxi',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/vps-taxi\/api\/v1/, '/plugin/client_api/api/v1'),
+      },
+    },
+  },
 })

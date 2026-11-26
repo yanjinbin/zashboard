@@ -664,6 +664,32 @@ const zhTW: LANG_MESSAGE = {
   shliiNetworkMode: '網路模式',
   shliiLongTerm: '長期有效',
   shliiRefreshing: '背景重新整理中',
+
+  vpsTaxi: 'VPS.Taxi',
+  vpsTaxiHint:
+    '預設走同源反向代理 /vps-taxi/api/v1，由代理注入 Bearer 金鑰；未設定代理時，可直接填入介面位址與金鑰。',
+  vpsTaxiApiBase: '介面位址',
+  vpsTaxiApiKey: 'API 金鑰',
+  vpsTaxiApiKeyOptional: '留空則由代理注入',
+  vpsTaxiTrafficUsed: '本週期流量',
+  vpsTaxiIncoming: '下行',
+  vpsTaxiOutgoing: '上行',
+  vpsTaxiPeriod: '計費週期',
+  vpsTaxiUpdatedAt: '更新於 {time}',
+  vpsTaxiRenewsAt: '續約時間',
+  vpsTaxiIpv4: 'IPv4',
+  vpsTaxiIpv6: 'IPv6',
+  vpsTaxiDaily: '每日流量',
+  vpsTaxiNoDaily: '暫無每日明細',
+  vpsTaxiUnlimited: '不限',
+  vpsTaxiDaysLeft: '剩餘 {days} 天',
+  vpsTaxiStatusActive: '執行中',
+  vpsTaxiNoRenew: '長期有效',
+  vpsTaxiUnauthorized: '金鑰無效或介面未授權',
+  vpsTaxiRateLimited: '請求過於頻繁，請稍後再試',
+  vpsTaxiUnavailable: '介面暫時無法使用',
+  vpsTaxiNetwork: '無法連線介面位址',
+  vpsTaxiUnknown: '讀取流量失敗',
 }
 
 export default zhTW

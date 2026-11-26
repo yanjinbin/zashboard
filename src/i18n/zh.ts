@@ -664,6 +664,32 @@ const zh: LANG_MESSAGE = {
   shliiNetworkMode: '网络模式',
   shliiLongTerm: '长期有效',
   shliiRefreshing: '后台刷新中',
+
+  vpsTaxi: 'VPS.Taxi',
+  vpsTaxiHint:
+    '默认走同源反代 /vps-taxi/api/v1，由反代注入 Bearer 密钥；反代未配置时，可直接填入接口地址与密钥。',
+  vpsTaxiApiBase: '接口地址',
+  vpsTaxiApiKey: 'API 密钥',
+  vpsTaxiApiKeyOptional: '留空则由反代注入',
+  vpsTaxiTrafficUsed: '本周期流量',
+  vpsTaxiIncoming: '下行',
+  vpsTaxiOutgoing: '上行',
+  vpsTaxiPeriod: '计费周期',
+  vpsTaxiUpdatedAt: '更新于 {time}',
+  vpsTaxiRenewsAt: '续费时间',
+  vpsTaxiIpv4: 'IPv4',
+  vpsTaxiIpv6: 'IPv6',
+  vpsTaxiDaily: '每日流量',
+  vpsTaxiNoDaily: '暂无每日明细',
+  vpsTaxiUnlimited: '不限',
+  vpsTaxiDaysLeft: '剩余 {days} 天',
+  vpsTaxiStatusActive: '运行中',
+  vpsTaxiNoRenew: '长期有效',
+  vpsTaxiUnauthorized: '密钥无效或接口未授权',
+  vpsTaxiRateLimited: '请求过于频繁，请稍后再试',
+  vpsTaxiUnavailable: '接口暂时不可用',
+  vpsTaxiNetwork: '无法连接接口地址',
+  vpsTaxiUnknown: '读取流量失败',
 }
 
 export default zh

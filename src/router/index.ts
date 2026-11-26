@@ -3,6 +3,7 @@ import { resolvePageTransition } from '@/helper/page-transition'
 import { getLabelFromBackend } from '@/helper/utils'
 import { i18n } from '@/i18n'
 import ShliiPage from '@/modules/shlii/ShliiPage.vue'
+import VpsTaxiPage from '@/modules/vps-taxi/VpsTaxiPage.vue'
 import { language } from '@/store/settings'
 import { activeBackend } from '@/store/setup'
 import ConnectionsPage from '@/views/ConnectionsPage.vue'
@@ -47,6 +48,11 @@ const childrenRouter = [
     path: 'shlii',
     name: ROUTE_NAME.shlii,
     component: ShliiPage,
+  },
+  {
+    path: 'vps-taxi',
+    name: ROUTE_NAME.vpsTaxi,
+    component: VpsTaxiPage,
   },
   {
     path: 'settings',
