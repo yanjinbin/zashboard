@@ -49,6 +49,7 @@ jobs:
         env:
           FONT: ${{ matrix.font.key }}
           VITE_SHLII_USAGE_URL: ${{ secrets.VITE_SHLII_USAGE_URL }}
+          VITE_VPS_TAXI_API_BASE: https://sub.oralcure.icu/vps-taxi/api/v1
         run: |
           pnpm i
           pnpm run build
