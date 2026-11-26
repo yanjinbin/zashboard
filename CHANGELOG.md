@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [4.3.1](https://github.com/yanjinbin/zashboard/compare/v4.3.0...v4.3.1) (2026-11-26)
+
+
+### Bug Fixes
+
+* **vps-taxi:** default the API base to the relay endpoint ([59901b1](https://github.com/yanjinbin/zashboard/commit/59901b1c23ff44f2b87515da28228fcceb34a420))
+
 ## [4.3.0](https://github.com/yanjinbin/zashboard/compare/v4.2.0...v4.3.0) (2026-11-26)
 
 
