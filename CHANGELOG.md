@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [4.4.0](https://github.com/yanjinbin/zashboard/compare/v4.3.2...v4.4.0) (2026-11-27)
+
+
+### Features
+
+* **settings:** customize default overview and proxy display settings ([d036889](https://github.com/yanjinbin/zashboard/commit/d036889b745cbe03c60d606193b987ee73037ebf))
+
 ## [4.3.2](https://github.com/yanjinbin/zashboard/compare/v4.3.1...v4.3.2) (2026-11-27)
 
 
