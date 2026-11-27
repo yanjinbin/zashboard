@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [4.6.0](https://github.com/yanjinbin/zashboard/compare/v4.5.0...v4.6.0) (2026-11-27)
+
+
+### Features
+
+* **settings:** expand sidebar by default ([84cdc81](https://github.com/yanjinbin/zashboard/commit/84cdc81e4939f13a43f760a85280bdda50bf7093))
+
 ## [4.5.0](https://github.com/yanjinbin/zashboard/compare/v4.4.0...v4.5.0) (2026-11-27)
 
 
