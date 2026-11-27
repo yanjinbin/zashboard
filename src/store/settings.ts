@@ -156,7 +156,7 @@ export const language = useStorage<LANG>(
     ? (navigator.language as LANG)
     : LANG.EN_US,
 )
-export const isSidebarCollapsedConfig = useStorage('config/is-sidebar-collapsed', true)
+export const isSidebarCollapsedConfig = useStorage('config/is-sidebar-collapsed', false)
 export const isSidebarCollapsed = computed({
   get: () => {
     if (isMiddleScreen.value) {
