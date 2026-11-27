@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [4.3.2](https://github.com/yanjinbin/zashboard/compare/v4.3.1...v4.3.2) (2026-11-27)
+
+
+### Bug Fixes
+
+* **shlii:** stop baking the usage URL into the public build ([9b8e4e7](https://github.com/yanjinbin/zashboard/commit/9b8e4e79c95849ae1b5e9b2c46873a847fd60c08))
+
 ## [4.3.1](https://github.com/yanjinbin/zashboard/compare/v4.3.0...v4.3.1) (2026-11-26)
 
 
