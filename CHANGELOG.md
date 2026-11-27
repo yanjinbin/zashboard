@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [4.5.0](https://github.com/yanjinbin/zashboard/compare/v4.4.0...v4.5.0) (2026-11-27)
+
+
+### Features
+
+* **ci:** configure default Shlii usage proxy URL ([ea1e2ee](https://github.com/yanjinbin/zashboard/commit/ea1e2ee93b10ed2446accc1f26679e194816e2b7))
+
 ## [4.4.0](https://github.com/yanjinbin/zashboard/compare/v4.3.2...v4.4.0) (2026-11-27)
 
 
