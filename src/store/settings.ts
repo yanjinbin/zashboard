@@ -214,7 +214,7 @@ export const autoDisconnectIdleUDP = useStorage('config/auto-disconnect-idle-udp
 export const autoDisconnectIdleUDPTime = useStorage('config/auto-disconnect-idle-udp-time', 300)
 export const keyboardShortcuts = useStorage<Record<string, string>>('config/keyboard-shortcuts', {})
 
-export const splitOverviewPage = useStorage('config/split-overview-page', false)
+export const splitOverviewPage = useStorage('config/split-overview-page', true)
 export const autoIPCheck = useStorage('config/auto-ip-check', true)
 export const ipCheckPrimaryAPI = useStorage<IP_INFO_API>(
   'config/ip-check-primary-api',
@@ -231,7 +231,7 @@ export const showStatisticsWhenSidebarCollapsed = useStorage(
 )
 export const numberOfChartsInSidebar = useStorage<0 | 1 | 2 | 3>(
   'config/number-of-charts-in-sidebar',
-  1,
+  0,
 )
 const defaultOverviewCardOrder: { card: OVERVIEW_CARD; visible: boolean }[] = [
   {
@@ -334,13 +334,13 @@ export const proxySortType = useStorage<PROXY_SORT_TYPE>(
   PROXY_SORT_TYPE.DEFAULT,
 )
 export const automaticDisconnection = useStorage('config/automatic-disconnection', true)
-export const truncateProxyName = useStorage('config/truncate-proxy-name', true)
+export const truncateProxyName = useStorage('config/truncate-proxy-name', false)
 export const disableProxiesPageTextSelect = useStorage(
   'config/disable-proxies-page-text-select',
   true,
 )
 export const proxyPreviewType = useStorage('config/proxy-preview-type', PROXY_PREVIEW_TYPE.AUTO)
-export const hideUnavailableProxies = useStorage('config/hide-unavailable-proxies', false)
+export const hideUnavailableProxies = useStorage('config/hide-unavailable-proxies', true)
 export const lowLatency = useStorage('config/low-latency', 400)
 export const mediumLatency = useStorage('config/medium-latency', 800)
 export const IPv6test = useStorage('config/ipv6-test', false)
@@ -365,7 +365,7 @@ export const iconReflectList = useStorage<
     uuid: string
   }[]
 >('config/icon-reflect-list', [])
-export const groupProxiesByProvider = useStorage('config/group-proxies-by-provider', false)
+export const groupProxiesByProvider = useStorage('config/group-proxies-by-provider', true)
 export const useSmartGroupSort = useStorage('config/use-smart-group-sort', false)
 export const groupTestUrls = useStorage<
   {
