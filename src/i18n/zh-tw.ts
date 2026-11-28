@@ -664,6 +664,11 @@ const zhTW: LANG_MESSAGE = {
   shliiNetworkMode: '網路模式',
   shliiLongTerm: '長期有效',
   shliiRefreshing: '背景重新整理中',
+  shliiRegion: '地區',
+  shliiNode: '節點',
+  shliiPlan: '方案',
+  shliiPrice: '價格',
+  shliiDaysRemaining: '{days} 天',
 
   vpsTaxi: 'VPS.Taxi',
   vpsTaxiHint:

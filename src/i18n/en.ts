@@ -679,6 +679,11 @@ const en = {
   shliiNetworkMode: 'Network mode',
   shliiLongTerm: 'No expiry',
   shliiRefreshing: 'refreshing in background',
+  shliiRegion: 'Region',
+  shliiNode: 'Node',
+  shliiPlan: 'Plan',
+  shliiPrice: 'Price',
+  shliiDaysRemaining: '{days}d',
 
   vpsTaxi: 'VPS.Taxi',
   vpsTaxiHint:

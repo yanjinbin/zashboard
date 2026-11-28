@@ -10,6 +10,10 @@ export interface ShliiUsageInstance {
   disk: number
   image: string
   autoRenew: boolean
+  region?: string
+  node?: string
+  plan?: string
+  price?: string | number
   ipv4?: string
   publicIpv4?: string
   publicIpv6?: string

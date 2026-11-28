@@ -361,7 +361,20 @@ const specLabel = (instance: ShliiUsageInstance) => {
 const expireLabel = (instance: ShliiUsageInstance) => {
   if (!instance.expiresAt) return t('shliiLongTerm')
 
-  return dayjs(instance.expiresAt).format('YYYY-MM-DD')
+  const expireDate = dayjs(instance.expiresAt)
+  const days = Math.max(0, expireDate.startOf('day').diff(dayjs().startOf('day'), 'day'))
+
+  return `${expireDate.format('YYYY-MM-DD')} · ${t('shliiDaysRemaining', { days })}`
+}
+
+const priceLabel = (instance: ShliiUsageInstance) => {
+  if (instance.price === undefined || instance.price === null || instance.price === '') {
+    return undefined
+  }
+
+  return typeof instance.price === 'number'
+    ? `¥${instance.price.toFixed(2)}`
+    : String(instance.price)
 }
 
 const usedLabel = (instance: ShliiUsageInstance) =>
@@ -386,6 +399,10 @@ const percentage = (instance: ShliiUsageInstance): number | null => {
 
 const networkFields = (instance: ShliiUsageInstance) =>
   [
+    { label: t('shliiRegion'), value: instance.region, copyable: false },
+    { label: t('shliiNode'), value: instance.node, copyable: false },
+    { label: t('shliiPlan'), value: instance.plan, copyable: false },
+    { label: t('shliiPrice'), value: priceLabel(instance), copyable: false },
     { label: t('shliiPublicIpv4'), value: instance.publicIpv4, copyable: true },
     { label: t('shliiPublicIpv6'), value: instance.publicIpv6, copyable: true },
     { label: t('shliiPrivateIpv4'), value: instance.ipv4, copyable: false },

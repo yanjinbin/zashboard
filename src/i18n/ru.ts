@@ -682,6 +682,11 @@ const ru: LANG_MESSAGE = {
   shliiNetworkMode: 'Режим сети',
   shliiLongTerm: 'Без срока',
   shliiRefreshing: 'обновление в фоне',
+  shliiRegion: 'Регион',
+  shliiNode: 'Узел',
+  shliiPlan: 'Тариф',
+  shliiPrice: 'Цена',
+  shliiDaysRemaining: '{days} дн.',
 
   vpsTaxi: 'VPS.Taxi',
   vpsTaxiHint:
