@@ -147,7 +147,7 @@ const fetchIsCoreUpdateAvailable = async () => {
 
 export const checkUIUpdate = async () => {
   const { tag_name } = await fetchWithLocalCache<{ tag_name: string }>(
-    'https://api.github.com/repos/Zephyruso/zashboard/releases/latest',
+    'https://api.github.com/repos/yanjinbin/zashboard/releases/latest',
     zashboardVersion.value,
   )
 
