@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [4.8.0](https://github.com/yanjinbin/zashboard/compare/v4.7.0...v4.8.0) (2026-11-28)
+
+
+### Features
+
+* sync upstream search history improvements ([31772f8](https://github.com/yanjinbin/zashboard/commit/31772f87da91d9601cfffb195a7c9a138865cf65))
+
 ## [4.7.0](https://github.com/yanjinbin/zashboard/compare/v4.6.0...v4.7.0) (2026-11-28)
 
 
