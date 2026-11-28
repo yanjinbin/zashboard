@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [4.7.0](https://github.com/yanjinbin/zashboard/compare/v4.6.0...v4.7.0) (2026-11-28)
+
+
+### Features
+
+* **shlii:** show region, node, plan, price and remaining days ([fea5c81](https://github.com/yanjinbin/zashboard/commit/fea5c815f2f23f0f2413c899432ee303f0b509b1))
+
 ## [4.6.0](https://github.com/yanjinbin/zashboard/compare/v4.5.0...v4.6.0) (2026-11-27)
 
 
